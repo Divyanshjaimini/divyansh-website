@@ -283,7 +283,7 @@
         localStorage.getItem('siteVisitors') || '0';
 
     // STATS
-    fetch('http://localhost:8080/api/admin/stats', { headers: { 'userId': userId } })
+    fetch('https://divyansh-website-wooq.onrender.com/api/admin/stats', { headers: { 'userId': userId } })
         .then(r => r.json())
         .then(data => {
             document.getElementById('total-users').textContent = data.totalUsers;
@@ -295,7 +295,7 @@
     let currentFilter = 'all';
 
     function loadUsers() {
-        fetch('http://localhost:8080/api/admin/users', { headers: { 'userId': userId } })
+        fetch('https://divyansh-website-wooq.onrender.com/api/admin/users', { headers: { 'userId': userId } })
             .then(r => r.json())
             .then(users => {
                 allUsers = users;
@@ -352,7 +352,7 @@
 
     function makeAdmin(targetId) {
         if (!confirm('Is user ko Admin banana chahte ho?')) return;
-        fetch(`http://localhost:8080/api/admin/make-admin/${targetId}`, {
+        fetch(`https://divyansh-website-wooq.onrender.com/api/admin/make-admin/${targetId}`, {
             method: 'PUT', headers: { 'userId': userId }
         })
         .then(r => r.json())
@@ -361,7 +361,7 @@
 
     function deleteUser(targetId, name) {
         if (!confirm(`"${name}" ko delete karna chahte ho?`)) return;
-        fetch(`http://localhost:8080/api/admin/delete-user/${targetId}`, {
+        fetch(`https://divyansh-website-wooq.onrender.com/api/admin/delete-user/${targetId}`, {
             method: 'DELETE', headers: { 'userId': userId }
         })
         .then(r => r.json())

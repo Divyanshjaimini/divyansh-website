@@ -628,7 +628,7 @@
     document.getElementById('visitorText').textContent = `🌍 ${visitors} log is website par aa chuke hain`;
 
     // MEMBER COUNT
-    fetch('http://localhost:8080/api/admin/stats')
+    fetch('https://divyansh-website-wooq.onrender.com/api/admin/stats')
         .then(r => r.json())
         .then(data => {
             document.getElementById('memberCount').textContent = data.totalUsers || 0;

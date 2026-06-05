@@ -368,7 +368,7 @@
     document.querySelector('.theme-icon').textContent = savedTheme === 'dark' ? '🌙' : '☀️';
 
     // LOAD PROFILE
-    fetch('http://localhost:8080/api/user/profile', { headers: { 'userId': userId } })
+    fetch('https://divyansh-website-wooq.onrender.com/api/user/profile', { headers: { 'userId': userId } })
         .then(r => r.json())
         .then(data => {
             document.getElementById('p-username').textContent = data.username;
@@ -399,7 +399,7 @@
         const msgBox = document.getElementById('username-msg');
         if (!newUsername) { showMsg(msgBox, 'Username likho!', 'error'); return; }
 
-        fetch('http://localhost:8080/api/user/update-profile', {
+        fetch('https://divyansh-website-wooq.onrender.com/api/user/update-profile', {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json', 'userId': userId },
             body: JSON.stringify({ username: newUsername })
@@ -433,7 +433,7 @@
         if (newPw !== confirmPw) { showMsg(msgBox, 'Naya password match nahi kar raha!', 'error'); return; }
         if (newPw.length < 6) { showMsg(msgBox, 'Password kam se kam 6 characters ka hona chahiye!', 'error'); return; }
 
-        fetch('http://localhost:8080/api/user/change-password', {
+        fetch('https://divyansh-website-wooq.onrender.com/api/user/change-password', {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json', 'userId': userId },
             body: JSON.stringify({ oldPassword: oldPw, newPassword: newPw })
