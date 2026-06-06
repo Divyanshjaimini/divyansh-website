@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chat — Divyansh Jaimini</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',sans-serif;background:#030308;color:#fff;height:100vh;display:flex;flex-direction:column;overflow:hidden}
+canvas{position:fixed;top:0;left:0;z-index:0;pointer-events:none}
+
+/* NAV */
+nav{position:relative;z-index:10;display:flex;justify-content:space-between;align-items:center;padding:0 1.5rem;height:60px;background:rgba(3,3,8,0.95);border-bottom:1px solid rgba(255,255,255,0.07);backdrop-filter:blur(20px)}
+.nav-logo{font-size:1rem;font-weight:900;background:linear-gradient(135deg,#667eea,#f093fb);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.nav-right{display:flex;align-items:center;gap:0.8rem}
+.online-badge{display:flex;align-items:center;gap:0.4rem;background:rgba(74,222,128,0.08);border:1px solid rgba(74,222,128,0.2);color:#4ade80;padding:0.3rem 0.8rem;border-radius:20px;font-size:0.78rem;font-weight:600}
+.online-dot{width:6px;height:6px;background:#4ade80;border-radius:50%;animation:pulse 1.5s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+.back-btn{color:rgba(255,255,255,0.5);text-decoration:none;font-size:0.82rem;padding:0.4rem 0.8rem;border-radius:8px;border:1px solid rgba(255,255,255,0.1);transition:all 0.2s}
+.back-btn:hover{color:#fff;border-color:rgba(255,255,255,0.3)}
+
+/* LAYOUT */
+.chat-layout{position:relative;z-index:1;display:flex;flex:1;height:calc(100vh - 60px);overflow:hidden}
+
+/* SIDEBAR */
+.sidebar{width:280px;border-right:1px solid rgba(255,255,255,0.07);display:flex;flex-direction:column;background:rgba(255,255,255,0.02)}
+.sidebar-header{padding:1rem;border-bottom:1px solid rgba(255,255,255,0.07)}
+.sidebar-title{font-size:0.75rem;font-weight:700;color:rgba(255,255,255,0.35);text-transform:uppercase;letter-spacing:0.12em;margin-bottom:0.8rem}
+.room-btn{width:100%;padding:0.7rem 0.9rem;border:none;border-radius:12px;cursor:pointer;font-family:inherit;font-size:0.85rem;font-weight:600;text-align:left;transition:all 0.2s;margin-bottom:0.4rem;display:flex;align-items:center;gap:0.6rem}
+.room-btn.active{background:linear-gradient(135deg,rgba(102,126,234,0.2),rgba(240,147,251,0.1));color:#a78bfa;border:1px solid rgba(102,126,234,0.25)}
+.room-btn:not(.active){background:transparent;color:rgba(255,255,255,0.5);border:1px solid transparent}
+.room-btn:not(.active):hover{background:rgba(255,255,255,0.05);color:#fff}
+.users-list{flex:1;overflow-y:auto;padding:0.8rem}
+.users-list::-webkit-scrollbar{width:4px}
+.users-list::-webkit-scrollbar-track{background:transparent}
+.users-list::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.1);border-radius:2px}
+.user-item{display:flex;align-items:center;gap:0.7rem;padding:0.6rem 0.8rem;border-radius:10px;cursor:pointer;transition:all 0.2s;margin-bottom:0.3rem}
+.user-item:hover{background:rgba(255,255,255,0.05)}
+.user-item.active{background:rgba(102,126,234,0.12);border:1px solid rgba(102,126,234,0.2)}
+.user-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#667eea,#f093fb);display:flex;align-items:center;justify-content:center;font-size:0.9rem;font-weight:800;flex-shrink:0}
+.user-name{font-size:0.85rem;font-weight:600}
+.user-status{width:8px;height:8px;background:#4ade80;border-radius:50%;margin-left:auto;flex-shrink:0}
+
+/* CHAT AREA */
+.chat-area{flex:1;display:flex;flex-direction:column}
+.chat-header{padding:1rem 1.5rem;border-bottom:1px solid rgba(255,255,255,0.07);display:flex;align-items:center;gap:0.8rem;background:rgba(255,255,255,0.02)}
+.chat-header-avatar{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#667eea,#f093fb);display:flex;align-items:center;justify-content:center;font-size:1rem;font-weight:800}
+.chat-header-name{font-size:1rem;font-weight:700}
+.chat-header-sub{font-size:0.75rem;color:rgba(255,255,255,0.4);margin-top:0.1rem}
+.messages{flex:1;overflow-y:auto;padding:1.5rem;display:flex;flex-direction:column;gap:0.8rem}
+.messages::-webkit-scrollbar{width:4px}
+.messages::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.1);border-radius:2px}
+
+/* MESSAGES */
+.msg-wrap{display:flex;gap:0.6rem;align-items:flex-end;animation:msgIn 0.3s ease}
+@keyframes msgIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.msg-wrap.mine{flex-direction:row-reverse}
+.msg-avatar{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#667eea,#f093fb);display:flex;align-items:center;justify-content:center;font-size:0.78rem;font-weight:800;flex-shrink:0}
+.msg-bubble{max-width:65%;padding:0.7rem 1rem;border-radius:18px;font-size:0.88rem;line-height:1.5}
+.msg-wrap:not(.mine) .msg-bubble{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.08);border-bottom-left-radius:4px}
+.msg-wrap.mine .msg-bubble{background:linear-gradient(135deg,#667eea,#764ba2);border-bottom-right-radius:4px}
+.msg-sender{font-size:0.72rem;font-weight:700;color:rgba(255,255,255,0.5);margin-bottom:0.3rem}
+.msg-time{font-size:0.68rem;color:rgba(255,255,255,0.3);margin-top:0.3rem;text-align:right}
+.msg-wrap:not(.mine) .msg-time{text-align:left}
+
+/* SYSTEM MSG */
+.sys-msg{text-align:center;font-size:0.75rem;color:rgba(255,255,255,0.3);padding:0.3rem;font-weight:500}
+
+/* INPUT */
+.chat-input{padding:1rem 1.5rem;border-top:1px solid rgba(255,255,255,0.07);display:flex;gap:0.8rem;align-items:center;background:rgba(255,255,255,0.02)}
+.input-box{flex:1;padding:0.8rem 1.1rem;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:25px;color:#fff;font-size:0.9rem;font-family:inherit;outline:none;transition:all 0.2s}
+.input-box:focus{border-color:rgba(102,126,234,0.5);background:rgba(102,126,234,0.07)}
+.input-box::placeholder{color:rgba(255,255,255,0.2)}
+.send-btn{width:44px;height:44px;background:linear-gradient(135deg,#667eea,#764ba2);border:none;border-radius:50%;cursor:pointer;font-size:1.1rem;transition:all 0.2s;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.send-btn:hover{transform:scale(1.1);box-shadow:0 4px 15px rgba(102,126,234,0.5)}
+
+/* NOT LOGGED IN */
+.not-logged{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;gap:1rem;text-align:center;padding:2rem}
+.not-logged h2{font-size:1.5rem;font-weight:800}
+.not-logged p{color:rgba(255,255,255,0.4);font-size:0.9rem}
+.login-link{background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;padding:0.8rem 2rem;border-radius:25px;text-decoration:none;font-weight:700;transition:all 0.2s}
+.login-link:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(102,126,234,0.4)}
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+
+<nav>
+    <div class="nav-logo">💬 Divyansh Chat</div>
+    <div class="nav-right">
+        <div class="online-badge"><div class="online-dot"></div><span id="onlineCount">0</span> Online</div>
+        <a href="index.html" class="back-btn">← Home</a>
+    </div>
+</nav>
+
+<div class="chat-layout" id="chatLayout">
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-title">Channels</div>
+            <button class="room-btn active" id="btnPublic" onclick="switchToPublic()">
+                🌍 Public Chat
+            </button>
+            <button class="room-btn" id="btnDivyansh" onclick="switchToDivyansh()">
+                👑 Chat with Divyansh
+            </button>
+        </div>
+        <div style="padding:0.8rem">
+            <div class="sidebar-title">Online Users</div>
+        </div>
+        <div class="users-list" id="usersList"></div>
+    </div>
+
+    <!-- CHAT AREA -->
+    <div class="chat-area">
+        <div class="chat-header">
+            <div class="chat-header-avatar" id="chatAvatar">🌍</div>
+            <div>
+                <div class="chat-header-name" id="chatName">Public Chat</div>
+                <div class="chat-header-sub" id="chatSub">Everyone can see messages here</div>
+            </div>
+        </div>
+        <div class="messages" id="messages"></div>
+        <div class="chat-input">
+            <input class="input-box" id="msgInput" placeholder="Type a message..." onkeydown="if(event.key==='Enter')sendMessage()">
+            <button class="send-btn" onclick="sendMessage()">➤</button>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.0/sockjs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+<script>
+// PARTICLES
+const canvas=document.getElementById('c'),ctx=canvas.getContext('2d');
+canvas.width=window.innerWidth;canvas.height=window.innerHeight;
+window.addEventListener('resize',()=>{canvas.width=window.innerWidth;canvas.height=window.innerHeight});
+const pts=Array.from({length:40},()=>({x:Math.random()*canvas.width,y:Math.random()*canvas.height,r:Math.random()*1+0.3,dx:(Math.random()-.5)*.2,dy:(Math.random()-.5)*.2,c:['#667eea','#f093fb'][Math.floor(Math.random()*2)]}));
+function drawP(){ctx.clearRect(0,0,canvas.width,canvas.height);pts.forEach(p=>{p.x+=p.dx;p.y+=p.dy;if(p.x<0||p.x>canvas.width)p.dx*=-1;if(p.y<0||p.y>canvas.height)p.dy*=-1;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle=p.c+'22';ctx.fill()});requestAnimationFrame(drawP)}drawP();
+
+const userId=localStorage.getItem('userId');
+const username=localStorage.getItem('username');
+
+if(!userId){
+    document.getElementById('chatLayout').innerHTML=`
+        <div class="not-logged">
+            <h2>Login Required 🔐</h2>
+            <p>Please login to access the chat!</p>
+            <a href="login.html" class="login-link">Login Now</a>
+        </div>`;
+}
+
+let stompClient=null;
+let currentRoom='public';
+let onlineUsers=new Set();
+
+// CONNECT
+function connect(){
+    const socket=new SockJS('https://divyansh-website-wooq.onrender.com/ws');
+    stompClient=Stomp.over(socket);
+    stompClient.debug=null;
+
+    stompClient.connect({},()=>{
+        // Public channel subscribe
+        stompClient.subscribe('/topic/public',(msg)=>{
+            const data=JSON.parse(msg.body);
+            if(data.type==='JOIN'){
+                onlineUsers.add(data.sender);
+                updateOnlineUsers();
+                if(currentRoom==='public')addSysMsg(`${data.sender} joined the chat`);
+            } else if(currentRoom==='public'){
+                addMessage(data);
+            }
+        });
+
+        // Private channel subscribe
+        stompClient.subscribe(`/user/${username}/queue/private`,(msg)=>{
+            const data=JSON.parse(msg.body);
+            if(currentRoom==='private'||data.sender===username){
+                addMessage(data);
+            }
+        });
+
+        // Join announce karo
+        stompClient.send('/app/chat.join',{},JSON.stringify({
+            sender:username,
+            type:'JOIN'
+        }));
+
+        // Load history
+        loadPublicHistory();
+    });
+}
+
+function loadPublicHistory(){
+    fetch('https://divyansh-website-wooq.onrender.com/api/chat/public-history')
+    .then(r=>r.json())
+    .then(msgs=>{
+        msgs.forEach(m=>addMessage(m,true));
+        scrollBottom();
+    }).catch(()=>{});
+}
+
+function addMessage(msg,isHistory=false){
+    const div=document.getElementById('messages');
+    const isMe=msg.sender===username;
+    const time=new Date(msg.timestamp||Date.now()).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
+    const html=`
+        <div class="msg-wrap ${isMe?'mine':''}">
+            <div class="msg-avatar">${msg.sender?msg.sender.charAt(0).toUpperCase():'?'}</div>
+            <div>
+                ${!isMe?`<div class="msg-sender">${msg.sender}</div>`:''}
+                <div class="msg-bubble">${escapeHtml(msg.content)}</div>
+                <div class="msg-time">${time}</div>
+            </div>
+        </div>`;
+    div.innerHTML+=html;
+    if(!isHistory)scrollBottom();
+}
+
+function addSysMsg(text){
+    document.getElementById('messages').innerHTML+=`<div class="sys-msg">— ${text} —</div>`;
+    scrollBottom();
+}
+
+function sendMessage(){
+    const input=document.getElementById('msgInput');
+    const content=input.value.trim();
+    if(!content||!stompClient)return;
+
+    if(currentRoom==='public'){
+        stompClient.send('/app/chat.public',{},JSON.stringify({
+            sender:username,
+            content:content,
+            type:'PUBLIC'
+        }));
+    } else {
+        stompClient.send('/app/chat.private',{},JSON.stringify({
+            sender:username,
+            recipient:'divyansh_admin',
+            content:content,
+            type:'PRIVATE'
+        }));
+    }
+    input.value='';
+}
+
+function switchToPublic(){
+    currentRoom='public';
+    document.getElementById('btnPublic').classList.add('active');
+    document.getElementById('btnDivyansh').classList.remove('active');
+    document.getElementById('chatAvatar').textContent='🌍';
+    document.getElementById('chatName').textContent='Public Chat';
+    document.getElementById('chatSub').textContent='Everyone can see messages here';
+    document.getElementById('messages').innerHTML='';
+    loadPublicHistory();
+}
+
+function switchToDivyansh(){
+    currentRoom='private';
+    document.getElementById('btnPublic').classList.remove('active');
+    document.getElementById('btnDivyansh').classList.add('active');
+    document.getElementById('chatAvatar').textContent='👑';
+    document.getElementById('chatName').textContent='Chat with Divyansh';
+    document.getElementById('chatSub').textContent='Private conversation';
+    document.getElementById('messages').innerHTML='';
+    // Load private history
+    fetch(`https://divyansh-website-wooq.onrender.com/api/chat/private-history?user1=${username}&user2=divyansh_admin`)
+    .then(r=>r.json())
+    .then(msgs=>{msgs.forEach(m=>addMessage(m,true));scrollBottom();}).catch(()=>{});
+}
+
+function updateOnlineUsers(){
+    document.getElementById('onlineCount').textContent=onlineUsers.size;
+    const list=document.getElementById('usersList');
+    list.innerHTML=[...onlineUsers].map(u=>`
+        <div class="user-item">
+            <div class="user-avatar">${u.charAt(0).toUpperCase()}</div>
+            <div class="user-name">${u}</div>
+            <div class="user-status"></div>
+        </div>`).join('');
+}
+
+function scrollBottom(){
+    const msgs=document.getElementById('messages');
+    msgs.scrollTop=msgs.scrollHeight;
+}
+
+function escapeHtml(text){
+    const div=document.createElement('div');
+    div.appendChild(document.createTextNode(text));
+    return div.innerHTML;
+}
+
+if(userId)connect();
+</script>
+</body>
+</html>
