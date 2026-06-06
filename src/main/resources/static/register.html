@@ -15,30 +15,42 @@ canvas{position:fixed;top:0;left:0;z-index:0;pointer-events:none}
 .back:hover{color:rgba(255,255,255,0.7)}
 .brand{font-size:0.95rem;font-weight:900;background:linear-gradient(135deg,#667eea,#f093fb);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:1.8rem}
 h2{font-size:2rem;font-weight:900;letter-spacing:-0.5px;margin-bottom:0.3rem}
-.sub{color:rgba(255,255,255,0.35);font-size:0.85rem;margin-bottom:2.5rem}
+.sub{color:rgba(255,255,255,0.35);font-size:0.85rem;margin-bottom:2rem}
+.step-indicator{display:flex;gap:0.5rem;margin-bottom:2rem}
+.step{flex:1;height:3px;border-radius:3px;background:rgba(255,255,255,0.08);transition:all 0.3s}
+.step.active{background:linear-gradient(90deg,#667eea,#f093fb)}
+.step.done{background:#4ade80}
 .fg{margin-bottom:1.1rem}
-label{display:block;font-size:0.78rem;font-weight:600;color:rgba(255,255,255,0.5);margin-bottom:0.5rem;text-transform:uppercase;letter-spacing:0.08em}
+label{display:block;font-size:0.75rem;font-weight:700;color:rgba(255,255,255,0.45);margin-bottom:0.5rem;text-transform:uppercase;letter-spacing:0.08em}
 input{width:100%;padding:0.9rem 1.1rem;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:14px;color:#fff;font-size:0.92rem;font-family:inherit;outline:none;transition:all 0.25s}
 input:focus{border-color:rgba(102,126,234,0.6);background:rgba(102,126,234,0.07);box-shadow:0 0 0 4px rgba(102,126,234,0.1)}
 input::placeholder{color:rgba(255,255,255,0.18)}
-.strength-wrap{margin-top:0.5rem}
-.strength-bar{height:3px;border-radius:3px;background:rgba(255,255,255,0.06);overflow:hidden}
+.strength-bar{height:3px;border-radius:3px;background:rgba(255,255,255,0.06);overflow:hidden;margin-top:0.5rem}
 .strength-fill{height:100%;border-radius:3px;transition:all 0.3s;width:0}
 .strength-txt{font-size:0.72rem;margin-top:0.3rem;font-weight:600}
-.btn{width:100%;padding:0.95rem;background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;border:none;border-radius:14px;font-size:0.95rem;font-weight:700;cursor:pointer;font-family:inherit;margin-top:0.5rem;transition:all 0.3s;box-shadow:0 4px 20px rgba(102,126,234,0.3);position:relative;overflow:hidden}
+.btn{width:100%;padding:0.95rem;background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;border:none;border-radius:14px;font-size:0.95rem;font-weight:700;cursor:pointer;font-family:inherit;transition:all 0.3s;box-shadow:0 4px 20px rgba(102,126,234,0.3);position:relative;overflow:hidden}
 .btn::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.15),transparent);transition:left 0.5s}
 .btn:hover::before{left:100%}
 .btn:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(102,126,234,0.5)}
 .btn:disabled{opacity:0.7;cursor:not-allowed;transform:none}
+.otp-box{display:flex;gap:0.5rem;justify-content:center;margin:1.5rem 0}
+.otp-input{width:50px;height:55px;text-align:center;font-size:1.3rem;font-weight:800;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:12px;color:#fff;font-family:inherit;outline:none;transition:all 0.2s}
+.otp-input:focus{border-color:rgba(102,126,234,0.6);background:rgba(102,126,234,0.07);box-shadow:0 0 0 4px rgba(102,126,234,0.1)}
+.resend{text-align:center;font-size:0.82rem;color:rgba(255,255,255,0.35);margin-top:1rem}
+.resend a{color:#a78bfa;text-decoration:none;font-weight:600;cursor:pointer}
 .msg{margin-top:1rem;padding:0.85rem 1rem;border-radius:12px;font-size:0.85rem;text-align:center;display:none;animation:fadeUp 0.3s ease}
 .msg.success{background:rgba(74,222,128,0.08);border:1px solid rgba(74,222,128,0.2);color:#4ade80}
 .msg.error{background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.2);color:#f87171}
-.divider{display:flex;align-items:center;gap:1rem;margin:1.8rem 0;color:rgba(255,255,255,0.15);font-size:0.78rem}
+.divider{display:flex;align-items:center;gap:1rem;margin:1.5rem 0;color:rgba(255,255,255,0.15);font-size:0.78rem}
 .divider::before,.divider::after{content:'';flex:1;height:1px;background:rgba(255,255,255,0.07)}
 .bottom{text-align:center;font-size:0.85rem;color:rgba(255,255,255,0.35)}
 .bottom a{color:#a78bfa;text-decoration:none;font-weight:600}
 .loading{display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin 0.7s linear infinite;margin-right:0.5rem;vertical-align:middle}
 @keyframes spin{to{transform:rotate(360deg)}}
+.section{display:none}
+.section.active{display:block}
+.otp-sent-info{background:rgba(102,126,234,0.08);border:1px solid rgba(102,126,234,0.2);border-radius:14px;padding:1rem;text-align:center;margin-bottom:1.5rem;font-size:0.85rem;color:rgba(255,255,255,0.6)}
+.otp-sent-info strong{color:#a78bfa}
 </style>
 </head>
 <body>
@@ -48,27 +60,55 @@ input::placeholder{color:rgba(255,255,255,0.18)}
     <div class="brand">Divyansh Jaimini</div>
     <h2>Create Account! 🚀</h2>
     <p class="sub">Join the community — completely free!</p>
-    <div class="fg"><label>Username</label><input type="text" id="username" placeholder="Your name"></div>
-    <div class="fg"><label>Email Address</label><input type="email" id="email" placeholder="your@email.com"></div>
-    <div class="fg">
-        <label>Password</label>
-        <input type="password" id="password" placeholder="Strong password" oninput="checkStrength(this.value)">
-        <div class="strength-wrap">
+
+    <!-- STEP INDICATOR -->
+    <div class="step-indicator">
+        <div class="step active" id="step1"></div>
+        <div class="step" id="step2"></div>
+        <div class="step" id="step3"></div>
+    </div>
+
+    <!-- SECTION 1: User Details -->
+    <div class="section active" id="sec1">
+        <div class="fg"><label>Username</label><input type="text" id="username" placeholder="Your name"></div>
+        <div class="fg"><label>Email Address</label><input type="email" id="email" placeholder="your@email.com"></div>
+        <div class="fg">
+            <label>Password</label>
+            <input type="password" id="password" placeholder="Strong password" oninput="checkStrength(this.value)">
             <div class="strength-bar"><div class="strength-fill" id="sFill"></div></div>
             <div class="strength-txt" id="sTxt"></div>
         </div>
+        <button class="btn" onclick="sendOtp()" id="otpBtn">Send OTP →</button>
+        <div class="msg" id="msg1"></div>
+        <div class="divider">or</div>
+        <div class="bottom">Already have an account? <a href="login.html">Login here</a></div>
     </div>
-    <button class="btn" onclick="register()" id="regBtn">Register 🚀</button>
-    <div class="msg" id="msg"></div>
-    <div class="divider">or</div>
-    <div class="bottom">Already have an account? <a href="login.html">Login here</a></div>
+
+    <!-- SECTION 2: OTP Verify -->
+    <div class="section" id="sec2">
+        <div class="otp-sent-info">OTP sent to <strong id="sentEmail"></strong><br>Check your inbox!</div>
+        <label style="text-align:center;display:block;margin-bottom:1rem">Enter 6-digit OTP</label>
+        <div class="otp-box">
+            <input class="otp-input" id="o1" maxlength="1" oninput="moveNext(this,'o2')" onkeydown="movePrev(event,this,'')">
+            <input class="otp-input" id="o2" maxlength="1" oninput="moveNext(this,'o3')" onkeydown="movePrev(event,this,'o1')">
+            <input class="otp-input" id="o3" maxlength="1" oninput="moveNext(this,'o4')" onkeydown="movePrev(event,this,'o2')">
+            <input class="otp-input" id="o4" maxlength="1" oninput="moveNext(this,'o5')" onkeydown="movePrev(event,this,'o3')">
+            <input class="otp-input" id="o5" maxlength="1" oninput="moveNext(this,'o6')" onkeydown="movePrev(event,this,'o4')">
+            <input class="otp-input" id="o6" maxlength="1" oninput="moveNext(this,'')" onkeydown="movePrev(event,this,'o5')">
+        </div>
+        <button class="btn" onclick="register()" id="regBtn">Verify & Register ✅</button>
+        <div class="msg" id="msg2"></div>
+        <div class="resend">Didn't receive OTP? <a onclick="resendOtp()">Resend OTP</a></div>
+    </div>
 </div>
+
 <script>
 const canvas=document.getElementById('c'),ctx=canvas.getContext('2d');
 canvas.width=window.innerWidth;canvas.height=window.innerHeight;
 window.addEventListener('resize',()=>{canvas.width=window.innerWidth;canvas.height=window.innerHeight});
 const pts=Array.from({length:60},()=>({x:Math.random()*canvas.width,y:Math.random()*canvas.height,r:Math.random()*1.2+0.3,dx:(Math.random()-.5)*.3,dy:(Math.random()-.5)*.3,c:['#667eea','#f093fb','#fda085'][Math.floor(Math.random()*3)],o:Math.random()*0.3+0.1}));
 function drawP(){ctx.clearRect(0,0,canvas.width,canvas.height);pts.forEach(p=>{p.x+=p.dx;p.y+=p.dy;if(p.x<0||p.x>canvas.width)p.dx*=-1;if(p.y<0||p.y>canvas.height)p.dy*=-1;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle=p.c+Math.floor(p.o*255).toString(16).padStart(2,'0');ctx.fill()});requestAnimationFrame(drawP)}drawP();
+
 function checkStrength(pw){
     const fill=document.getElementById('sFill'),txt=document.getElementById('sTxt');
     if(!pw){fill.style.width='0';txt.textContent='';return}
@@ -76,28 +116,105 @@ function checkStrength(pw){
     if(pw.length>=6)score++;if(pw.length>=10)score++;if(/[A-Z]/.test(pw))score++;if(/[0-9]/.test(pw))score++;if(/[^A-Za-z0-9]/.test(pw))score++;
     const levels=[{c:'#f87171',l:'Very Weak',w:'20%'},{c:'#fb923c',l:'Weak',w:'40%'},{c:'#fbbf24',l:'Medium',w:'60%'},{c:'#34d399',l:'Strong',w:'80%'},{c:'#4ade80',l:'Very Strong! 💪',w:'100%'}];
     const lv=levels[Math.min(score,4)];
-    fill.style.width=lv.w;fill.style.background=lv.c;
-    txt.style.color=lv.c;txt.textContent=lv.l;
+    fill.style.width=lv.w;fill.style.background=lv.c;txt.style.color=lv.c;txt.textContent=lv.l;
 }
-async function register(){
+
+function moveNext(current, nextId) {
+    if(current.value.length === 1 && nextId) {
+        document.getElementById(nextId).focus();
+    }
+}
+
+function movePrev(event, current, prevId) {
+    if(event.key === 'Backspace' && current.value === '' && prevId) {
+        document.getElementById(prevId).focus();
+    }
+}
+
+let userEmail = '';
+
+async function sendOtp() {
     const username=document.getElementById('username').value.trim();
     const email=document.getElementById('email').value.trim();
     const password=document.getElementById('password').value;
-    const msg=document.getElementById('msg');
-    const btn=document.getElementById('regBtn');
-    if(!username||!email||!password){showMsg('Please fill all fields!','error');return}
-    if(password.length<6){showMsg('Password must be at least 6 characters!','error');return}
+    const btn=document.getElementById('otpBtn');
+    const msg=document.getElementById('msg1');
+
+    if(!username||!email||!password){showMsg(msg,'Please fill all fields!','error');return}
+    if(password.length<6){showMsg(msg,'Password must be at least 6 characters!','error');return}
     const emailRegex=/^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if(!emailRegex.test(email)){showMsg('Please enter a valid email!','error');return}
-    btn.innerHTML='<span class="loading"></span>Registering...';btn.disabled=true;
-    try{
-        const res=await fetch('https://divyansh-website-wooq.onrender.com/api/auth/register',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({username,email,password})});
+    if(!emailRegex.test(email)){showMsg(msg,'Please enter a valid email!','error');return}
+
+    btn.innerHTML='<span class="loading"></span>Sending OTP...';btn.disabled=true;
+
+    try {
+        const res=await fetch('https://divyansh-website-wooq.onrender.com/api/auth/send-otp',{
+            method:'POST',
+            headers:{'Content-Type':'application/json'},
+            body:JSON.stringify({email})
+        });
         const data=await res.json();
-        if(res.ok){showMsg('✅ Registration successful! Going to login...','success');setTimeout(()=>window.location.href='login.html',1500)}
-        else{showMsg('❌ '+data.message,'error');btn.innerHTML='Register 🚀';btn.disabled=false}
-    }catch(e){showMsg('❌ Server connection failed!','error');btn.innerHTML='Register 🚀';btn.disabled=false}
+        if(res.ok){
+            userEmail=email;
+            document.getElementById('sentEmail').textContent=email;
+            document.getElementById('sec1').classList.remove('active');
+            document.getElementById('sec2').classList.add('active');
+            document.getElementById('step1').classList.add('done');
+            document.getElementById('step2').classList.add('active');
+            document.getElementById('o1').focus();
+        } else {
+            showMsg(msg,'❌ '+data.message,'error');
+            btn.innerHTML='Send OTP →';btn.disabled=false;
+        }
+    } catch(e) {
+        showMsg(msg,'❌ Server connection failed!','error');
+        btn.innerHTML='Send OTP →';btn.disabled=false;
+    }
 }
-function showMsg(text,type){const msg=document.getElementById('msg');msg.textContent=text;msg.className='msg '+type;msg.style.display='block'}
+
+async function register() {
+    const username=document.getElementById('username').value.trim();
+    const email=document.getElementById('email').value.trim();
+    const password=document.getElementById('password').value;
+    const otp=document.getElementById('o1').value+document.getElementById('o2').value+document.getElementById('o3').value+document.getElementById('o4').value+document.getElementById('o5').value+document.getElementById('o6').value;
+    const btn=document.getElementById('regBtn');
+    const msg=document.getElementById('msg2');
+
+    if(otp.length!==6){showMsg(msg,'Please enter 6-digit OTP!','error');return}
+
+    btn.innerHTML='<span class="loading"></span>Verifying...';btn.disabled=true;
+
+    try {
+        const res=await fetch('https://divyansh-website-wooq.onrender.com/api/auth/register',{
+            method:'POST',
+            headers:{'Content-Type':'application/json'},
+            body:JSON.stringify({username,email,password,otp})
+        });
+        const data=await res.json();
+        if(res.ok){
+            document.getElementById('step2').classList.add('done');
+            document.getElementById('step3').classList.add('active','done');
+            showMsg(msg,'✅ Registration successful! Going to login...','success');
+            setTimeout(()=>window.location.href='login.html',2000);
+        } else {
+            showMsg(msg,'❌ '+data.message,'error');
+            btn.innerHTML='Verify & Register ✅';btn.disabled=false;
+        }
+    } catch(e) {
+        showMsg(msg,'❌ Server connection failed!','error');
+        btn.innerHTML='Verify & Register ✅';btn.disabled=false;
+    }
+}
+
+async function resendOtp() {
+    const email=document.getElementById('email').value.trim();
+    try {
+        await fetch('https://divyansh-website-wooq.onrender.com/api/auth/send-otp',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email})});
+        alert('OTP resent! Check your inbox.');
+    } catch(e) {alert('Failed to resend OTP!')}
+}
+
+function showMsg(el,txt,type){el.textContent=txt;el.className='msg '+type;el.style.display='block'}
 </script>
 </body>
 </html>

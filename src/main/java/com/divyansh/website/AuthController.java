@@ -20,7 +20,35 @@ public class AuthController {
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
 
-    // REGISTER API
+    @Autowired
+    private OtpService otpService;
+
+    @Autowired
+    private EmailService emailService;
+
+    // STEP 1: Send OTP
+    @PostMapping("/send-otp")
+    public ResponseEntity<Map<String, String>> sendOtp(@RequestBody Map<String, String> request) {
+        Map<String, String> response = new HashMap<>();
+        String email = request.get("email");
+
+        if (userRepository.existsByEmail(email)) {
+            response.put("message", "Email already registered!");
+            return ResponseEntity.badRequest().body(response);
+        }
+
+        try {
+            String otp = otpService.generateOtp(email);
+            emailService.sendOtpEmail(email, otp);
+            response.put("message", "OTP sent successfully!");
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            response.put("message", "Failed to send OTP! Check your email address.");
+            return ResponseEntity.badRequest().body(response);
+        }
+    }
+
+    // STEP 2: Verify OTP + Register
     @PostMapping("/register")
     public ResponseEntity<Map<String, String>> register(@RequestBody Map<String, String> request) {
         Map<String, String> response = new HashMap<>();
@@ -28,9 +56,10 @@ public class AuthController {
         String username = request.get("username");
         String email = request.get("email");
         String password = request.get("password");
+        String otp = request.get("otp");
 
         if (userRepository.existsByEmail(email)) {
-            response.put("message", "Email already exists!");
+            response.put("message", "Email already registered!");
             return ResponseEntity.badRequest().body(response);
         }
 
@@ -39,12 +68,16 @@ public class AuthController {
             return ResponseEntity.badRequest().body(response);
         }
 
+        if (!otpService.verifyOtp(email, otp)) {
+            response.put("message", "Invalid or expired OTP!");
+            return ResponseEntity.badRequest().body(response);
+        }
+
         User user = new User();
         user.setUsername(username);
         user.setEmail(email);
         user.setPassword(passwordEncoder.encode(password));
         user.setRole(User.Role.USER);
-
         userRepository.save(user);
 
         response.put("message", "Registration successful!");
@@ -52,23 +85,20 @@ public class AuthController {
         return ResponseEntity.ok(response);
     }
 
-    // LOGIN API
+    // LOGIN
     @PostMapping("/login")
     public ResponseEntity<Map<String, String>> login(@RequestBody Map<String, String> request) {
         Map<String, String> response = new HashMap<>();
-
         String email = request.get("email");
         String password = request.get("password");
 
         Optional<User> userOpt = userRepository.findByEmail(email);
-
         if (userOpt.isEmpty()) {
             response.put("message", "User not found!");
             return ResponseEntity.badRequest().body(response);
         }
 
         User user = userOpt.get();
-
         if (!passwordEncoder.matches(password, user.getPassword())) {
             response.put("message", "Wrong password!");
             return ResponseEntity.badRequest().body(response);
