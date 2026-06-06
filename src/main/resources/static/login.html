@@ -1,269 +1,81 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login — Divyansh Jaimini</title>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
-        * { margin:0; padding:0; box-sizing:border-box; }
-        body {
-            font-family: 'Inter', sans-serif;
-            background: #060612;
-            color: white;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-        }
-        .bg-animation {
-            position: fixed;
-            top:0; left:0; width:100%; height:100%;
-            z-index:0; pointer-events:none;
-        }
-        .bg-circle {
-            position: absolute;
-            border-radius: 50%;
-            filter: blur(80px);
-            opacity: 0.12;
-            animation: floatBg 8s ease-in-out infinite;
-        }
-        .c1 { width:500px; height:500px; background:#667eea; top:-150px; left:-150px; }
-        .c2 { width:400px; height:400px; background:#f093fb; bottom:-100px; right:-100px; animation-delay:3s; }
-        @keyframes floatBg {
-            0%,100% { transform:translate(0,0) scale(1); }
-            50% { transform:translate(20px,-20px) scale(1.1); }
-        }
-        .card {
-            position: relative;
-            z-index: 1;
-            background: rgba(255,255,255,0.03);
-            border: 1px solid rgba(255,255,255,0.08);
-            border-radius: 24px;
-            padding: 2.5rem;
-            width: 100%;
-            max-width: 420px;
-            margin: 1rem;
-            animation: fadeUp 0.6s ease;
-            backdrop-filter: blur(20px);
-        }
-        @keyframes fadeUp {
-            from { opacity:0; transform:translateY(30px); }
-            to { opacity:1; transform:translateY(0); }
-        }
-        .back-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.4rem;
-            color: rgba(255,255,255,0.4);
-            text-decoration: none;
-            font-size: 0.82rem;
-            margin-bottom: 1.8rem;
-            transition: color 0.2s;
-        }
-        .back-btn:hover { color: rgba(255,255,255,0.8); }
-        .card-logo {
-            font-size: 1rem;
-            font-weight: 800;
-            background: linear-gradient(135deg, #667eea, #f093fb);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 1.5rem;
-        }
-        h2 {
-            font-size: 1.8rem;
-            font-weight: 800;
-            letter-spacing: -0.5px;
-            margin-bottom: 0.4rem;
-        }
-        .subtitle {
-            color: rgba(255,255,255,0.4);
-            font-size: 0.88rem;
-            margin-bottom: 2rem;
-        }
-        .form-group { margin-bottom: 1rem; }
-        label {
-            display: block;
-            font-size: 0.82rem;
-            font-weight: 500;
-            color: rgba(255,255,255,0.6);
-            margin-bottom: 0.5rem;
-        }
-        input {
-            width: 100%;
-            padding: 0.85rem 1.1rem;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.08);
-            border-radius: 12px;
-            color: white;
-            font-size: 0.92rem;
-            font-family: inherit;
-            outline: none;
-            transition: all 0.2s;
-        }
-        input:focus {
-            border-color: rgba(102,126,234,0.6);
-            background: rgba(102,126,234,0.07);
-            box-shadow: 0 0 0 3px rgba(102,126,234,0.1);
-        }
-        input::placeholder { color: rgba(255,255,255,0.2); }
-        .btn {
-            width: 100%;
-            padding: 0.9rem;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            border: none;
-            border-radius: 12px;
-            font-size: 0.95rem;
-            font-weight: 600;
-            cursor: pointer;
-            font-family: inherit;
-            margin-top: 0.5rem;
-            transition: all 0.3s;
-            box-shadow: 0 4px 20px rgba(102,126,234,0.3);
-        }
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 30px rgba(102,126,234,0.5);
-        }
-        .btn:active { transform: translateY(0); }
-        .msg {
-            margin-top: 1rem;
-            padding: 0.8rem 1rem;
-            border-radius: 10px;
-            font-size: 0.85rem;
-            text-align: center;
-            display: none;
-            animation: fadeUp 0.3s ease;
-        }
-        .msg.success {
-            background: rgba(74,222,128,0.1);
-            border: 1px solid rgba(74,222,128,0.25);
-            color: #4ade80;
-        }
-        .msg.error {
-            background: rgba(239,68,68,0.1);
-            border: 1px solid rgba(239,68,68,0.25);
-            color: #f87171;
-        }
-        .divider {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            margin: 1.5rem 0;
-            color: rgba(255,255,255,0.2);
-            font-size: 0.8rem;
-        }
-        .divider::before, .divider::after {
-            content: '';
-            flex: 1;
-            height: 1px;
-            background: rgba(255,255,255,0.08);
-        }
-        .bottom-link {
-            text-align: center;
-            font-size: 0.85rem;
-            color: rgba(255,255,255,0.4);
-            margin-top: 1.5rem;
-        }
-        .bottom-link a {
-            color: #a78bfa;
-            text-decoration: none;
-            font-weight: 500;
-        }
-        .bottom-link a:hover { text-decoration: underline; }
-        .loading {
-            display: inline-block;
-            width: 16px; height: 16px;
-            border: 2px solid rgba(255,255,255,0.3);
-            border-top-color: white;
-            border-radius: 50%;
-            animation: spin 0.7s linear infinite;
-            margin-right: 0.5rem;
-            vertical-align: middle;
-        }
-        @keyframes spin { to { transform: rotate(360deg); } }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login — Divyansh Jaimini</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',sans-serif;background:#030308;color:#fff;min-height:100vh;display:flex;align-items:center;justify-content:center;overflow:hidden}
+canvas{position:fixed;top:0;left:0;z-index:0;pointer-events:none}
+.card{position:relative;z-index:1;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:28px;padding:3rem;width:100%;max-width:440px;margin:1rem;animation:fadeUp 0.6s ease;backdrop-filter:blur(30px)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+.back{display:inline-flex;align-items:center;gap:0.4rem;color:rgba(255,255,255,0.35);text-decoration:none;font-size:0.8rem;margin-bottom:2rem;transition:color 0.2s}
+.back:hover{color:rgba(255,255,255,0.7)}
+.brand{font-size:0.95rem;font-weight:900;background:linear-gradient(135deg,#667eea,#f093fb);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:1.8rem}
+h2{font-size:2rem;font-weight:900;letter-spacing:-0.5px;margin-bottom:0.3rem}
+.sub{color:rgba(255,255,255,0.35);font-size:0.85rem;margin-bottom:2.5rem}
+.fg{margin-bottom:1.1rem}
+label{display:block;font-size:0.78rem;font-weight:600;color:rgba(255,255,255,0.5);margin-bottom:0.5rem;text-transform:uppercase;letter-spacing:0.08em}
+input{width:100%;padding:0.9rem 1.1rem;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:14px;color:#fff;font-size:0.92rem;font-family:inherit;outline:none;transition:all 0.25s}
+input:focus{border-color:rgba(102,126,234,0.6);background:rgba(102,126,234,0.07);box-shadow:0 0 0 4px rgba(102,126,234,0.1)}
+input::placeholder{color:rgba(255,255,255,0.18)}
+.btn{width:100%;padding:0.95rem;background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;border:none;border-radius:14px;font-size:0.95rem;font-weight:700;cursor:pointer;font-family:inherit;margin-top:0.5rem;transition:all 0.3s;box-shadow:0 4px 20px rgba(102,126,234,0.3);position:relative;overflow:hidden}
+.btn::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.15),transparent);transition:left 0.5s}
+.btn:hover::before{left:100%}
+.btn:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(102,126,234,0.5)}
+.btn:disabled{opacity:0.7;cursor:not-allowed;transform:none}
+.msg{margin-top:1rem;padding:0.85rem 1rem;border-radius:12px;font-size:0.85rem;text-align:center;display:none;animation:fadeUp 0.3s ease}
+.msg.success{background:rgba(74,222,128,0.08);border:1px solid rgba(74,222,128,0.2);color:#4ade80}
+.msg.error{background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.2);color:#f87171}
+.divider{display:flex;align-items:center;gap:1rem;margin:1.8rem 0;color:rgba(255,255,255,0.15);font-size:0.78rem}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:rgba(255,255,255,0.07)}
+.bottom{text-align:center;font-size:0.85rem;color:rgba(255,255,255,0.35)}
+.bottom a{color:#a78bfa;text-decoration:none;font-weight:600}
+.bottom a:hover{text-decoration:underline}
+.loading{display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin 0.7s linear infinite;margin-right:0.5rem;vertical-align:middle}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
 </head>
 <body>
-<div class="bg-animation">
-    <div class="bg-circle c1"></div>
-    <div class="bg-circle c2"></div>
-</div>
-
+<canvas id="c"></canvas>
 <div class="card">
-    <a href="index.html" class="back-btn">← Back to Home</a>
-    <div class="card-logo">Divyansh Jaimini</div>
+    <a href="index.html" class="back">← Back to Home</a>
+    <div class="brand">Divyansh Jaimini</div>
     <h2>Welcome Back! 👋</h2>
-    <p class="subtitle">Login to your account</p>
-
-    <div class="form-group">
-        <label>Email Address</label>
-        <input type="email" id="email" placeholder="your@email.com">
-    </div>
-    <div class="form-group">
-        <label>Password</label>
-        <input type="password" id="password" placeholder="Your password" onkeydown="if(event.key==='Enter')login()">
-    </div>
-
+    <p class="sub">Login to your account</p>
+    <div class="fg"><label>Email Address</label><input type="email" id="email" placeholder="your@email.com"></div>
+    <div class="fg"><label>Password</label><input type="password" id="password" placeholder="Your password" onkeydown="if(event.key==='Enter')login()"></div>
     <button class="btn" onclick="login()" id="loginBtn">Login</button>
     <div class="msg" id="msg"></div>
-
-    <div class="divider">ya</div>
-    <div class="bottom-link">
-       Don't have an account? <a href="register.html">Register here</a>
-    </div>
+    <div class="divider">or</div>
+    <div class="bottom">Don't have an account? <a href="register.html">Register here</a></div>
 </div>
-
 <script>
-    async function login() {
-        const email = document.getElementById('email').value.trim();
-        const password = document.getElementById('password').value;
-        const msg = document.getElementById('msg');
-        const btn = document.getElementById('loginBtn');
-
-        if (!email || !password) {
-            showMsg('Sab fields bharo!', 'error'); return;
-        }
-
-        btn.innerHTML = '<span class="loading"></span> Logging in...';
-        btn.disabled = true;
-
-        try {
-            const res = await fetch('https://divyansh-website-wooq.onrender.com/api/auth/login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, password })
-            });
-            const data = await res.json();
-
-            if (res.ok) {
-                localStorage.setItem('userId', data.userId);
-                localStorage.setItem('username', data.username);
-                localStorage.setItem('role', data.role);
-                showMsg('✅ Login successful! Redirecting...', 'success');
-                setTimeout(() => {
-                    window.location.href = data.role === 'ADMIN' ? 'admin-dashboard.html' : 'user-dashboard.html';
-                }, 1000);
-            } else {
-                showMsg('❌ ' + data.message, 'error');
-                btn.innerHTML = 'Login Karo';
-                btn.disabled = false;
-            }
-        } catch(e) {
-            showMsg('❌ Server se connect nahi ho pa raha!', 'error');
-            btn.innerHTML = 'Login Karo';
-            btn.disabled = false;
-        }
-    }
-
-    function showMsg(text, type) {
-        const msg = document.getElementById('msg');
-        msg.textContent = text;
-        msg.className = 'msg ' + type;
-        msg.style.display = 'block';
-    }
+const canvas=document.getElementById('c'),ctx=canvas.getContext('2d');
+canvas.width=window.innerWidth;canvas.height=window.innerHeight;
+window.addEventListener('resize',()=>{canvas.width=window.innerWidth;canvas.height=window.innerHeight});
+const pts=Array.from({length:60},()=>({x:Math.random()*canvas.width,y:Math.random()*canvas.height,r:Math.random()*1.2+0.3,dx:(Math.random()-.5)*.3,dy:(Math.random()-.5)*.3,c:['#667eea','#f093fb','#f5576c'][Math.floor(Math.random()*3)],o:Math.random()*0.3+0.1}));
+function drawP(){ctx.clearRect(0,0,canvas.width,canvas.height);pts.forEach(p=>{p.x+=p.dx;p.y+=p.dy;if(p.x<0||p.x>canvas.width)p.dx*=-1;if(p.y<0||p.y>canvas.height)p.dy*=-1;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle=p.c+Math.floor(p.o*255).toString(16).padStart(2,'0');ctx.fill()});requestAnimationFrame(drawP)}drawP();
+async function login(){
+    const email=document.getElementById('email').value.trim();
+    const password=document.getElementById('password').value;
+    const msg=document.getElementById('msg');
+    const btn=document.getElementById('loginBtn');
+    if(!email||!password){showMsg('Please fill all fields!','error');return}
+    btn.innerHTML='<span class="loading"></span>Logging in...';btn.disabled=true;
+    try{
+        const res=await fetch('https://divyansh-website-wooq.onrender.com/api/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password})});
+        const data=await res.json();
+        if(res.ok){
+            localStorage.setItem('userId',data.userId);localStorage.setItem('username',data.username);localStorage.setItem('role',data.role);
+            showMsg('✅ Login successful! Redirecting...','success');
+            setTimeout(()=>window.location.href=data.role==='ADMIN'?'admin-dashboard.html':'user-dashboard.html',1000);
+        }else{showMsg('❌ '+data.message,'error');btn.innerHTML='Login';btn.disabled=false}
+    }catch(e){showMsg('❌ Server connection failed!','error');btn.innerHTML='Login';btn.disabled=false}
+}
+function showMsg(text,type){const msg=document.getElementById('msg');msg.textContent=text;msg.className='msg '+type;msg.style.display='block'}
 </script>
 </body>
 </html>

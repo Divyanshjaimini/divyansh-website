@@ -4,174 +4,207 @@
 <meta charset="UTF-8">
 <meta name="google-site-verification" content="INg4Erf3MtJqB4SFhsZg25lVBRdPwI3bJZ00bBaurVE" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Divyansh Jaimini's official personal website. Join the community and access exclusive content!">
+<meta name="keywords" content="Divyansh Jaimini, divyansh jaimini, personal website">
+<meta name="author" content="Divyansh Jaimini">
+<meta name="robots" content="index, follow">
+<meta property="og:title" content="Divyansh Jaimini — Official Website">
+<meta property="og:description" content="Divyansh Jaimini's official personal website!">
+<meta property="og:url" content="https://divyansh-website-wooq.onrender.com">
 <title>Divyansh Jaimini — Official Website</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 *{margin:0;padding:0;box-sizing:border-box;scroll-behavior:smooth}
-body{font-family:'Inter',sans-serif;background:#050510;color:#fff;overflow-x:hidden}
-/* PARTICLES */
-#particles{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none}
+body{font-family:'Inter',sans-serif;background:#030308;color:#fff;overflow-x:hidden}
+
+/* CURSOR */
+.cursor{position:fixed;width:12px;height:12px;background:#667eea;border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:transform 0.1s;mix-blend-mode:difference}
+.cursor-follower{position:fixed;width:40px;height:40px;border:1px solid rgba(102,126,234,0.5);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:all 0.15s ease}
+
+/* CANVAS */
+canvas{position:fixed;top:0;left:0;z-index:0;pointer-events:none}
+
 /* NAVBAR */
-nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:0 3rem;height:70px;display:flex;align-items:center;justify-content:space-between;background:rgba(5,5,16,0.85);backdrop-filter:blur(25px);border-bottom:1px solid rgba(255,255,255,0.06);animation:slideDown 0.7s ease}
-@keyframes slideDown{from{opacity:0;transform:translateY(-20px)}to{opacity:1;transform:translateY(0)}}
-.nav-logo{font-size:1.3rem;font-weight:900;background:linear-gradient(135deg,#667eea,#f093fb,#f5576c);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-size:200%;animation:gradMove 3s ease infinite}
+nav{position:fixed;top:1rem;left:50%;transform:translateX(-50%);z-index:1000;width:calc(100% - 4rem);max-width:1200px;padding:0.8rem 1.5rem;display:flex;align-items:center;justify-content:space-between;background:rgba(3,3,8,0.8);backdrop-filter:blur(30px);border:1px solid rgba(255,255,255,0.08);border-radius:20px;animation:slideDown 0.7s ease}
+@keyframes slideDown{from{opacity:0;transform:translateX(-50%) translateY(-20px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+.nav-logo{font-size:1.2rem;font-weight:900;background:linear-gradient(135deg,#667eea,#f093fb,#f5576c);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-size:200%;animation:gradMove 3s ease infinite}
 @keyframes gradMove{0%{background-position:0%}50%{background-position:100%}100%{background-position:0%}}
-.nav-center{display:flex;align-items:center;gap:0.3rem}
-.nav-center a{color:rgba(255,255,255,0.6);text-decoration:none;padding:0.5rem 0.9rem;border-radius:8px;font-size:0.88rem;font-weight:500;transition:all 0.2s}
-.nav-center a:hover{color:#fff;background:rgba(255,255,255,0.08)}
+.nav-links{display:flex;align-items:center;gap:0.2rem}
+.nav-links a{color:rgba(255,255,255,0.6);text-decoration:none;padding:0.45rem 0.9rem;border-radius:10px;font-size:0.85rem;font-weight:500;transition:all 0.2s}
+.nav-links a:hover{color:#fff;background:rgba(255,255,255,0.08)}
 .nav-right{display:flex;align-items:center;gap:0.8rem}
-.nav-search{display:flex;align-items:center;gap:0.5rem;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:25px;padding:0.4rem 1rem}
+.nav-search{display:flex;align-items:center;gap:0.5rem;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:20px;padding:0.4rem 0.9rem;transition:all 0.2s}
 .nav-search:focus-within{border-color:rgba(102,126,234,0.5);background:rgba(102,126,234,0.08)}
-.nav-search input{background:none;border:none;outline:none;color:#fff;font-size:0.85rem;width:140px;font-family:inherit}
+.nav-search input{background:none;border:none;outline:none;color:#fff;font-size:0.82rem;width:130px;font-family:inherit}
 .nav-search input::placeholder{color:rgba(255,255,255,0.25)}
-.nav-btn{background:linear-gradient(135deg,#667eea,#764ba2)!important;color:#fff!important;padding:0.5rem 1.3rem!important;border-radius:25px!important;font-weight:600!important;box-shadow:0 4px 15px rgba(102,126,234,0.4)}
-/* SEARCH DROPDOWN */
-.search-drop{position:fixed;top:75px;left:50%;transform:translateX(-50%);width:400px;background:#0d0d20;border:1px solid rgba(255,255,255,0.1);border-radius:16px;padding:0.5rem;display:none;z-index:999;box-shadow:0 25px 60px rgba(0,0,0,0.7)}
+.nav-cta{background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;padding:0.5rem 1.2rem;border-radius:20px;text-decoration:none;font-size:0.85rem;font-weight:700;box-shadow:0 4px 15px rgba(102,126,234,0.4);transition:all 0.3s}
+.nav-cta:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(102,126,234,0.6)}
+
+/* SEARCH DROP */
+.s-drop{position:fixed;top:90px;left:50%;transform:translateX(-50%);width:380px;background:#0d0d1a;border:1px solid rgba(255,255,255,0.1);border-radius:16px;padding:0.5rem;display:none;z-index:999;box-shadow:0 25px 60px rgba(0,0,0,0.8)}
 .s-item{display:flex;align-items:center;gap:0.8rem;padding:0.7rem 1rem;border-radius:10px;cursor:pointer;transition:background 0.15s}
 .s-item:hover{background:rgba(255,255,255,0.06)}
-.s-icon{width:36px;height:36px;background:rgba(102,126,234,0.15);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1rem}
-.s-title{font-size:0.88rem;font-weight:500}
+.s-ico{width:34px;height:34px;background:rgba(102,126,234,0.15);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:0.95rem}
+.s-title{font-size:0.88rem;font-weight:600}
 .s-desc{font-size:0.75rem;color:rgba(255,255,255,0.4)}
+
 /* HERO */
-.hero{position:relative;z-index:1;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:7rem 2rem 4rem}
-.hero-tag{display:inline-flex;align-items:center;gap:0.6rem;background:rgba(102,126,234,0.12);border:1px solid rgba(102,126,234,0.35);color:#a78bfa;padding:0.5rem 1.3rem;border-radius:30px;font-size:0.82rem;font-weight:500;margin-bottom:2rem;animation:fadeUp 0.6s ease 0.2s both}
-.tag-dot{width:7px;height:7px;background:#a78bfa;border-radius:50%;animation:pulse 2s infinite}
-@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.5;transform:scale(1.5)}}
-.hero h1{font-size:clamp(2.8rem,7vw,6rem);font-weight:900;line-height:1.05;letter-spacing:-2px;margin-bottom:1.5rem;animation:fadeUp 0.6s ease 0.3s both}
-.grad{background:linear-gradient(135deg,#667eea,#f093fb,#f5576c,#fda085);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-size:300%;animation:gradMove 4s ease infinite}
-.hero p{font-size:1.1rem;color:rgba(255,255,255,0.5);max-width:480px;line-height:1.8;margin-bottom:2.5rem;animation:fadeUp 0.6s ease 0.4s both}
+.hero{position:relative;z-index:1;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:8rem 2rem 4rem}
+.hero-tag{display:inline-flex;align-items:center;gap:0.6rem;background:rgba(102,126,234,0.1);border:1px solid rgba(102,126,234,0.3);color:#a78bfa;padding:0.45rem 1.2rem;border-radius:30px;font-size:0.8rem;font-weight:600;margin-bottom:2rem;animation:fadeUp 0.6s ease 0.2s both;letter-spacing:0.05em}
+.tag-dot{width:6px;height:6px;background:#a78bfa;border-radius:50%;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.4;transform:scale(1.6)}}
+.hero h1{font-size:clamp(3rem,8vw,7rem);font-weight:900;line-height:1.02;letter-spacing:-3px;margin-bottom:1.5rem;animation:fadeUp 0.6s ease 0.3s both}
+.grad{background:linear-gradient(135deg,#667eea,#f093fb,#f5576c,#fda085,#667eea);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-size:300%;animation:gradMove 5s ease infinite}
+.hero-sub{font-size:1.1rem;color:rgba(255,255,255,0.45);max-width:500px;line-height:1.8;margin-bottom:3rem;animation:fadeUp 0.6s ease 0.4s both;font-weight:400}
 .hero-btns{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;animation:fadeUp 0.6s ease 0.5s both}
-.btn-main{display:inline-flex;align-items:center;gap:0.5rem;background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;padding:1rem 2.5rem;border-radius:30px;font-size:0.95rem;font-weight:700;text-decoration:none;transition:all 0.3s;box-shadow:0 8px 30px rgba(102,126,234,0.4)}
+.btn-main{display:inline-flex;align-items:center;gap:0.6rem;background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;padding:1rem 2.5rem;border-radius:30px;font-size:0.95rem;font-weight:700;text-decoration:none;transition:all 0.3s;box-shadow:0 8px 30px rgba(102,126,234,0.4);position:relative;overflow:hidden}
+.btn-main::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.15),transparent);transition:left 0.5s}
+.btn-main:hover::before{left:100%}
 .btn-main:hover{transform:translateY(-4px);box-shadow:0 15px 40px rgba(102,126,234,0.6)}
-.btn-out{display:inline-flex;align-items:center;gap:0.5rem;background:transparent;color:rgba(255,255,255,0.75);padding:1rem 2.5rem;border-radius:30px;font-size:0.95rem;font-weight:500;text-decoration:none;border:1px solid rgba(255,255,255,0.2);transition:all 0.3s}
-.btn-out:hover{background:rgba(255,255,255,0.06);border-color:rgba(255,255,255,0.4);transform:translateY(-2px)}
+.btn-out{display:inline-flex;align-items:center;gap:0.6rem;background:transparent;color:rgba(255,255,255,0.75);padding:1rem 2.5rem;border-radius:30px;font-size:0.95rem;font-weight:600;text-decoration:none;border:1px solid rgba(255,255,255,0.15);transition:all 0.3s;backdrop-filter:blur(10px)}
+.btn-out:hover{background:rgba(255,255,255,0.06);border-color:rgba(255,255,255,0.35);transform:translateY(-2px)}
+
 /* STATS */
-.stats{display:flex;gap:3rem;justify-content:center;flex-wrap:wrap;margin-top:4rem;padding-top:3rem;border-top:1px solid rgba(255,255,255,0.07);animation:fadeUp 0.6s ease 0.6s both}
-.stat-box{text-align:center}
-.stat-num{font-size:2.2rem;font-weight:900;background:linear-gradient(135deg,#667eea,#f093fb);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.stat-lbl{font-size:0.75rem;color:rgba(255,255,255,0.35);margin-top:0.2rem;text-transform:uppercase;letter-spacing:0.1em;font-weight:600}
-/* LIVE BANNER */
-.live-banner{display:inline-flex;align-items:center;gap:0.7rem;background:rgba(74,222,128,0.08);border:1px solid rgba(74,222,128,0.2);color:#4ade80;padding:0.55rem 1.5rem;border-radius:30px;font-size:0.85rem;font-weight:500;margin-top:2rem;animation:fadeUp 0.6s ease 0.7s both}
-.live-dot{width:8px;height:8px;background:#4ade80;border-radius:50%;animation:pulse 1.5s infinite}
-/* FLOATING CARDS */
-.floating-cards{position:absolute;width:100%;height:100%;top:0;left:0;pointer-events:none;overflow:hidden}
-.f-card{position:absolute;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:1rem 1.5rem;font-size:0.85rem;color:rgba(255,255,255,0.5);backdrop-filter:blur(10px);animation:float 6s ease-in-out infinite}
-.f-card:nth-child(1){top:20%;left:5%;animation-delay:0s}
-.f-card:nth-child(2){top:30%;right:5%;animation-delay:2s}
-.f-card:nth-child(3){bottom:25%;left:8%;animation-delay:4s}
-.f-card:nth-child(4){bottom:35%;right:8%;animation-delay:1s}
-@keyframes float{0%,100%{transform:translateY(0) rotate(-1deg)}50%{transform:translateY(-20px) rotate(1deg)}}
+.stats{display:flex;gap:0;margin-top:5rem;animation:fadeUp 0.6s ease 0.6s both;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:20px;overflow:hidden}
+.stat-box{flex:1;padding:1.5rem;text-align:center;border-right:1px solid rgba(255,255,255,0.07);position:relative;overflow:hidden;transition:background 0.3s}
+.stat-box:last-child{border-right:none}
+.stat-box:hover{background:rgba(102,126,234,0.08)}
+.stat-num{font-size:2rem;font-weight:900;background:linear-gradient(135deg,#667eea,#f093fb);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.stat-lbl{font-size:0.72rem;color:rgba(255,255,255,0.35);margin-top:0.2rem;text-transform:uppercase;letter-spacing:0.12em;font-weight:600}
+
+/* LIVE */
+.live-badge{display:inline-flex;align-items:center;gap:0.6rem;background:rgba(74,222,128,0.07);border:1px solid rgba(74,222,128,0.2);color:#4ade80;padding:0.5rem 1.4rem;border-radius:30px;font-size:0.82rem;font-weight:600;margin-top:2rem;animation:fadeUp 0.6s ease 0.7s both}
+.live-dot{width:7px;height:7px;background:#4ade80;border-radius:50%;animation:pulse 1.5s infinite}
+
+/* FLOATING */
+.floats{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.float-card{position:absolute;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:0.8rem 1.2rem;font-size:0.8rem;color:rgba(255,255,255,0.4);backdrop-filter:blur(10px);animation:float 7s ease-in-out infinite}
+.float-card:nth-child(1){top:22%;left:4%;animation-delay:0s}
+.float-card:nth-child(2){top:28%;right:4%;animation-delay:2s}
+.float-card:nth-child(3){bottom:28%;left:6%;animation-delay:4s}
+.float-card:nth-child(4){bottom:32%;right:6%;animation-delay:1.5s}
+@keyframes float{0%,100%{transform:translateY(0) rotate(-1deg)}50%{transform:translateY(-18px) rotate(1deg)}}
+
 /* DIVIDER */
-.divider{position:relative;z-index:1;height:1px;background:linear-gradient(90deg,transparent,rgba(102,126,234,0.4),rgba(240,147,251,0.4),transparent);margin:0 2rem}
+.div-line{position:relative;z-index:1;height:1px;background:linear-gradient(90deg,transparent,rgba(102,126,234,0.5),rgba(240,147,251,0.5),transparent);margin:0 3rem}
+
 /* SECTION */
-.section{position:relative;z-index:1;padding:6rem 2rem;max-width:1150px;margin:0 auto}
-.s-tag{text-align:center;font-size:0.75rem;font-weight:700;color:#a78bfa;text-transform:uppercase;letter-spacing:0.15em;margin-bottom:0.8rem}
-.s-title{text-align:center;font-size:clamp(1.8rem,4vw,2.8rem);font-weight:900;letter-spacing:-0.5px;margin-bottom:0.8rem}
-.s-sub{text-align:center;color:rgba(255,255,255,0.4);font-size:0.95rem;max-width:450px;margin:0 auto 3.5rem;line-height:1.7}
+.sec{position:relative;z-index:1;padding:7rem 2rem;max-width:1150px;margin:0 auto}
+.sec-tag{text-align:center;font-size:0.72rem;font-weight:700;color:#a78bfa;text-transform:uppercase;letter-spacing:0.18em;margin-bottom:0.8rem}
+.sec-title{text-align:center;font-size:clamp(1.8rem,4vw,3rem);font-weight:900;letter-spacing:-1px;margin-bottom:0.8rem;line-height:1.1}
+.sec-sub{text-align:center;color:rgba(255,255,255,0.38);font-size:0.95rem;max-width:420px;margin:0 auto 4rem;line-height:1.7}
+
 /* FEATURES */
-.feat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1rem}
-.feat-card{background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:20px;padding:2rem;transition:all 0.4s;position:relative;overflow:hidden;cursor:default}
-.feat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#667eea,#f093fb);transform:scaleX(0);transition:transform 0.4s;transform-origin:left}
-.feat-card:hover{transform:translateY(-8px);border-color:rgba(102,126,234,0.3);background:rgba(102,126,234,0.05);box-shadow:0 25px 50px rgba(0,0,0,0.4)}
-.feat-card:hover::before{transform:scaleX(1)}
-.f-ico{width:52px;height:52px;border-radius:15px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;margin-bottom:1.2rem;transition:transform 0.3s}
-.feat-card:hover .f-ico{transform:scale(1.15) rotate(-5deg)}
-.feat-card h3{font-size:1.05rem;font-weight:700;margin-bottom:0.6rem}
-.feat-card p{color:rgba(255,255,255,0.4);font-size:0.88rem;line-height:1.65}
+.feat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.06);border-radius:24px;overflow:hidden}
+.feat-card{background:#030308;padding:2.5rem;transition:all 0.4s;position:relative;overflow:hidden;cursor:default}
+.feat-card::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(102,126,234,0.06),rgba(240,147,251,0.04));opacity:0;transition:opacity 0.4s}
+.feat-card:hover{background:#0a0a18}
+.feat-card:hover::after{opacity:1}
+.f-num{font-size:0.72rem;font-weight:700;color:rgba(102,126,234,0.6);text-transform:uppercase;letter-spacing:0.15em;margin-bottom:1.2rem}
+.f-ico{font-size:2rem;margin-bottom:1rem;display:block;transition:transform 0.3s}
+.feat-card:hover .f-ico{transform:scale(1.2) rotate(-5deg)}
+.feat-card h3{font-size:1.05rem;font-weight:700;margin-bottom:0.6rem;color:#fff}
+.feat-card p{color:rgba(255,255,255,0.38);font-size:0.875rem;line-height:1.65}
+
 /* ABOUT */
-.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:center}
-@media(max-width:768px){.about-grid,.contact-grid{grid-template-columns:1fr;gap:3rem}nav{padding:0 1rem}.nav-search,.floating-cards{display:none}.nav-center{display:none}}
-.about-img{aspect-ratio:1;border-radius:28px;position:relative;display:flex;align-items:center;justify-content:center;font-size:8rem;overflow:hidden}
-.about-img::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(102,126,234,0.2),rgba(240,147,251,0.2));border-radius:28px;border:1px solid rgba(102,126,234,0.25)}
-.about-img::after{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:conic-gradient(from 0deg,transparent,rgba(102,126,234,0.15),transparent);animation:spin 8s linear infinite}
+.about-wrap{display:grid;grid-template-columns:1fr 1.2fr;gap:6rem;align-items:center}
+@media(max-width:900px){.about-wrap,.contact-grid{grid-template-columns:1fr;gap:3rem}nav{width:calc(100% - 2rem)}.nav-search,.floats,.nav-links{display:none}}
+.about-visual{aspect-ratio:1;border-radius:30px;position:relative;display:flex;align-items:center;justify-content:center;font-size:9rem;background:linear-gradient(135deg,rgba(102,126,234,0.08),rgba(240,147,251,0.08));border:1px solid rgba(255,255,255,0.06);overflow:hidden}
+.about-visual::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:conic-gradient(from 0deg,transparent,rgba(102,126,234,0.1),transparent,rgba(240,147,251,0.1),transparent);animation:spin 10s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
-.about-txt .s-tag{text-align:left}
-.about-txt h2{font-size:2.2rem;font-weight:900;letter-spacing:-0.5px;line-height:1.2;margin-bottom:1.2rem}
-.about-txt p{color:rgba(255,255,255,0.5);line-height:1.8;font-size:0.92rem;margin-bottom:1rem}
+.about-visual::after{content:'';position:absolute;inset:1px;border-radius:29px;background:#030308}
+.about-emoji{position:relative;z-index:1}
+.about-txt .sec-tag{text-align:left}
+.about-txt h2{font-size:2.5rem;font-weight:900;letter-spacing:-1px;line-height:1.15;margin-bottom:1.2rem}
+.about-txt p{color:rgba(255,255,255,0.45);line-height:1.85;font-size:0.92rem;margin-bottom:0.9rem}
 .skill-tags{display:flex;flex-wrap:wrap;gap:0.5rem;margin-top:1.5rem}
-.skill-tag{background:rgba(102,126,234,0.1);border:1px solid rgba(102,126,234,0.25);color:#a78bfa;padding:0.35rem 1rem;border-radius:20px;font-size:0.8rem;font-weight:500;transition:all 0.2s}
-.skill-tag:hover{background:rgba(102,126,234,0.2);transform:translateY(-2px)}
+.skill-tag{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);color:rgba(255,255,255,0.6);padding:0.35rem 0.9rem;border-radius:20px;font-size:0.78rem;font-weight:500;transition:all 0.2s;cursor:default}
+.skill-tag:hover{background:rgba(102,126,234,0.15);border-color:rgba(102,126,234,0.35);color:#a78bfa;transform:translateY(-2px)}
+
 /* CONTACT */
-.contact-sec{position:relative;z-index:1;background:rgba(255,255,255,0.015);border-top:1px solid rgba(255,255,255,0.06);border-bottom:1px solid rgba(255,255,255,0.06)}
-.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:start}
-.c-left h2{font-size:2rem;font-weight:900;letter-spacing:-0.5px;margin-bottom:1rem}
-.c-left p{color:rgba(255,255,255,0.45);line-height:1.8;margin-bottom:2rem;font-size:0.92rem}
-.c-item{display:flex;align-items:center;gap:1rem;margin-bottom:1rem;padding:0.8rem;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:12px;transition:all 0.2s}
-.c-item:hover{background:rgba(102,126,234,0.07);border-color:rgba(102,126,234,0.2);transform:translateX(5px)}
-.c-ico{width:42px;height:42px;background:rgba(102,126,234,0.1);border:1px solid rgba(102,126,234,0.2);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.1rem}
-.c-txt span{display:block;font-size:0.72rem;color:rgba(255,255,255,0.35);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.1rem}
-.c-txt{font-size:0.9rem;font-weight:500}
+.contact-sec{position:relative;z-index:1;border-top:1px solid rgba(255,255,255,0.05)}
+.contact-grid{display:grid;grid-template-columns:1fr 1.2fr;gap:6rem;align-items:start}
+.c-left h2{font-size:2.2rem;font-weight:900;letter-spacing:-1px;margin-bottom:1rem;line-height:1.2}
+.c-left p{color:rgba(255,255,255,0.4);line-height:1.85;margin-bottom:2rem;font-size:0.92rem}
+.c-item{display:flex;align-items:center;gap:1rem;margin-bottom:0.8rem;padding:0.9rem 1rem;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05);border-radius:14px;transition:all 0.2s;cursor:default}
+.c-item:hover{background:rgba(102,126,234,0.07);border-color:rgba(102,126,234,0.2);transform:translateX(6px)}
+.c-ico{width:40px;height:40px;background:rgba(102,126,234,0.1);border:1px solid rgba(102,126,234,0.2);border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0}
+.c-lbl{font-size:0.7rem;color:rgba(255,255,255,0.3);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.1rem}
+.c-val{font-size:0.88rem;font-weight:600}
 .c-form{display:flex;flex-direction:column;gap:0.8rem}
-.f-in,.f-ta{width:100%;padding:0.88rem 1.1rem;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;color:#fff;font-size:0.9rem;font-family:inherit;outline:none;transition:all 0.2s}
-.f-in:focus,.f-ta:focus{border-color:rgba(102,126,234,0.5);background:rgba(102,126,234,0.06);box-shadow:0 0 0 3px rgba(102,126,234,0.1)}
+.f-in,.f-ta{width:100%;padding:0.9rem 1.1rem;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:14px;color:#fff;font-size:0.9rem;font-family:inherit;outline:none;transition:all 0.25s}
+.f-in:focus,.f-ta:focus{border-color:rgba(102,126,234,0.5);background:rgba(102,126,234,0.05);box-shadow:0 0 0 4px rgba(102,126,234,0.08)}
 .f-in::placeholder,.f-ta::placeholder{color:rgba(255,255,255,0.2)}
-.f-ta{height:120px;resize:none}
-.sub-btn{background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;padding:0.9rem;border:none;border-radius:12px;font-size:0.95rem;font-weight:700;cursor:pointer;font-family:inherit;transition:all 0.3s;box-shadow:0 4px 20px rgba(102,126,234,0.3)}
+.f-ta{height:130px;resize:none}
+.sub-btn{background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;padding:0.95rem;border:none;border-radius:14px;font-size:0.95rem;font-weight:700;cursor:pointer;font-family:inherit;transition:all 0.3s;box-shadow:0 4px 20px rgba(102,126,234,0.3);position:relative;overflow:hidden}
+.sub-btn::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.15),transparent);transition:left 0.5s}
+.sub-btn:hover::before{left:100%}
 .sub-btn:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(102,126,234,0.5)}
-.f-success{background:rgba(74,222,128,0.08);border:1px solid rgba(74,222,128,0.25);color:#4ade80;padding:0.8rem;border-radius:10px;font-size:0.85rem;text-align:center;display:none}
+.f-success{background:rgba(74,222,128,0.07);border:1px solid rgba(74,222,128,0.2);color:#4ade80;padding:0.85rem;border-radius:12px;font-size:0.85rem;text-align:center;display:none}
+
 /* FOOTER */
-footer{position:relative;z-index:1;padding:3rem 2rem;text-align:center;border-top:1px solid rgba(255,255,255,0.06)}
-.f-logo{font-size:1.4rem;font-weight:900;background:linear-gradient(135deg,#667eea,#f093fb);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:0.8rem}
-footer p{color:rgba(255,255,255,0.25);font-size:0.82rem}
+footer{position:relative;z-index:1;border-top:1px solid rgba(255,255,255,0.05)}
+.footer-inner{max-width:1150px;margin:0 auto;padding:4rem 2rem 2rem}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr;gap:3rem;margin-bottom:3rem}
+@media(max-width:768px){.footer-grid{grid-template-columns:1fr}}
+.f-brand-logo{font-size:1.3rem;font-weight:900;background:linear-gradient(135deg,#667eea,#f093fb);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:0.8rem}
+.f-brand-desc{color:rgba(255,255,255,0.3);font-size:0.85rem;line-height:1.7;max-width:250px}
+.f-socials{display:flex;gap:0.6rem;margin-top:1.2rem}
+.f-social{width:38px;height:38px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1rem;text-decoration:none;transition:all 0.2s;cursor:pointer}
+.f-social:hover{background:rgba(102,126,234,0.15);border-color:rgba(102,126,234,0.3);transform:translateY(-3px)}
+.f-col-title{font-size:0.72rem;font-weight:700;color:rgba(255,255,255,0.35);text-transform:uppercase;letter-spacing:0.12em;margin-bottom:1rem}
+.f-links{display:flex;flex-direction:column;gap:0.55rem}
+.f-link{color:rgba(255,255,255,0.4);text-decoration:none;font-size:0.85rem;transition:color 0.2s}
+.f-link:hover{color:#a78bfa}
+.f-bottom{padding-top:2rem;border-top:1px solid rgba(255,255,255,0.05);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem}
+.f-copy{color:rgba(255,255,255,0.2);font-size:0.8rem}
+
 /* ANIMATIONS */
-@keyframes fadeUp{from{opacity:0;transform:translateY(25px)}to{opacity:1;transform:translateY(0)}}
-.reveal{opacity:0;transform:translateY(40px);transition:all 0.8s cubic-bezier(0.16,1,0.3,1)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+.reveal{opacity:0;transform:translateY(50px);transition:all 0.9s cubic-bezier(0.16,1,0.3,1)}
 .reveal.visible{opacity:1;transform:translateY(0)}
-/* CURSOR GLOW */
-.cursor-glow{position:fixed;width:400px;height:400px;border-radius:50%;background:radial-gradient(circle,rgba(102,126,234,0.08) 0%,transparent 70%);pointer-events:none;z-index:0;transform:translate(-50%,-50%);transition:all 0.1s}
+.reveal-left{opacity:0;transform:translateX(-50px);transition:all 0.9s cubic-bezier(0.16,1,0.3,1)}
+.reveal-left.visible{opacity:1;transform:translateX(0)}
+.reveal-right{opacity:0;transform:translateX(50px);transition:all 0.9s cubic-bezier(0.16,1,0.3,1)}
+.reveal-right.visible{opacity:1;transform:translateX(0)}
 </style>
-
-<!-- SEO META TAGS -->
-<meta name="description" content="Divyansh Jaimini ki official personal website. Register karke community join karo aur exclusive content access karo!">
-<meta name="keywords" content="Divyansh Jaimini, divyansh jaimini, DivyanshJaimini, personal website, divyansh">
-<meta name="author" content="Divyansh Jaimini">
-<meta name="robots" content="index, follow">
-<meta property="og:title" content="Divyansh Jaimini — Official Website">
-<meta property="og:description" content="Divyansh Jaimini ki official personal website!">
-<meta property="og:url" content="https://divyansh-website-wooq.onrender.com">
-<meta property="og:type" content="website">
-<link rel="canonical" href="https://divyansh-website-wooq.onrender.com">
-
 </head>
 <body>
 
-<div class="cursor-glow" id="cursorGlow"></div>
+<div class="cursor" id="cursor"></div>
+<div class="cursor-follower" id="cursorFollower"></div>
+<canvas id="c"></canvas>
 
-<!-- PARTICLES -->
-<canvas id="particles"></canvas>
-
-<!-- NAVBAR -->
+<!-- NAV -->
 <nav>
     <div class="nav-logo">Divyansh Jaimini</div>
-    <div class="nav-center">
+    <div class="nav-links">
         <a href="#home">Home</a>
         <a href="#about">About</a>
         <a href="#contact">Contact</a>
+        <a href="login.html">Login</a>
     </div>
     <div class="nav-right">
         <div class="nav-search">
-            <span>🔍</span>
+            <span style="font-size:0.85rem;opacity:0.5">🔍</span>
             <input type="text" id="searchInput" placeholder="Search..." oninput="handleSearch(this.value)" onblur="hideSearch()">
         </div>
-        <a href="login.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:0.88rem;font-weight:500;padding:0.5rem 0.9rem;border-radius:8px;transition:all 0.2s" onmouseover="this.style.background='rgba(255,255,255,0.08)'" onmouseout="this.style.background='none'">Login</a>
-        <a href="register.html" class="nav-center nav-btn" style="text-decoration:none;padding:0.5rem 1.3rem;border-radius:25px;background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;font-weight:600;font-size:0.88rem">Join Now</a>
+        <a href="register.html" class="nav-cta">Join Now</a>
     </div>
 </nav>
-
-<div class="search-drop" id="searchDrop"></div>
+<div class="s-drop" id="sDrop"></div>
 
 <!-- HERO -->
 <section class="hero" id="home">
-    <div class="floating-cards">
-        <div class="f-card">👋 Hello World!</div>
-        <div class="f-card">🚀 Join Community</div>
-        <div class="f-card">💻 Spring Boot</div>
-        <div class="f-card">⭐ Top Member</div>
+    <div class="floats">
+        <div class="float-card">👋 Hello World!</div>
+        <div class="float-card">🚀 Join Now</div>
+        <div class="float-card">💻 Spring Boot</div>
+        <div class="float-card">⭐ Top Member</div>
     </div>
-
     <div class="hero-tag"><div class="tag-dot"></div>Official Personal Website</div>
     <h1>Hi, I'm<br><span class="grad">Divyansh Jaimini</span></h1>
-    <p>Welcome to my personal world. Join the community and get access to exclusive content!</p>
+    <p class="hero-sub">Welcome to my personal world. Join the community and get access to exclusive content!</p>
     <div class="hero-btns">
         <a href="register.html" class="btn-main">🚀 Join Community</a>
         <a href="#about" class="btn-out">Learn More ↓</a>
@@ -182,38 +215,38 @@ footer p{color:rgba(255,255,255,0.25);font-size:0.82rem}
         <div class="stat-box"><div class="stat-num">100%</div><div class="stat-lbl">Free</div></div>
         <div class="stat-box"><div class="stat-num">24/7</div><div class="stat-lbl">Online</div></div>
     </div>
-    <div class="live-banner"><div class="live-dot"></div><span id="liveText">Website is Live!</span></div>
+    <div class="live-badge"><div class="live-dot"></div><span id="liveText">Website is Live!</span></div>
 </section>
 
-<div class="divider"></div>
+<div class="div-line"></div>
 
 <!-- FEATURES -->
-<div class="section reveal" id="features">
-    <div class="s-tag">Features</div>
-    <h2 class="s-title">Why Join Us? 🚀</h2>
-    <p class="s-sub">Join us and get exclusive benefits</p>
+<div class="sec reveal" id="features">
+    <div class="sec-tag">Features</div>
+    <h2 class="sec-title">Why Join Us? 🚀</h2>
+    <p class="sec-sub">Join us and get exclusive benefits</p>
     <div class="feat-grid">
-        <div class="feat-card"><div class="f-ico" style="background:rgba(102,126,234,0.12);border:1px solid rgba(102,126,234,0.2)">👤</div><h3>Personal Profile</h3><p>Register karke apna profile banao aur community ka hissa bano.</p></div>
-        <div class="feat-card"><div class="f-ico" style="background:rgba(240,147,251,0.12);border:1px solid rgba(240,147,251,0.2)">🔐</div><h3>Secure Login</h3><p>Tumhara data bilkul safe hai. Advanced encryption ke saath protected.</p></div>
-        <div class="feat-card"><div class="f-ico" style="background:rgba(245,87,108,0.12);border:1px solid rgba(245,87,108,0.2)">🌟</div><h3>Exclusive Content</h3><p>Members ko special content aur latest updates milenge sabse pehle.</p></div>
-        <div class="feat-card"><div class="f-ico" style="background:rgba(79,172,254,0.12);border:1px solid rgba(79,172,254,0.2)">🛡️</div><h3>Admin Control</h3><p>Poori community ka management ek jagah se — powerful admin panel.</p></div>
-        <div class="feat-card"><div class="f-ico" style="background:rgba(253,160,133,0.12);border:1px solid rgba(253,160,133,0.2)">📱</div><h3>Mobile Friendly</h3><p>Har device par perfectly kaam karta hai — phone, tablet, laptop.</p></div>
-        <div class="feat-card"><div class="f-ico" style="background:rgba(74,222,128,0.12);border:1px solid rgba(74,222,128,0.2)">⚡</div><h3>Fast & Modern</h3><p>Latest technology se banai gayi website — fast aur smooth experience.</p></div>
+        <div class="feat-card"><div class="f-num">01</div><span class="f-ico">👤</span><h3>Personal Profile</h3><p>Register and create your profile to become a part of our community.</p></div>
+        <div class="feat-card"><div class="f-num">02</div><span class="f-ico">🔐</span><h3>Secure Login</h3><p>Your data is completely safe. Protected with advanced encryption.</p></div>
+        <div class="feat-card"><div class="f-num">03</div><span class="f-ico">🌟</span><h3>Exclusive Content</h3><p>Members get special content and latest updates first.</p></div>
+        <div class="feat-card"><div class="f-num">04</div><span class="f-ico">🛡️</span><h3>Admin Control</h3><p>Manage the entire community from one place — powerful admin panel.</p></div>
+        <div class="feat-card"><div class="f-num">05</div><span class="f-ico">📱</span><h3>Mobile Friendly</h3><p>Works perfectly on every device — phone, tablet, laptop.</p></div>
+        <div class="feat-card"><div class="f-num">06</div><span class="f-ico">⚡</span><h3>Fast & Modern</h3><p>Built with latest technology — fast and smooth experience.</p></div>
     </div>
 </div>
 
-<div class="divider"></div>
+<div class="div-line"></div>
 
 <!-- ABOUT -->
-<div class="section reveal" id="about">
-    <div class="about-grid">
-        <div class="about-img">🧑‍💻</div>
-        <div class="about-txt">
-            <div class="s-tag">About Me</div>
-            <h2>I'm<br><span class="grad">Divyansh Jaimini</span></h2>
+<div class="sec" id="about">
+    <div class="about-wrap">
+        <div class="about-visual reveal-left"><span class="about-emoji">🧑‍💻</span></div>
+        <div class="about-txt reveal-right">
+            <div class="sec-tag">About Me</div>
+            <h2>I'm <span class="grad">Divyansh Jaimini</span></h2>
             <p>Hello! I'm Divyansh Jaimini. This is my personal website where I share my journey, skills and thoughts.</p>
             <p>I'm deeply passionate about technology and coding. I built this website myself using Spring Boot and modern web technologies.</p>
-            <p>If you want to learn something or just have a chat — feel free to contact me!!</p>
+            <p>If you want to learn something or just have a chat — feel free to contact me!</p>
             <div class="skill-tags">
                 <span class="skill-tag">☕ Java</span>
                 <span class="skill-tag">🍃 Spring Boot</span>
@@ -225,23 +258,23 @@ footer p{color:rgba(255,255,255,0.25);font-size:0.82rem}
     </div>
 </div>
 
-<div class="divider"></div>
+<div class="div-line"></div>
 
 <!-- CONTACT -->
 <div class="contact-sec" id="contact">
-    <div class="section">
-        <div class="s-tag">Contact</div>
-        <h2 class="s-title">Get In Touch 📬</h2>
-        <p class="s-sub">Have any questions? I'm here for you!</p>
+    <div class="sec">
+        <div class="sec-tag">Contact</div>
+        <h2 class="sec-title">Get In Touch 📬</h2>
+        <p class="sec-sub">Have any questions? I'm here for you!</p>
         <div class="contact-grid">
-            <div class="c-left">
+            <div class="c-left reveal-left">
                 <h2>Let's Connect!</h2>
                 <p>Whether it's a project, a question, or just a hello — I always reply!</p>
-                <div class="c-item"><div class="c-ico">📧</div><div class="c-txt"><span>Email</span>divyanshjaimini0@gmail.com</div></div>
-                <div class="c-item"><div class="c-ico">📍</div><div class="c-txt"><span>Location</span>India</div></div>
-                <div class="c-item"><div class="c-ico">⏰</div><div class="c-txt"><span>Response Time</span>Within 24 hours</div></div>
+                <div class="c-item"><div class="c-ico">📧</div><div><div class="c-lbl">Email</div><div class="c-val">divyanshjaimini0@gmail.com</div></div></div>
+                <div class="c-item"><div class="c-ico">📍</div><div><div class="c-lbl">Location</div><div class="c-val">India</div></div></div>
+                <div class="c-item"><div class="c-ico">⏰</div><div><div class="c-lbl">Response Time</div><div class="c-val">Within 24 hours</div></div></div>
             </div>
-            <div class="c-form">
+            <div class="c-form reveal-right">
                 <input class="f-in" type="text" id="cn" placeholder="Your name">
                 <input class="f-in" type="email" id="ce" placeholder="Your email">
                 <textarea class="f-ta" id="cm" placeholder="Your message..."></textarea>
@@ -254,200 +287,140 @@ footer p{color:rgba(255,255,255,0.25);font-size:0.82rem}
 
 <!-- FOOTER -->
 <footer>
-    <div style="position:relative;z-index:1;padding:4rem 2rem 2rem;border-top:1px solid rgba(255,255,255,0.06)">
-        <div style="max-width:1150px;margin:0 auto">
-            <!-- TOP ROW -->
-            <div style="display:grid;grid-template-columns:2fr 1fr 1fr;gap:3rem;margin-bottom:3rem">
-                <!-- BRAND -->
-                <div>
-                    <div class="f-logo" style="margin-bottom:1rem">Divyansh Jaimini</div>
-                    <p style="color:rgba(255,255,255,0.35);font-size:0.88rem;line-height:1.7;max-width:280px">My personal website — where I share my journey, skills and thoughts.</p>
-                    <!-- SOCIAL LINKS -->
-                    <div style="display:flex;gap:0.8rem;margin-top:1.5rem">
-                        <a href="#" style="width:40px;height:40px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;text-decoration:none;transition:all 0.2s" onmouseover="this.style.background='rgba(102,126,234,0.2)';this.style.transform='translateY(-3px)'" onmouseout="this.style.background='rgba(255,255,255,0.06)';this.style.transform='translateY(0)'">🐦</a>
-                        <a href="#" style="width:40px;height:40px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;text-decoration:none;transition:all 0.2s" onmouseover="this.style.background='rgba(102,126,234,0.2)';this.style.transform='translateY(-3px)'" onmouseout="this.style.background='rgba(255,255,255,0.06)';this.style.transform='translateY(0)'">💼</a>
-                        <a href="#" style="width:40px;height:40px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;text-decoration:none;transition:all 0.2s" onmouseover="this.style.background='rgba(102,126,234,0.2)';this.style.transform='translateY(-3px)'" onmouseout="this.style.background='rgba(255,255,255,0.06)';this.style.transform='translateY(0)'">📸</a>
-                        <a href="#" style="width:40px;height:40px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;text-decoration:none;transition:all 0.2s" onmouseover="this.style.background='rgba(102,126,234,0.2)';this.style.transform='translateY(-3px)'" onmouseout="this.style.background='rgba(255,255,255,0.06)';this.style.transform='translateY(0)'">💻</a>
-                    </div>
-                </div>
-                <!-- QUICK LINKS -->
-                <div>
-                    <div style="font-size:0.8rem;font-weight:700;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:1rem">Quick Links</div>
-                    <div style="display:flex;flex-direction:column;gap:0.6rem">
-                        <a href="#home" style="color:rgba(255,255,255,0.5);text-decoration:none;font-size:0.88rem;transition:color 0.2s" onmouseover="this.style.color='#a78bfa'" onmouseout="this.style.color='rgba(255,255,255,0.5)'">🏠 Home</a>
-                        <a href="#about" style="color:rgba(255,255,255,0.5);text-decoration:none;font-size:0.88rem;transition:color 0.2s" onmouseover="this.style.color='#a78bfa'" onmouseout="this.style.color='rgba(255,255,255,0.5)'">👤 About</a>
-                        <a href="#contact" style="color:rgba(255,255,255,0.5);text-decoration:none;font-size:0.88rem;transition:color 0.2s" onmouseover="this.style.color='#a78bfa'" onmouseout="this.style.color='rgba(255,255,255,0.5)'">📬 Contact</a>
-                        <a href="register.html" style="color:rgba(255,255,255,0.5);text-decoration:none;font-size:0.88rem;transition:color 0.2s" onmouseover="this.style.color='#a78bfa'" onmouseout="this.style.color='rgba(255,255,255,0.5)'">🚀 Register</a>
-                        <a href="login.html" style="color:rgba(255,255,255,0.5);text-decoration:none;font-size:0.88rem;transition:color 0.2s" onmouseover="this.style.color='#a78bfa'" onmouseout="this.style.color='rgba(255,255,255,0.5)'">🔐 Login</a>
-                    </div>
-                </div>
-                <!-- CONTACT INFO -->
-                <div>
-                    <div style="font-size:0.8rem;font-weight:700;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:1rem">Contact</div>
-                    <div style="display:flex;flex-direction:column;gap:0.8rem">
-                        <div style="display:flex;align-items:center;gap:0.6rem;color:rgba(255,255,255,0.5);font-size:0.85rem">📧 divyansh@gmail.com</div>
-                        <div style="display:flex;align-items:center;gap:0.6rem;color:rgba(255,255,255,0.5);font-size:0.85rem">📍 India</div>
-                        <div style="display:flex;align-items:center;gap:0.6rem;color:rgba(255,255,255,0.5);font-size:0.85rem">⏰ 24/7 Available</div>
-                    </div>
+    <div class="footer-inner">
+        <div class="footer-grid">
+            <div>
+                <div class="f-brand-logo">Divyansh Jaimini</div>
+                <div class="f-brand-desc">My personal website — where I share my journey, skills and thoughts.</div>
+                <div class="f-socials">
+                    <div class="f-social">🐦</div>
+                    <div class="f-social">💼</div>
+                    <div class="f-social">📸</div>
+                    <div class="f-social">💻</div>
                 </div>
             </div>
-            <!-- BOTTOM ROW -->
-            <div style="padding-top:2rem;border-top:1px solid rgba(255,255,255,0.06);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem">
-                <p style="color:rgba(255,255,255,0.25);font-size:0.82rem">© 2025 Divyansh Jaimini. All rights reserved.</p>
-                <p style="color:rgba(255,255,255,0.25);font-size:0.82rem">Made with ❤️ using Spring Boot</p>
+            <div>
+                <div class="f-col-title">Quick Links</div>
+                <div class="f-links">
+                    <a href="#home" class="f-link">Home</a>
+                    <a href="#about" class="f-link">About</a>
+                    <a href="#contact" class="f-link">Contact</a>
+                    <a href="register.html" class="f-link">Register</a>
+                    <a href="login.html" class="f-link">Login</a>
+                </div>
             </div>
+            <div>
+                <div class="f-col-title">Contact</div>
+                <div class="f-links">
+                    <span class="f-link">📧 divyanshjaimini0@gmail.com</span>
+                    <span class="f-link">📍 India</span>
+                    <span class="f-link">⏰ 24/7 Available</span>
+                </div>
+            </div>
+        </div>
+        <div class="f-bottom">
+            <div class="f-copy">© 2025 Divyansh Jaimini. All rights reserved.</div>
+            <div class="f-copy">Made with ❤️ using Spring Boot</div>
         </div>
     </div>
 </footer>
 
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 <script>
-// CURSOR GLOW
-document.addEventListener('mousemove', e => {
-    document.getElementById('cursorGlow').style.cssText = `left:${e.clientX}px;top:${e.clientY}px`;
+emailjs.init('lAz8t3QmaYBvtxNal');
+
+// CURSOR
+const cursor=document.getElementById('cursor'),follower=document.getElementById('cursorFollower');
+document.addEventListener('mousemove',e=>{
+    cursor.style.left=e.clientX+'px';cursor.style.top=e.clientY+'px';
+    setTimeout(()=>{follower.style.left=e.clientX+'px';follower.style.top=e.clientY+'px'},80);
 });
 
 // PARTICLES
-const canvas = document.getElementById('particles');
-const ctx = canvas.getContext('2d');
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
-window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; });
-
-const particles = [];
-for (let i = 0; i < 80; i++) {
-    particles.push({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        r: Math.random() * 1.5 + 0.5,
-        dx: (Math.random() - 0.5) * 0.4,
-        dy: (Math.random() - 0.5) * 0.4,
-        opacity: Math.random() * 0.5 + 0.1,
-        color: ['#667eea','#f093fb','#f5576c','#4facfe','#fda085'][Math.floor(Math.random()*5)]
-    });
-}
-
-function animParticles() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    particles.forEach(p => {
-        p.x += p.dx; p.y += p.dy;
-        if (p.x < 0 || p.x > canvas.width) p.dx *= -1;
-        if (p.y < 0 || p.y > canvas.height) p.dy *= -1;
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-        ctx.fillStyle = p.color + Math.floor(p.opacity * 255).toString(16).padStart(2,'0');
+const canvas=document.getElementById('c'),ctx=canvas.getContext('2d');
+canvas.width=window.innerWidth;canvas.height=window.innerHeight;
+window.addEventListener('resize',()=>{canvas.width=window.innerWidth;canvas.height=window.innerHeight});
+const pts=Array.from({length:100},()=>({
+    x:Math.random()*canvas.width,y:Math.random()*canvas.height,
+    r:Math.random()*1.5+0.3,dx:(Math.random()-.5)*.35,dy:(Math.random()-.5)*.35,
+    c:['#667eea','#f093fb','#f5576c','#4facfe','#fda085'][Math.floor(Math.random()*5)],
+    o:Math.random()*0.4+0.1
+}));
+function drawP(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    pts.forEach(p=>{
+        p.x+=p.dx;p.y+=p.dy;
+        if(p.x<0||p.x>canvas.width)p.dx*=-1;
+        if(p.y<0||p.y>canvas.height)p.dy*=-1;
+        ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+        ctx.fillStyle=p.c+Math.floor(p.o*255).toString(16).padStart(2,'0');
         ctx.fill();
     });
-    // Connect nearby particles
-    for (let i = 0; i < particles.length; i++) {
-        for (let j = i+1; j < particles.length; j++) {
-            const dx = particles[i].x - particles[j].x;
-            const dy = particles[i].y - particles[j].y;
-            const dist = Math.sqrt(dx*dx + dy*dy);
-            if (dist < 100) {
-                ctx.beginPath();
-                ctx.strokeStyle = `rgba(102,126,234,${0.08 * (1 - dist/100)})`;
-                ctx.lineWidth = 0.5;
-                ctx.moveTo(particles[i].x, particles[i].y);
-                ctx.lineTo(particles[j].x, particles[j].y);
-                ctx.stroke();
-            }
-        }
+    for(let i=0;i<pts.length;i++)for(let j=i+1;j<pts.length;j++){
+        const dx=pts[i].x-pts[j].x,dy=pts[i].y-pts[j].y,dist=Math.sqrt(dx*dx+dy*dy);
+        if(dist<120){ctx.beginPath();ctx.strokeStyle=`rgba(102,126,234,${0.06*(1-dist/120)})`;ctx.lineWidth=0.5;ctx.moveTo(pts[i].x,pts[i].y);ctx.lineTo(pts[j].x,pts[j].y);ctx.stroke()}
     }
-    requestAnimationFrame(animParticles);
-}
-animParticles();
+    requestAnimationFrame(drawP);
+}drawP();
 
-// VISITOR
-let v = parseInt(localStorage.getItem('siteVisitors')||'0');
-if (!sessionStorage.getItem('visited')) { v++; localStorage.setItem('siteVisitors',v); sessionStorage.setItem('visited','true'); }
-document.getElementById('visitorCount').textContent = v;
-document.getElementById('liveText').textContent = `🌍 ${v} log is website par aa chuke hain`;
+// VISITORS
+let v=parseInt(localStorage.getItem('siteVisitors')||'0');
+if(!sessionStorage.getItem('visited')){v++;localStorage.setItem('siteVisitors',v);sessionStorage.setItem('visited','true')}
+document.getElementById('visitorCount').textContent=v;
+document.getElementById('liveText').textContent=`🌍 ${v} people have visited this website`;
 
 // MEMBERS
 fetch('https://divyansh-website-wooq.onrender.com/api/admin/stats')
-    .then(r=>r.json()).then(d=>{ document.getElementById('memberCount').textContent = d.totalUsers||0; }).catch(()=>{ document.getElementById('memberCount').textContent='1+'; });
+.then(r=>r.json()).then(d=>document.getElementById('memberCount').textContent=d.totalUsers||0)
+.catch(()=>document.getElementById('memberCount').textContent='1+');
 
 // SEARCH
-const pages = [
-    {title:'Register',desc:'Naya account banao',icon:'👤',url:'register.html'},
-    {title:'Login',desc:'Login karo',icon:'🔐',url:'login.html'},
-    {title:'About',desc:'Divyansh ke baare mein',icon:'🙋',url:'#about'},
-    {title:'Contact',desc:'Mujhse baat karo',icon:'📬',url:'#contact'},
+const pages=[
+    {title:'Register',desc:'Create new account',icon:'👤',url:'register.html'},
+    {title:'Login',desc:'Login to account',icon:'🔐',url:'login.html'},
+    {title:'About',desc:'About Divyansh',icon:'🙋',url:'#about'},
+    {title:'Contact',desc:'Get in touch',icon:'📬',url:'#contact'},
     {title:'Home',desc:'Home page',icon:'🏠',url:'#home'},
 ];
-function handleSearch(v) {
-    const box = document.getElementById('searchDrop');
-    if (!v.trim()) { box.style.display='none'; return; }
-    const f = pages.filter(p=>p.title.toLowerCase().includes(v.toLowerCase())||p.desc.toLowerCase().includes(v.toLowerCase()));
-    if (!f.length) { box.style.display='none'; return; }
-    box.innerHTML = f.map(p=>`<div class="s-item" onmousedown="goto('${p.url}')"><div class="s-icon">${p.icon}</div><div><div class="s-title">${p.title}</div><div class="s-desc">${p.desc}</div></div></div>`).join('');
+function handleSearch(v){
+    const box=document.getElementById('sDrop');
+    if(!v.trim()){box.style.display='none';return}
+    const f=pages.filter(p=>p.title.toLowerCase().includes(v.toLowerCase())||p.desc.toLowerCase().includes(v.toLowerCase()));
+    if(!f.length){box.style.display='none';return}
+    box.innerHTML=f.map(p=>`<div class="s-item" onmousedown="goto('${p.url}')"><div class="s-ico">${p.icon}</div><div><div class="s-title">${p.title}</div><div class="s-desc">${p.desc}</div></div></div>`).join('');
     box.style.display='block';
 }
-function hideSearch() { setTimeout(()=>document.getElementById('searchDrop').style.display='none',200); }
-function goto(url) {
-    if (url.startsWith('#')) document.querySelector(url).scrollIntoView({behavior:'smooth'});
+function hideSearch(){setTimeout(()=>document.getElementById('sDrop').style.display='none',200)}
+function goto(url){
+    if(url.startsWith('#'))document.querySelector(url).scrollIntoView({behavior:'smooth'});
     else window.location.href=url;
-    document.getElementById('searchDrop').style.display='none';
+    document.getElementById('sDrop').style.display='none';
     document.getElementById('searchInput').value='';
 }
 
 // CONTACT
-function sendMsg() {
-    const name = document.getElementById('cn').value.trim();
-    const email = document.getElementById('ce').value.trim();
-    const msg = document.getElementById('cm').value.trim();
-    const btn = document.querySelector('.sub-btn');
-    const success = document.getElementById('fSuccess');
-
-    if (!name || !email || !msg) {
-        alert('Sab fields bharo!');
-        return;
-    }
-
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-        alert('Sahi email address likho!');
-        return;
-    }
-
-    btn.textContent = '⏳ Bhej raha hai...';
-    btn.disabled = true;
-
-    emailjs.send('service_6zv6pmo', 'template_fy0xgj9', {
-        from_name: name,
-        from_email: email,
-        message: msg,
-        to_name: 'Divyansh'
-    })
-    .then(function(response) {
-        console.log('SUCCESS!', response.status, response.text);
-        success.style.display = 'block';
-        success.textContent = '✅ Message send ho gaya! Main jald reply karunga.';
-        document.getElementById('cn').value = '';
-        document.getElementById('ce').value = '';
-        document.getElementById('cm').value = '';
-        btn.textContent = '📨 Message Bhejo';
-        btn.disabled = false;
-        setTimeout(() => success.style.display = 'none', 5000);
-    })
-    .catch(function(error) {
-        console.log('FAILED...', error);
-        alert('Error: ' + JSON.stringify(error));
-        btn.textContent = '📨 Message Bhejo';
-        btn.disabled = false;
-    });
+function sendMsg(){
+    const name=document.getElementById('cn').value.trim();
+    const email=document.getElementById('ce').value.trim();
+    const msg=document.getElementById('cm').value.trim();
+    const btn=document.querySelector('.sub-btn');
+    const success=document.getElementById('fSuccess');
+    if(!name||!email||!msg){alert('Please fill all fields!');return}
+    const emailRegex=/^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if(!emailRegex.test(email)){alert('Please enter a valid email!');return}
+    btn.textContent='⏳ Sending...';btn.disabled=true;
+    emailjs.send('service_6zv6pmo','template_fy0xgj9',{from_name:name,from_email:email,message:msg,to_name:'Divyansh'})
+    .then(()=>{
+        success.style.display='block';
+        document.getElementById('cn').value='';document.getElementById('ce').value='';document.getElementById('cm').value='';
+        btn.textContent='📨 Send Message';btn.disabled=false;
+        setTimeout(()=>success.style.display='none',5000);
+    }).catch(()=>{alert('Failed to send! Please try again.');btn.textContent='📨 Send Message';btn.disabled=false});
 }
 
-// SCROLL REVEAL
-const obs = new IntersectionObserver(entries=>entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('visible'); }),{threshold:0.1});
-document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+// REVEAL
+const obs=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')}),{threshold:0.1});
+document.querySelectorAll('.reveal,.reveal-left,.reveal-right').forEach(el=>obs.observe(el));
 </script>
-
-<!-- EMAILJS -->
-<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
-<script>
-    emailjs.init('lAz8t3QmaYBvtxNal');
-</script>
-
 </body>
 </html>
