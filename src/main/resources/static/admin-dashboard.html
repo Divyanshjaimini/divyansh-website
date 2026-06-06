@@ -89,7 +89,7 @@ tr:hover td{background:var(--hover)}
 <div class="main">
     <div class="a-header">
         <h1>🛡️ Admin Dashboard</h1>
-        <p>Poori website ka control tumhare haath mein, <span class="a-name" id="aName"></span>!</p>
+        <p>You have full control of the website, <span class="a-name" id="aName"></span>!</p>
     </div>
     <div class="s-grid">
         <div class="s-card" style="animation-delay:0.1s"><div class="s-ico">👥</div><div class="s-val" id="tUsers">--</div><div class="s-lbl">Total Users</div></div>
@@ -99,13 +99,13 @@ tr:hover td{background:var(--hover)}
     </div>
     <div class="toolbar">
         <input class="s-input" id="searchInput" placeholder="🔍 User search karo..." oninput="renderUsers()">
-        <button class="f-btn active" id="f-all" onclick="setFilter('all',this)">Sab</button>
+        <button class="f-btn active" id="f-all" onclick="setFilter('all',this)">All</button>
         <button class="f-btn" onclick="setFilter('ADMIN',this)">🛡️ Admins</button>
         <button class="f-btn" onclick="setFilter('USER',this)">👤 Users</button>
     </div>
     <div class="t-wrap">
         <div class="t-head">
-            <span class="t-title">👥 Sabhi Users</span>
+            <span class="t-title">👥 All Users</span>
             <span class="t-count" id="shownCount">Loading...</span>
         </div>
         <table>
@@ -156,7 +156,7 @@ function renderUsers(){
     });
     document.getElementById('shownCount').textContent=filtered.length+' user';
     const tbody=document.getElementById('usersList');
-    if(!filtered.length){tbody.innerHTML='<tr><td colspan="6" class="no-res">😕 Koi user nahi mila</td></tr>';return}
+    if(!filtered.length){tbody.innerHTML='<tr><td colspan="6" class="no-res">😕 No users found</td></tr>';return}
     tbody.innerHTML=filtered.map(u=>{
         const isMe=u.id==userId;
         const dt=new Date(u.createdAt).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'});
@@ -176,13 +176,13 @@ function renderUsers(){
 }
 
 function makeAdmin(id){
-    if(!confirm('Is user ko Admin banana chahte ho?'))return;
+    if(!confirm('Do you want to make this user an Admin?'))return;
     fetch(`https://divyansh-website-wooq.onrender.com/api/admin/make-admin/${id}`,{method:'PUT',headers:{'userId':userId}})
     .then(r=>r.json()).then(d=>{showToast('✅ '+d.message,'ok');loadUsers()});
 }
 
 function deleteUser(id,name){
-    if(!confirm(`"${name}" ko delete karna chahte ho?`))return;
+    if(!confirm(`"${name}" Do you want to delete`))return;
     fetch(`https://divyansh-website-wooq.onrender.com/api/admin/delete-user/${id}`,{method:'DELETE',headers:{'userId':userId}})
     .then(r=>r.json()).then(d=>{showToast('🗑 '+d.message,'ok');loadUsers()});
 }

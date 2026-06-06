@@ -97,7 +97,7 @@ nav{position:sticky;top:0;z-index:100;display:flex;justify-content:space-between
 <div class="main">
     <div class="welcome">
         <h1>Welcome, <span class="w-name" id="wName">User</span>! 👋</h1>
-        <p>Tumhara personal dashboard — sab kuch yahan manage karo.</p>
+        <p>Your personal dashboard — manage everything here.</p>
     </div>
     <div class="stats-grid">
         <div class="s-card" style="animation-delay:0.1s"><div class="s-ico">📅</div><div class="s-val" id="joinDate">--</div><div class="s-lbl">Member Since</div></div>
@@ -121,7 +121,7 @@ nav{position:sticky;top:0;z-index:100;display:flex;justify-content:space-between
             <div class="p-row"><span class="p-lbl">Role</span><span class="p-val"><span class="role-b" id="pvRole">USER</span></span></div>
             <div class="p-row"><span class="p-lbl">Joined</span><span class="p-val" id="pvJoined">--</span></div>
             <div class="edit-row">
-                <input class="e-input" id="newUser" placeholder="Naya username likho...">
+                <input class="e-input" id="newUser" placeholder="Enter new username...">
                 <button class="save-btn" onclick="updateUser()">💾 Save</button>
             </div>
             <div class="msg-b" id="uMsg"></div>
@@ -130,9 +130,9 @@ nav{position:sticky;top:0;z-index:100;display:flex;justify-content:space-between
     <!-- PASSWORD TAB -->
     <div class="tab-content" id="tab-password">
         <div class="pw-card">
-            <h3>🔐 Password Change Karo</h3>
-            <div class="pw-g"><label>Purana Password</label><input type="password" id="oldPw" placeholder="Current password"></div>
-            <div class="pw-g"><label>Naya Password</label><input type="password" id="newPw" placeholder="New password"></div>
+            <h3>🔐 Change Password</h3>
+            <div class="pw-g"><label>Current Password</label><input type="password" id="oldPw" placeholder="Current password"></div>
+            <div class="pw-g"><label>New Password</label><input type="password" id="newPw" placeholder="New password"></div>
             <div class="pw-g"><label>Confirm Password</label><input type="password" id="conPw" placeholder="Repeat new password"></div>
             <button class="pw-btn" onclick="changePw()">🔐 Password Change Karo</button>
             <div class="msg-b" id="pwMsg"></div>
@@ -213,9 +213,9 @@ function updateUser(){
 function changePw(){
     const op=document.getElementById('oldPw').value,np=document.getElementById('newPw').value,cp=document.getElementById('conPw').value;
     const mb=document.getElementById('pwMsg');
-    if(!op||!np||!cp){showMsg(mb,'Sab fields bharo!','err');return}
-    if(np!==cp){showMsg(mb,'Password match nahi kar raha!','err');return}
-    if(np.length<6){showMsg(mb,'Password 6+ characters ka hona chahiye!','err');return}
+    if(!op||!np||!cp){showMsg(mb,'Please fill all fields!','err');return}
+    if(np!==cp){showMsg(mb,'Passwords do not match!','err');return}
+    if(np.length<6){showMsg(mb,'Password must be at least 6 characters!','err');return}
     fetch('https://divyansh-website-wooq.onrender.com/api/user/change-password',{method:'PUT',headers:{'Content-Type':'application/json','userId':userId},body:JSON.stringify({oldPassword:op,newPassword:np})})
     .then(r=>r.json()).then(d=>{
         if(d.message.includes('successfully')){showMsg(mb,'✅ '+d.message,'ok');showToast('Password change ho gaya!','ok');document.getElementById('oldPw').value='';document.getElementById('newPw').value='';document.getElementById('conPw').value='';}
