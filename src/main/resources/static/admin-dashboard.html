@@ -1,383 +1,195 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Panel - Divyansh Jaimini</title>
-    <style>
-        :root[data-theme="dark"] {
-            --bg:#0a0a14; --bg2:#12121f; --bg3:rgba(255,255,255,0.04);
-            --border:rgba(255,255,255,0.08); --text:#ffffff;
-            --text2:rgba(255,255,255,0.55); --card:rgba(255,255,255,0.03);
-            --nav:rgba(10,10,20,0.95); --table-hover:rgba(255,255,255,0.03);
-        }
-        :root[data-theme="light"] {
-            --bg:#f0f2ff; --bg2:#ffffff; --bg3:rgba(102,126,234,0.06);
-            --border:rgba(102,126,234,0.15); --text:#1a1a2e;
-            --text2:#555577; --card:#ffffff; --nav:rgba(240,242,255,0.95);
-            --table-hover:rgba(102,126,234,0.04);
-        }
-        * { margin:0; padding:0; box-sizing:border-box; transition:background 0.3s,color 0.3s,border-color 0.3s; }
-        body { font-family:'Segoe UI',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; }
-
-        nav {
-            display:flex; justify-content:space-between; align-items:center;
-            padding:1rem 2rem; background:var(--nav);
-            backdrop-filter:blur(20px);
-            border-bottom:1px solid var(--border);
-            position:sticky; top:0; z-index:100;
-        }
-        .nav-left { display:flex; align-items:center; gap:0.8rem; }
-        .logo {
-            font-size:1.2rem; font-weight:800;
-            background:linear-gradient(135deg,#f093fb,#f5576c);
-            -webkit-background-clip:text; -webkit-text-fill-color:transparent;
-        }
-        .admin-badge {
-            background:rgba(240,147,251,0.15); color:#f0abfc;
-            border:1px solid rgba(240,147,251,0.3);
-            padding:0.25rem 0.7rem; border-radius:20px; font-size:0.75rem; font-weight:600;
-        }
-        .nav-right { display:flex; align-items:center; gap:0.8rem; }
-        .theme-toggle {
-            width:48px; height:26px; background:var(--bg3);
-            border:1px solid var(--border); border-radius:13px;
-            cursor:pointer; position:relative; outline:none;
-        }
-        .theme-toggle::after {
-            content:''; position:absolute; top:3px; left:3px;
-            width:18px; height:18px;
-            background:linear-gradient(135deg,#f093fb,#f5576c);
-            border-radius:50%; transition:transform 0.3s;
-        }
-        [data-theme="light"] .theme-toggle::after { transform:translateX(22px); }
-        .theme-icon { font-size:1rem; cursor:pointer; }
-        .logout-btn {
-            background:rgba(239,68,68,0.12); color:#f87171;
-            border:1px solid rgba(239,68,68,0.25);
-            padding:0.45rem 1rem; border-radius:8px;
-            cursor:pointer; font-size:0.85rem;
-        }
-
-        .main { padding:2rem; max-width:1200px; margin:0 auto; }
-
-        .admin-header {
-            background:linear-gradient(135deg,rgba(240,147,251,0.12),rgba(245,87,108,0.08));
-            border:1px solid rgba(240,147,251,0.25);
-            border-radius:20px; padding:2rem; margin-bottom:1.5rem;
-            animation:slideDown 0.5s ease;
-        }
-        .admin-header h1 { font-size:1.7rem; margin-bottom:0.3rem; }
-        .admin-header p { color:var(--text2); font-size:0.95rem; }
-
-        .stats-grid {
-            display:grid;
-            grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
-            gap:1rem; margin-bottom:1.5rem;
-        }
-        .stat-card {
-            background:var(--card); border:1px solid var(--border);
-            border-radius:16px; padding:1.3rem; text-align:center;
-            animation:fadeUp 0.4s ease both;
-            transition:transform 0.2s,border-color 0.2s;
-        }
-        .stat-card:hover { transform:translateY(-3px); border-color:rgba(240,147,251,0.3); }
-        .stat-icon { font-size:1.8rem; margin-bottom:0.5rem; }
-        .stat-value { font-size:1.6rem; font-weight:800; color:#f0abfc; }
-        .stat-label { font-size:0.78rem; color:var(--text2); margin-top:0.2rem; }
-
-        /* SEARCH + FILTER BAR */
-        .toolbar {
-            display:flex; gap:0.8rem; margin-bottom:1rem; flex-wrap:wrap; align-items:center;
-        }
-        .search-input {
-            flex:1; min-width:200px;
-            padding:0.65rem 1rem;
-            background:var(--bg3); border:1px solid var(--border);
-            border-radius:10px; color:var(--text);
-            font-size:0.9rem; outline:none;
-        }
-        .search-input:focus { border-color:#f093fb; }
-        .filter-btn {
-            padding:0.65rem 1.1rem;
-            background:var(--bg3); border:1px solid var(--border);
-            border-radius:10px; color:var(--text2);
-            cursor:pointer; font-size:0.85rem;
-            transition:all 0.2s;
-        }
-        .filter-btn.active { background:rgba(240,147,251,0.15); color:#f0abfc; border-color:rgba(240,147,251,0.3); }
-
-        /* TABLE */
-        .table-wrap {
-            background:var(--card); border:1px solid var(--border);
-            border-radius:20px; overflow:hidden;
-            animation:fadeUp 0.5s ease;
-        }
-        .table-header {
-            padding:1.2rem 1.5rem;
-            border-bottom:1px solid var(--border);
-            display:flex; justify-content:space-between; align-items:center;
-        }
-        .table-title { font-size:1rem; font-weight:600; }
-        .user-count {
-            background:var(--bg3); border:1px solid var(--border);
-            padding:0.25rem 0.8rem; border-radius:20px;
-            font-size:0.8rem; color:var(--text2);
-        }
-        table { width:100%; border-collapse:collapse; }
-        th {
-            padding:0.9rem 1.2rem; text-align:left;
-            font-size:0.78rem; color:var(--text2);
-            text-transform:uppercase; letter-spacing:0.07em;
-            border-bottom:1px solid var(--border);
-        }
-        td { padding:0.9rem 1.2rem; border-bottom:1px solid var(--border); font-size:0.88rem; }
-        tr:last-child td { border-bottom:none; }
-        tr:hover td { background:var(--table-hover); }
-
-        .role-user {
-            background:rgba(102,126,234,0.15); color:#818cf8;
-            border:1px solid rgba(102,126,234,0.25);
-            padding:0.2rem 0.7rem; border-radius:20px; font-size:0.78rem;
-        }
-        .role-admin {
-            background:rgba(240,147,251,0.15); color:#f0abfc;
-            border:1px solid rgba(240,147,251,0.25);
-            padding:0.2rem 0.7rem; border-radius:20px; font-size:0.78rem;
-        }
-        .you-badge {
-            background:rgba(34,197,94,0.12); color:#4ade80;
-            padding:0.1rem 0.5rem; border-radius:10px; font-size:0.72rem;
-            margin-left:0.4rem;
-        }
-        .action-btn {
-            padding:0.3rem 0.7rem; border-radius:7px;
-            border:none; cursor:pointer; font-size:0.78rem;
-            margin-right:0.3rem; transition:all 0.15s;
-        }
-        .make-admin-btn {
-            background:rgba(240,147,251,0.15); color:#f0abfc;
-            border:1px solid rgba(240,147,251,0.25);
-        }
-        .make-admin-btn:hover { background:rgba(240,147,251,0.3); }
-        .delete-btn {
-            background:rgba(239,68,68,0.12); color:#f87171;
-            border:1px solid rgba(239,68,68,0.25);
-        }
-        .delete-btn:hover { background:rgba(239,68,68,0.25); }
-        .no-results { text-align:center; padding:2rem; color:var(--text2); }
-
-        /* TOAST */
-        .toast {
-            position:fixed; bottom:2rem; right:2rem;
-            padding:0.9rem 1.5rem; border-radius:12px;
-            font-size:0.9rem; display:none; z-index:999;
-            box-shadow:0 8px 30px rgba(0,0,0,0.3);
-        }
-        .toast.success { background:linear-gradient(135deg,#059669,#047857); color:white; }
-        .toast.error { background:linear-gradient(135deg,#dc2626,#b91c1c); color:white; }
-
-        @keyframes slideDown { from{opacity:0;transform:translateY(-15px)} to{opacity:1;transform:translateY(0)} }
-        @keyframes fadeUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Panel — Divyansh Jaimini</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+:root[data-theme="dark"]{--bg:#050510;--bg2:#0d0d20;--bg3:rgba(255,255,255,0.04);--border:rgba(255,255,255,0.08);--text:#fff;--text2:rgba(255,255,255,0.5);--card:rgba(255,255,255,0.03);--nav:rgba(5,5,16,0.9);--hover:rgba(255,255,255,0.03)}
+:root[data-theme="light"]{--bg:#f0f2ff;--bg2:#fff;--bg3:rgba(102,126,234,0.06);--border:rgba(102,126,234,0.15);--text:#1a1a2e;--text2:#555577;--card:#fff;--nav:rgba(240,242,255,0.95);--hover:rgba(102,126,234,0.04)}
+*{margin:0;padding:0;box-sizing:border-box;transition:background 0.3s,color 0.3s,border-color 0.3s}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+canvas{position:fixed;top:0;left:0;z-index:0;pointer-events:none}
+nav{position:sticky;top:0;z-index:100;display:flex;justify-content:space-between;align-items:center;padding:0 2rem;height:65px;background:var(--nav);backdrop-filter:blur(25px);border-bottom:1px solid var(--border)}
+.nav-left{display:flex;align-items:center;gap:0.8rem}
+.nav-logo{font-size:1.1rem;font-weight:900;background:linear-gradient(135deg,#f093fb,#f5576c);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.a-badge{background:rgba(240,147,251,0.12);color:#f0abfc;border:1px solid rgba(240,147,251,0.25);padding:0.25rem 0.7rem;border-radius:20px;font-size:0.72rem;font-weight:700;letter-spacing:0.05em}
+.nav-right{display:flex;align-items:center;gap:0.8rem}
+.theme-btn{width:46px;height:24px;background:var(--bg3);border:1px solid var(--border);border-radius:12px;cursor:pointer;position:relative;outline:none}
+.theme-btn::after{content:'';position:absolute;top:3px;left:3px;width:16px;height:16px;background:linear-gradient(135deg,#f093fb,#f5576c);border-radius:50%;transition:transform 0.3s}
+[data-theme="light"] .theme-btn::after{transform:translateX(22px)}
+.t-icon{font-size:1rem;cursor:pointer;background:none;border:none;color:var(--text)}
+.logout-btn{background:rgba(239,68,68,0.1);color:#f87171;border:1px solid rgba(239,68,68,0.2);padding:0.4rem 1rem;border-radius:8px;cursor:pointer;font-size:0.82rem;font-family:inherit;transition:all 0.2s}
+.main{position:relative;z-index:1;padding:2rem;max-width:1200px;margin:0 auto}
+/* HEADER */
+.a-header{background:linear-gradient(135deg,rgba(240,147,251,0.12),rgba(245,87,108,0.08),rgba(102,126,234,0.08));border:1px solid rgba(240,147,251,0.2);border-radius:24px;padding:2rem;margin-bottom:1.5rem;position:relative;overflow:hidden;animation:slideDown 0.6s ease}
+@keyframes slideDown{from{opacity:0;transform:translateY(-20px)}to{opacity:1;transform:translateY(0)}}
+.a-header::before{content:'';position:absolute;top:-80px;right:-80px;width:250px;height:250px;background:radial-gradient(circle,rgba(240,147,251,0.12),transparent 70%);border-radius:50%}
+.a-header h1{font-size:1.7rem;font-weight:900;margin-bottom:0.3rem}
+.a-header p{color:var(--text2);font-size:0.9rem}
+.a-name{background:linear-gradient(135deg,#f093fb,#f5576c);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+/* STATS */
+.s-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1rem;margin-bottom:1.5rem}
+.s-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:1.3rem;text-align:center;animation:fadeUp 0.5s ease both;transition:all 0.3s;cursor:default;position:relative;overflow:hidden}
+.s-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#f093fb,#f5576c);transform:scaleX(0);transition:transform 0.3s}
+.s-card:hover{transform:translateY(-5px);border-color:rgba(240,147,251,0.3);box-shadow:0 15px 35px rgba(0,0,0,0.2)}
+.s-card:hover::before{transform:scaleX(1)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(15px)}to{opacity:1;transform:translateY(0)}}
+.s-ico{font-size:1.8rem;margin-bottom:0.5rem}
+.s-val{font-size:1.6rem;font-weight:900;background:linear-gradient(135deg,#f093fb,#f5576c);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.s-lbl{font-size:0.75rem;color:var(--text2);margin-top:0.2rem;font-weight:500}
+/* TOOLBAR */
+.toolbar{display:flex;gap:0.8rem;margin-bottom:1rem;flex-wrap:wrap;align-items:center}
+.s-input{flex:1;min-width:200px;padding:0.65rem 1rem;background:var(--bg3);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:0.88rem;outline:none;font-family:inherit;transition:all 0.2s}
+.s-input:focus{border-color:#f093fb;box-shadow:0 0 0 3px rgba(240,147,251,0.1)}
+.f-btn{padding:0.65rem 1rem;background:var(--bg3);border:1px solid var(--border);border-radius:10px;color:var(--text2);cursor:pointer;font-size:0.82rem;font-family:inherit;transition:all 0.2s;font-weight:500}
+.f-btn.active{background:rgba(240,147,251,0.12);color:#f0abfc;border-color:rgba(240,147,251,0.3)}
+.f-btn:hover{border-color:rgba(240,147,251,0.3);color:#f0abfc}
+/* TABLE */
+.t-wrap{background:var(--card);border:1px solid var(--border);border-radius:20px;overflow:hidden;animation:fadeUp 0.5s ease}
+.t-head{padding:1.2rem 1.5rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+.t-title{font-size:1rem;font-weight:700}
+.t-count{background:var(--bg3);border:1px solid var(--border);padding:0.25rem 0.8rem;border-radius:20px;font-size:0.78rem;color:var(--text2)}
+table{width:100%;border-collapse:collapse}
+th{padding:0.9rem 1.2rem;text-align:left;font-size:0.75rem;color:var(--text2);text-transform:uppercase;letter-spacing:0.08em;border-bottom:1px solid var(--border);font-weight:600}
+td{padding:0.9rem 1.2rem;border-bottom:1px solid var(--border);font-size:0.85rem}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:var(--hover)}
+.r-user{background:rgba(102,126,234,0.12);color:#818cf8;border:1px solid rgba(102,126,234,0.2);padding:0.2rem 0.7rem;border-radius:20px;font-size:0.75rem;font-weight:600}
+.r-admin{background:rgba(240,147,251,0.12);color:#f0abfc;border:1px solid rgba(240,147,251,0.2);padding:0.2rem 0.7rem;border-radius:20px;font-size:0.75rem;font-weight:600}
+.you-b{background:rgba(74,222,128,0.1);color:#4ade80;padding:0.1rem 0.5rem;border-radius:10px;font-size:0.7rem;margin-left:0.4rem;font-weight:600}
+.act-btn{padding:0.3rem 0.7rem;border-radius:7px;border:none;cursor:pointer;font-size:0.75rem;font-weight:600;transition:all 0.15s;font-family:inherit}
+.mk-btn{background:rgba(240,147,251,0.12);color:#f0abfc;border:1px solid rgba(240,147,251,0.2)}
+.mk-btn:hover{background:rgba(240,147,251,0.25);transform:translateY(-1px)}
+.del-btn{background:rgba(239,68,68,0.1);color:#f87171;border:1px solid rgba(239,68,68,0.2)}
+.del-btn:hover{background:rgba(239,68,68,0.25);transform:translateY(-1px)}
+.no-res{text-align:center;padding:2.5rem;color:var(--text2);font-size:0.9rem}
+/* TOAST */
+.toast{position:fixed;bottom:2rem;right:2rem;padding:0.9rem 1.5rem;border-radius:12px;font-size:0.88rem;display:none;z-index:999;box-shadow:0 8px 30px rgba(0,0,0,0.3);font-weight:600;animation:slideUp 0.3s ease}
+@keyframes slideUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.toast.ok{background:linear-gradient(135deg,#059669,#047857);color:#fff}
+.toast.err{background:linear-gradient(135deg,#dc2626,#b91c1c);color:#fff}
+</style>
 </head>
 <body>
-
+<canvas id="c"></canvas>
 <nav>
     <div class="nav-left">
-        <div class="logo">Admin Panel</div>
-        <span class="admin-badge">ADMIN</span>
+        <div class="nav-logo">Admin Panel</div>
+        <span class="a-badge">⚡ ADMIN</span>
     </div>
     <div class="nav-right">
-        <span class="theme-icon" onclick="toggleTheme()">🌙</span>
-        <button class="theme-toggle" onclick="toggleTheme()"></button>
-        <span style="font-size:0.85rem;color:var(--text2);" id="nav-username"></span>
+        <span style="font-size:0.82rem;color:var(--text2)" id="navUser"></span>
+        <button class="t-icon" onclick="toggleTheme()">🌙</button>
+        <button class="theme-btn" onclick="toggleTheme()"></button>
         <button class="logout-btn" onclick="logout()">Logout</button>
     </div>
 </nav>
-
 <div class="main">
-    <div class="admin-header">
+    <div class="a-header">
         <h1>🛡️ Admin Dashboard</h1>
-        <p>Poori website ka control tumhare haath mein, <span id="admin-name" style="color:#f0abfc;"></span>!</p>
+        <p>Poori website ka control tumhare haath mein, <span class="a-name" id="aName"></span>!</p>
     </div>
-
-    <div class="stats-grid">
-        <div class="stat-card" style="animation-delay:0.1s">
-            <div class="stat-icon">👥</div>
-            <div class="stat-value" id="total-users">--</div>
-            <div class="stat-label">Total Users</div>
-        </div>
-        <div class="stat-card" style="animation-delay:0.2s">
-            <div class="stat-icon">🛡️</div>
-            <div class="stat-value" id="total-admins">--</div>
-            <div class="stat-label">Admins</div>
-        </div>
-        <div class="stat-card" style="animation-delay:0.3s">
-            <div class="stat-icon">👤</div>
-            <div class="stat-value" id="normal-users">--</div>
-            <div class="stat-label">Normal Users</div>
-        </div>
-        <div class="stat-card" style="animation-delay:0.4s">
-            <div class="stat-icon">🌍</div>
-            <div class="stat-value" id="visitor-count">--</div>
-            <div class="stat-label">Visitors</div>
-        </div>
+    <div class="s-grid">
+        <div class="s-card" style="animation-delay:0.1s"><div class="s-ico">👥</div><div class="s-val" id="tUsers">--</div><div class="s-lbl">Total Users</div></div>
+        <div class="s-card" style="animation-delay:0.2s"><div class="s-ico">🛡️</div><div class="s-val" id="tAdmins">--</div><div class="s-lbl">Admins</div></div>
+        <div class="s-card" style="animation-delay:0.3s"><div class="s-ico">👤</div><div class="s-val" id="tNormal">--</div><div class="s-lbl">Normal Users</div></div>
+        <div class="s-card" style="animation-delay:0.4s"><div class="s-ico">🌍</div><div class="s-val" id="tVisitors">--</div><div class="s-lbl">Visitors</div></div>
     </div>
-
     <div class="toolbar">
-        <input class="search-input" id="searchInput" placeholder="🔍 User search karo..." oninput="filterUsers()">
-        <button class="filter-btn active" id="f-all" onclick="setFilter('all', this)">Sab</button>
-        <button class="filter-btn" id="f-admin" onclick="setFilter('ADMIN', this)">Admins</button>
-        <button class="filter-btn" id="f-user" onclick="setFilter('USER', this)">Users</button>
+        <input class="s-input" id="searchInput" placeholder="🔍 User search karo..." oninput="renderUsers()">
+        <button class="f-btn active" id="f-all" onclick="setFilter('all',this)">Sab</button>
+        <button class="f-btn" onclick="setFilter('ADMIN',this)">🛡️ Admins</button>
+        <button class="f-btn" onclick="setFilter('USER',this)">👤 Users</button>
     </div>
-
-    <div class="table-wrap">
-        <div class="table-header">
-            <span class="table-title">👥 Sabhi Users</span>
-            <span class="user-count" id="shown-count">Loading...</span>
+    <div class="t-wrap">
+        <div class="t-head">
+            <span class="t-title">👥 Sabhi Users</span>
+            <span class="t-count" id="shownCount">Loading...</span>
         </div>
         <table>
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Username</th>
-                    <th>Email</th>
-                    <th>Role</th>
-                    <th>Joined</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody id="users-list">
-                <tr><td colspan="6" class="no-results">Loading...</td></tr>
-            </tbody>
+            <thead><tr><th>ID</th><th>Username</th><th>Email</th><th>Role</th><th>Joined</th><th>Actions</th></tr></thead>
+            <tbody id="usersList"><tr><td colspan="6" class="no-res">Loading...</td></tr></tbody>
         </table>
     </div>
 </div>
-
 <div class="toast" id="toast"></div>
-
 <script>
-    const userId = localStorage.getItem('userId');
-    const username = localStorage.getItem('username');
-    const role = localStorage.getItem('role');
-    if (!userId || role !== 'ADMIN') window.location.href = 'login.html';
+// PARTICLES
+const canvas=document.getElementById('c'),ctx=canvas.getContext('2d');
+canvas.width=window.innerWidth;canvas.height=window.innerHeight;
+window.addEventListener('resize',()=>{canvas.width=window.innerWidth;canvas.height=window.innerHeight});
+const pts=Array.from({length:60},()=>({x:Math.random()*canvas.width,y:Math.random()*canvas.height,r:Math.random()*1.2+0.3,dx:(Math.random()-.5)*.3,dy:(Math.random()-.5)*.3,c:['#f093fb','#f5576c','#667eea','#fda085'][Math.floor(Math.random()*4)]}));
+function drawP(){ctx.clearRect(0,0,canvas.width,canvas.height);pts.forEach(p=>{p.x+=p.dx;p.y+=p.dy;if(p.x<0||p.x>canvas.width)p.dx*=-1;if(p.y<0||p.y>canvas.height)p.dy*=-1;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle=p.c+'33';ctx.fill()});requestAnimationFrame(drawP)}
+drawP();
 
-    document.getElementById('nav-username').textContent = username;
-    document.getElementById('admin-name').textContent = username;
+const userId=localStorage.getItem('userId'),username=localStorage.getItem('username'),role=localStorage.getItem('role');
+if(!userId||role!=='ADMIN')window.location.href='login.html';
+document.getElementById('navUser').textContent=username;
+document.getElementById('aName').textContent=username;
+document.getElementById('tVisitors').textContent=localStorage.getItem('siteVisitors')||'0';
 
-    // THEME
-    const savedTheme = localStorage.getItem('theme') || 'dark';
-    document.documentElement.setAttribute('data-theme', savedTheme);
-    function toggleTheme() {
-        const cur = document.documentElement.getAttribute('data-theme');
-        const next = cur === 'dark' ? 'light' : 'dark';
-        document.documentElement.setAttribute('data-theme', next);
-        localStorage.setItem('theme', next);
-        document.querySelector('.theme-icon').textContent = next === 'dark' ? '🌙' : '☀️';
-    }
-    document.querySelector('.theme-icon').textContent = savedTheme === 'dark' ? '🌙' : '☀️';
+const th=localStorage.getItem('theme')||'dark';
+document.documentElement.setAttribute('data-theme',th);
+document.querySelector('.t-icon').textContent=th==='dark'?'🌙':'☀️';
+function toggleTheme(){const cur=document.documentElement.getAttribute('data-theme');const nxt=cur==='dark'?'light':'dark';document.documentElement.setAttribute('data-theme',nxt);localStorage.setItem('theme',nxt);document.querySelector('.t-icon').textContent=nxt==='dark'?'🌙':'☀️'}
 
-    // VISITOR COUNT
-    document.getElementById('visitor-count').textContent =
-        localStorage.getItem('siteVisitors') || '0';
+fetch('https://divyansh-website-wooq.onrender.com/api/admin/stats',{headers:{'userId':userId}})
+.then(r=>r.json()).then(d=>{document.getElementById('tUsers').textContent=d.totalUsers;document.getElementById('tAdmins').textContent=d.totalAdmins;document.getElementById('tNormal').textContent=d.totalNormalUsers});
 
-    // STATS
-    fetch('https://divyansh-website-wooq.onrender.com/api/admin/stats', { headers: { 'userId': userId } })
-        .then(r => r.json())
-        .then(data => {
-            document.getElementById('total-users').textContent = data.totalUsers;
-            document.getElementById('total-admins').textContent = data.totalAdmins;
-            document.getElementById('normal-users').textContent = data.totalNormalUsers;
-        });
+let allUsers=[],curFilter='all';
 
-    let allUsers = [];
-    let currentFilter = 'all';
+function loadUsers(){
+    fetch('https://divyansh-website-wooq.onrender.com/api/admin/users',{headers:{'userId':userId}})
+    .then(r=>r.json()).then(u=>{allUsers=u;renderUsers()});
+}
 
-    function loadUsers() {
-        fetch('https://divyansh-website-wooq.onrender.com/api/admin/users', { headers: { 'userId': userId } })
-            .then(r => r.json())
-            .then(users => {
-                allUsers = users;
-                renderUsers();
-            });
-    }
+function setFilter(f,btn){curFilter=f;document.querySelectorAll('.f-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderUsers()}
 
-    function setFilter(f, btn) {
-        currentFilter = f;
-        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        renderUsers();
-    }
+function renderUsers(){
+    const search=document.getElementById('searchInput').value.toLowerCase();
+    const filtered=allUsers.filter(u=>{
+        const mf=curFilter==='all'||u.role===curFilter;
+        const ms=u.username.toLowerCase().includes(search)||u.email.toLowerCase().includes(search);
+        return mf&&ms;
+    });
+    document.getElementById('shownCount').textContent=filtered.length+' user';
+    const tbody=document.getElementById('usersList');
+    if(!filtered.length){tbody.innerHTML='<tr><td colspan="6" class="no-res">😕 Koi user nahi mila</td></tr>';return}
+    tbody.innerHTML=filtered.map(u=>{
+        const isMe=u.id==userId;
+        const dt=new Date(u.createdAt).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'});
+        return`<tr>
+            <td style="color:var(--text2);font-weight:600">#${u.id}</td>
+            <td><span style="font-weight:600">${u.username}</span>${isMe?'<span class="you-b">You</span>':''}</td>
+            <td style="color:var(--text2)">${u.email}</td>
+            <td><span class="${u.role==='ADMIN'?'r-admin':'r-user'}">${u.role}</span></td>
+            <td style="color:var(--text2)">${dt}</td>
+            <td>
+                ${!isMe&&u.role!=='ADMIN'?`<button class="act-btn mk-btn" onclick="makeAdmin(${u.id})">⬆ Admin</button>`:''}
+                ${!isMe?`<button class="act-btn del-btn" onclick="deleteUser(${u.id},'${u.username}')">🗑 Delete</button>`:''}
+                ${isMe?'<span style="color:var(--text2);font-size:0.8rem">—</span>':''}
+            </td>
+        </tr>`;
+    }).join('');
+}
 
-    function filterUsers() { renderUsers(); }
+function makeAdmin(id){
+    if(!confirm('Is user ko Admin banana chahte ho?'))return;
+    fetch(`https://divyansh-website-wooq.onrender.com/api/admin/make-admin/${id}`,{method:'PUT',headers:{'userId':userId}})
+    .then(r=>r.json()).then(d=>{showToast('✅ '+d.message,'ok');loadUsers()});
+}
 
-    function renderUsers() {
-        const search = document.getElementById('searchInput').value.toLowerCase();
-        const filtered = allUsers.filter(u => {
-            const matchFilter = currentFilter === 'all' || u.role === currentFilter;
-            const matchSearch = u.username.toLowerCase().includes(search) ||
-                                u.email.toLowerCase().includes(search);
-            return matchFilter && matchSearch;
-        });
+function deleteUser(id,name){
+    if(!confirm(`"${name}" ko delete karna chahte ho?`))return;
+    fetch(`https://divyansh-website-wooq.onrender.com/api/admin/delete-user/${id}`,{method:'DELETE',headers:{'userId':userId}})
+    .then(r=>r.json()).then(d=>{showToast('🗑 '+d.message,'ok');loadUsers()});
+}
 
-        document.getElementById('shown-count').textContent = filtered.length + ' user';
-        const tbody = document.getElementById('users-list');
-
-        if (filtered.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="6" class="no-results">Koi user nahi mila</td></tr>';
-            return;
-        }
-
-        tbody.innerHTML = filtered.map(user => {
-            const isMe = user.id == userId;
-            const date = new Date(user.createdAt).toLocaleDateString('en-IN', {day:'numeric',month:'short',year:'numeric'});
-            return `<tr>
-                <td style="color:var(--text2)">#${user.id}</td>
-                <td>
-                    ${user.username}
-                    ${isMe ? '<span class="you-badge">You</span>' : ''}
-                </td>
-                <td style="color:var(--text2)">${user.email}</td>
-                <td><span class="${user.role === 'ADMIN' ? 'role-admin' : 'role-user'}">${user.role}</span></td>
-                <td style="color:var(--text2)">${date}</td>
-                <td>
-                    ${!isMe && user.role !== 'ADMIN' ? `<button class="action-btn make-admin-btn" onclick="makeAdmin(${user.id})">⬆ Admin</button>` : ''}
-                    ${!isMe ? `<button class="action-btn delete-btn" onclick="deleteUser(${user.id},'${user.username}')">🗑 Delete</button>` : ''}
-                    ${isMe ? '<span style="color:var(--text2);font-size:0.8rem;">—</span>' : ''}
-                </td>
-            </tr>`;
-        }).join('');
-    }
-
-    function makeAdmin(targetId) {
-        if (!confirm('Is user ko Admin banana chahte ho?')) return;
-        fetch(`https://divyansh-website-wooq.onrender.com/api/admin/make-admin/${targetId}`, {
-            method: 'PUT', headers: { 'userId': userId }
-        })
-        .then(r => r.json())
-        .then(data => { showToast('✅ ' + data.message, 'success'); loadUsers(); });
-    }
-
-    function deleteUser(targetId, name) {
-        if (!confirm(`"${name}" ko delete karna chahte ho?`)) return;
-        fetch(`https://divyansh-website-wooq.onrender.com/api/admin/delete-user/${targetId}`, {
-            method: 'DELETE', headers: { 'userId': userId }
-        })
-        .then(r => r.json())
-        .then(data => { showToast('🗑 ' + data.message, 'success'); loadUsers(); });
-    }
-
-    function showToast(msg, type) {
-        const t = document.getElementById('toast');
-        t.textContent = msg; t.className = 'toast ' + type;
-        t.style.display = 'block';
-        setTimeout(() => t.style.display = 'none', 3000);
-    }
-
-    function logout() { localStorage.clear(); window.location.href = 'login.html'; }
-
-    loadUsers();
+function showToast(msg,type){const t=document.getElementById('toast');t.textContent=msg;t.className='toast '+type;t.style.display='block';setTimeout(()=>t.style.display='none',3000)}
+function logout(){localStorage.clear();window.location.href='login.html'}
+loadUsers();
 </script>
 </body>
 </html>
