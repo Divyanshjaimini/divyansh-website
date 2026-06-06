@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://divyansh-website-wooq.onrender.com/sitemap.xml
