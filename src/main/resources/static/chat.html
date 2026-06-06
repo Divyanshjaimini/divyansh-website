@@ -184,8 +184,12 @@ const role=localStorage.getItem('role');
 
 // GO BACK — Dashboard par jaao
 function goBack(){
-    if(role==='ADMIN') window.location.href='admin-dashboard.html';
-    else window.location.href='user-dashboard.html';
+    const role=localStorage.getItem('role');
+    if(role==='ADMIN'){
+        window.location.href='admin-dashboard.html';
+    } else {
+        window.location.href='user-dashboard.html';
+    }
 }
 
 if(!userId){

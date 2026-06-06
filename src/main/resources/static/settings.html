@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark" data-lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Settings — Divyansh Jaimini</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+/* THEMES */
+:root[data-theme="dark"]{--bg:#030308;--bg2:#0a0a14;--bg3:rgba(255,255,255,0.04);--border:rgba(255,255,255,0.07);--text:#fff;--text2:rgba(255,255,255,0.45);--card:rgba(255,255,255,0.025);--nav:rgba(3,3,8,0.9);--accent:#667eea}
+:root[data-theme="light"]{--bg:#f0f2ff;--bg2:#fff;--bg3:rgba(102,126,234,0.06);--border:rgba(102,126,234,0.12);--text:#1a1a2e;--text2:#666688;--card:#fff;--nav:rgba(240,242,255,0.95);--accent:#667eea}
+:root[data-theme="blue"]{--bg:#010b1a;--bg2:#021224;--bg3:rgba(0,150,255,0.06);--border:rgba(0,150,255,0.12);--text:#e0f0ff;--text2:rgba(224,240,255,0.5);--card:rgba(0,150,255,0.04);--nav:rgba(1,11,26,0.95);--accent:#0096ff}
+:root[data-theme="green"]{--bg:#010f08;--bg2:#021a0d;--bg3:rgba(0,200,100,0.06);--border:rgba(0,200,100,0.12);--text:#e0ffe8;--text2:rgba(224,255,232,0.5);--card:rgba(0,200,100,0.04);--nav:rgba(1,15,8,0.95);--accent:#00c864}
+:root[data-theme="purple"]{--bg:#08010f;--bg2:#12021a;--bg3:rgba(150,0,255,0.06);--border:rgba(150,0,255,0.12);--text:#f0e0ff;--text2:rgba(240,224,255,0.5);--card:rgba(150,0,255,0.04);--nav:rgba(8,1,15,0.95);--accent:#9600ff}
+:root[data-theme="sunset"]{--bg:#0f0500;--bg2:#1a0a00;--bg3:rgba(255,100,0,0.06);--border:rgba(255,100,0,0.12);--text:#fff0e0;--text2:rgba(255,240,224,0.5);--card:rgba(255,100,0,0.04);--nav:rgba(15,5,0,0.95);--accent:#ff6400}
+
+*{margin:0;padding:0;box-sizing:border-box;transition:background 0.3s,color 0.3s,border-color 0.3s}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding-bottom:2rem}
+canvas{position:fixed;top:0;left:0;z-index:0;pointer-events:none}
+
+nav{position:sticky;top:0;z-index:100;display:flex;justify-content:space-between;align-items:center;padding:0 2rem;height:65px;background:var(--nav);backdrop-filter:blur(30px);border-bottom:1px solid var(--border)}
+.nav-logo{font-size:1.1rem;font-weight:900;background:linear-gradient(135deg,var(--accent),#f093fb);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.back-btn{color:var(--text2);text-decoration:none;font-size:0.85rem;padding:0.45rem 1rem;border-radius:10px;border:1px solid var(--border);transition:all 0.2s;font-weight:500;cursor:pointer;background:none;font-family:inherit}
+.back-btn:hover{color:var(--text);border-color:var(--accent)}
+
+.main{position:relative;z-index:1;padding:2rem;max-width:800px;margin:0 auto}
+.page-title{font-size:2rem;font-weight:900;letter-spacing:-0.5px;margin-bottom:0.4rem}
+.page-sub{color:var(--text2);font-size:0.9rem;margin-bottom:2rem}
+
+.settings-section{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:1.5rem;margin-bottom:1rem;animation:fadeUp 0.5s ease both}
+@keyframes fadeUp{from{opacity:0;transform:translateY(15px)}to{opacity:1;transform:translateY(0)}}
+.sec-title{font-size:0.75rem;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:0.12em;margin-bottom:1.2rem;display:flex;align-items:center;gap:0.5rem}
+
+/* THEME GRID */
+.theme-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:0.8rem}
+.theme-card{padding:1rem;border-radius:14px;border:2px solid transparent;cursor:pointer;transition:all 0.2s;text-align:center;position:relative}
+.theme-card.selected{border-color:var(--accent);box-shadow:0 0 0 4px rgba(102,126,234,0.15)}
+.theme-preview{width:100%;height:50px;border-radius:10px;margin-bottom:0.6rem;position:relative;overflow:hidden}
+.theme-name{font-size:0.8rem;font-weight:600;color:var(--text)}
+.theme-check{position:absolute;top:0.4rem;right:0.4rem;width:18px;height:18px;background:var(--accent);border-radius:50%;display:none;align-items:center;justify-content:center;font-size:0.7rem}
+.theme-card.selected .theme-check{display:flex}
+
+/* LANGUAGE */
+.lang-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:0.8rem}
+.lang-card{padding:1rem;border-radius:14px;border:1px solid var(--border);cursor:pointer;transition:all 0.2s;display:flex;align-items:center;gap:0.8rem;background:var(--bg3)}
+.lang-card:hover{border-color:var(--accent)}
+.lang-card.selected{border-color:var(--accent);background:rgba(102,126,234,0.08)}
+.lang-flag{font-size:1.5rem}
+.lang-name{font-size:0.88rem;font-weight:600}
+.lang-native{font-size:0.75rem;color:var(--text2)}
+
+/* TOGGLE */
+.setting-row{display:flex;justify-content:space-between;align-items:center;padding:1rem 0;border-bottom:1px solid var(--border)}
+.setting-row:last-child{border-bottom:none}
+.setting-info h4{font-size:0.9rem;font-weight:600;margin-bottom:0.2rem}
+.setting-info p{font-size:0.78rem;color:var(--text2)}
+.toggle{width:46px;height:25px;background:var(--bg3);border:1px solid var(--border);border-radius:13px;cursor:pointer;position:relative;outline:none;flex-shrink:0;transition:background 0.3s}
+.toggle.on{background:var(--accent);border-color:var(--accent)}
+.toggle::after{content:'';position:absolute;top:3px;left:3px;width:17px;height:17px;background:#fff;border-radius:50%;transition:transform 0.3s}
+.toggle.on::after{transform:translateX(21px)}
+
+/* FONT SIZE */
+.font-slider{width:100%;margin-top:0.8rem;accent-color:var(--accent)}
+.font-preview{margin-top:0.8rem;padding:0.8rem;background:var(--bg3);border-radius:10px;border:1px solid var(--border)}
+
+/* SAVE BTN */
+.save-btn{width:100%;padding:1rem;background:linear-gradient(135deg,var(--accent),#764ba2);color:#fff;border:none;border-radius:14px;font-size:1rem;font-weight:700;cursor:pointer;font-family:inherit;transition:all 0.3s;box-shadow:0 4px 20px rgba(102,126,234,0.3);margin-top:1rem}
+.save-btn:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(102,126,234,0.5)}
+.saved-msg{text-align:center;color:#4ade80;font-size:0.88rem;font-weight:600;margin-top:0.8rem;display:none}
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+
+<nav>
+    <div class="nav-logo">⚙️ Settings</div>
+    <button class="back-btn" onclick="goBack()">← Dashboard</button>
+</nav>
+
+<div class="main">
+    <div class="page-title">Settings ⚙️</div>
+    <p class="page-sub">Customize your experience</p>
+
+    <!-- THEME -->
+    <div class="settings-section" style="animation-delay:0.1s">
+        <div class="sec-title">🎨 Theme</div>
+        <div class="theme-grid">
+            <div class="theme-card" id="theme-dark" onclick="setTheme('dark')">
+                <div class="theme-preview" style="background:linear-gradient(135deg,#030308,#0a0a14)">
+                    <div style="position:absolute;bottom:5px;left:8px;right:8px;height:3px;background:linear-gradient(90deg,#667eea,#f093fb);border-radius:2px"></div>
+                </div>
+                <div class="theme-name">Dark</div>
+                <div class="theme-check">✓</div>
+            </div>
+            <div class="theme-card" id="theme-light" onclick="setTheme('light')">
+                <div class="theme-preview" style="background:linear-gradient(135deg,#f0f2ff,#fff)">
+                    <div style="position:absolute;bottom:5px;left:8px;right:8px;height:3px;background:linear-gradient(90deg,#667eea,#764ba2);border-radius:2px"></div>
+                </div>
+                <div class="theme-name">Light</div>
+                <div class="theme-check">✓</div>
+            </div>
+            <div class="theme-card" id="theme-blue" onclick="setTheme('blue')">
+                <div class="theme-preview" style="background:linear-gradient(135deg,#010b1a,#021224)">
+                    <div style="position:absolute;bottom:5px;left:8px;right:8px;height:3px;background:linear-gradient(90deg,#0096ff,#00d4ff);border-radius:2px"></div>
+                </div>
+                <div class="theme-name">Ocean Blue</div>
+                <div class="theme-check">✓</div>
+            </div>
+            <div class="theme-card" id="theme-green" onclick="setTheme('green')">
+                <div class="theme-preview" style="background:linear-gradient(135deg,#010f08,#021a0d)">
+                    <div style="position:absolute;bottom:5px;left:8px;right:8px;height:3px;background:linear-gradient(90deg,#00c864,#00ff88);border-radius:2px"></div>
+                </div>
+                <div class="theme-name">Forest</div>
+                <div class="theme-check">✓</div>
+            </div>
+            <div class="theme-card" id="theme-purple" onclick="setTheme('purple')">
+                <div class="theme-preview" style="background:linear-gradient(135deg,#08010f,#12021a)">
+                    <div style="position:absolute;bottom:5px;left:8px;right:8px;height:3px;background:linear-gradient(90deg,#9600ff,#f093fb);border-radius:2px"></div>
+                </div>
+                <div class="theme-name">Purple</div>
+                <div class="theme-check">✓</div>
+            </div>
+            <div class="theme-card" id="theme-sunset" onclick="setTheme('sunset')">
+                <div class="theme-preview" style="background:linear-gradient(135deg,#0f0500,#1a0a00)">
+                    <div style="position:absolute;bottom:5px;left:8px;right:8px;height:3px;background:linear-gradient(90deg,#ff6400,#fda085);border-radius:2px"></div>
+                </div>
+                <div class="theme-name">Sunset</div>
+                <div class="theme-check">✓</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- LANGUAGE -->
+    <div class="settings-section" style="animation-delay:0.2s">
+        <div class="sec-title">🌍 Language</div>
+        <div class="lang-grid">
+            <div class="lang-card selected" id="lang-en" onclick="setLang('en')">
+                <div class="lang-flag">🇬🇧</div>
+                <div><div class="lang-name">English</div><div class="lang-native">English</div></div>
+            </div>
+            <div class="lang-card" id="lang-hi" onclick="setLang('hi')">
+                <div class="lang-flag">🇮🇳</div>
+                <div><div class="lang-name">Hindi</div><div class="lang-native">हिंदी</div></div>
+            </div>
+            <div class="lang-card" id="lang-es" onclick="setLang('es')">
+                <div class="lang-flag">🇪🇸</div>
+                <div><div class="lang-name">Spanish</div><div class="lang-native">Español</div></div>
+            </div>
+            <div class="lang-card" id="lang-fr" onclick="setLang('fr')">
+                <div class="lang-flag">🇫🇷</div>
+                <div><div class="lang-name">French</div><div class="lang-native">Français</div></div>
+            </div>
+            <div class="lang-card" id="lang-de" onclick="setLang('de')">
+                <div class="lang-flag">🇩🇪</div>
+                <div><div class="lang-name">German</div><div class="lang-native">Deutsch</div></div>
+            </div>
+            <div class="lang-card" id="lang-ja" onclick="setLang('ja')">
+                <div class="lang-flag">🇯🇵</div>
+                <div><div class="lang-name">Japanese</div><div class="lang-native">日本語</div></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FONT SIZE -->
+    <div class="settings-section" style="animation-delay:0.3s">
+        <div class="sec-title">📝 Font Size</div>
+        <input type="range" class="font-slider" id="fontSlider" min="12" max="20" value="14" oninput="updateFont(this.value)">
+        <div class="font-preview">
+            <span id="fontPreview" style="font-size:14px">Preview text — This is how your text will look!</span>
+        </div>
+    </div>
+
+    <!-- OTHER SETTINGS -->
+    <div class="settings-section" style="animation-delay:0.4s">
+        <div class="sec-title">🔧 Preferences</div>
+        <div class="setting-row">
+            <div class="setting-info">
+                <h4>Animations</h4>
+                <p>Enable page animations and effects</p>
+            </div>
+            <button class="toggle on" id="toggleAnimations" onclick="toggleSetting('animations', this)"></button>
+        </div>
+        <div class="setting-row">
+            <div class="setting-info">
+                <h4>Particle Effects</h4>
+                <p>Background floating particles</p>
+            </div>
+            <button class="toggle on" id="toggleParticles" onclick="toggleSetting('particles', this)"></button>
+        </div>
+        <div class="setting-row">
+            <div class="setting-info">
+                <h4>Sound Effects</h4>
+                <p>Chat notification sounds</p>
+            </div>
+            <button class="toggle" id="toggleSound" onclick="toggleSetting('sound', this)"></button>
+        </div>
+        <div class="setting-row">
+            <div class="setting-info">
+                <h4>Compact Mode</h4>
+                <p>Reduce spacing for more content</p>
+            </div>
+            <button class="toggle" id="toggleCompact" onclick="toggleSetting('compact', this)"></button>
+        </div>
+    </div>
+
+    <!-- PROFILE INFO -->
+    <div class="settings-section" style="animation-delay:0.5s">
+        <div class="sec-title">👤 Account</div>
+        <div class="setting-row">
+            <div class="setting-info">
+                <h4 id="settingUsername">Username</h4>
+                <p id="settingRole">Role</p>
+            </div>
+            <a href="user-dashboard.html" style="color:var(--accent);text-decoration:none;font-size:0.85rem;font-weight:600">Edit Profile →</a>
+        </div>
+        <div class="setting-row">
+            <div class="setting-info">
+                <h4>Clear All Data</h4>
+                <p>Reset all settings to default</p>
+            </div>
+            <button onclick="resetSettings()" style="background:rgba(239,68,68,0.1);color:#f87171;border:1px solid rgba(239,68,68,0.2);padding:0.4rem 0.9rem;border-radius:8px;cursor:pointer;font-size:0.82rem;font-weight:600;font-family:inherit">Reset</button>
+        </div>
+    </div>
+
+    <button class="save-btn" onclick="saveSettings()">💾 Save Settings</button>
+    <div class="saved-msg" id="savedMsg">✅ Settings saved successfully!</div>
+</div>
+
+<script>
+// PARTICLES
+const canvas=document.getElementById('c'),ctx=canvas.getContext('2d');
+canvas.width=window.innerWidth;canvas.height=window.innerHeight;
+window.addEventListener('resize',()=>{canvas.width=window.innerWidth;canvas.height=window.innerHeight});
+const pts=Array.from({length:40},()=>({x:Math.random()*canvas.width,y:Math.random()*canvas.height,r:Math.random()*1+0.3,dx:(Math.random()-.5)*.2,dy:(Math.random()-.5)*.2,c:['#667eea','#f093fb'][Math.floor(Math.random()*2)]}));
+function drawP(){ctx.clearRect(0,0,canvas.width,canvas.height);pts.forEach(p=>{p.x+=p.dx;p.y+=p.dy;if(p.x<0||p.x>canvas.width)p.dx*=-1;if(p.y<0||p.y>canvas.height)p.dy*=-1;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle=p.c+'22';ctx.fill()});requestAnimationFrame(drawP)}drawP();
+
+const username=localStorage.getItem('username')||'User';
+const role=localStorage.getItem('role')||'USER';
+document.getElementById('settingUsername').textContent=username;
+document.getElementById('settingRole').textContent=role;
+
+// LOAD SAVED SETTINGS
+const settings=JSON.parse(localStorage.getItem('siteSettings')||'{}');
+const currentTheme=settings.theme||localStorage.getItem('theme')||'dark';
+const currentLang=settings.lang||'en';
+const currentFont=settings.fontSize||14;
+
+// Apply theme
+document.documentElement.setAttribute('data-theme',currentTheme);
+document.getElementById('theme-'+currentTheme)?.classList.add('selected');
+
+// Apply lang
+document.getElementById('lang-'+currentLang)?.classList.add('selected');
+document.querySelectorAll('.lang-card').forEach(c=>c.classList.remove('selected'));
+document.getElementById('lang-'+currentLang)?.classList.add('selected');
+
+// Apply font
+document.getElementById('fontSlider').value=currentFont;
+document.getElementById('fontPreview').style.fontSize=currentFont+'px';
+
+// Apply toggles
+['animations','particles','sound','compact'].forEach(key=>{
+    const val=settings[key]!==undefined?settings[key]:(key==='animations'||key==='particles');
+    const btn=document.getElementById('toggle'+key.charAt(0).toUpperCase()+key.slice(1));
+    if(val)btn.classList.add('on');
+    else btn.classList.remove('on');
+});
+
+function setTheme(theme){
+    document.documentElement.setAttribute('data-theme',theme);
+    document.querySelectorAll('.theme-card').forEach(c=>c.classList.remove('selected'));
+    document.getElementById('theme-'+theme).classList.add('selected');
+    localStorage.setItem('theme',theme);
+}
+
+function setLang(lang){
+    document.querySelectorAll('.lang-card').forEach(c=>c.classList.remove('selected'));
+    document.getElementById('lang-'+lang).classList.add('selected');
+
+    // Apply translations
+    const translations={
+        en:{title:'Settings',sub:'Customize your experience',save:'💾 Save Settings'},
+        hi:{title:'सेटिंग्स',sub:'अपना अनुभव customize करें',save:'💾 सेटिंग्स सहेजें'},
+        es:{title:'Configuración',sub:'Personaliza tu experiencia',save:'💾 Guardar'},
+        fr:{title:'Paramètres',sub:'Personnalisez votre expérience',save:'💾 Sauvegarder'},
+        de:{title:'Einstellungen',sub:'Passe deine Erfahrung an',save:'💾 Speichern'},
+        ja:{title:'設定',sub:'エクスペリエンスをカスタマイズ',save:'💾 保存'},
+    };
+    const t=translations[lang]||translations.en;
+    document.querySelector('.page-title').textContent=t.title+' ⚙️';
+    document.querySelector('.page-sub').textContent=t.sub;
+    document.querySelector('.save-btn').textContent=t.save;
+}
+
+function updateFont(val){
+    document.getElementById('fontPreview').style.fontSize=val+'px';
+    document.body.style.fontSize=val+'px';
+}
+
+function toggleSetting(key,btn){
+    btn.classList.toggle('on');
+}
+
+function saveSettings(){
+    const theme=document.documentElement.getAttribute('data-theme');
+    const lang=document.querySelector('.lang-card.selected')?.id.replace('lang-','')||'en';
+    const fontSize=document.getElementById('fontSlider').value;
+
+    const newSettings={
+        theme,lang,fontSize,
+        animations:document.getElementById('toggleAnimations').classList.contains('on'),
+        particles:document.getElementById('toggleParticles').classList.contains('on'),
+        sound:document.getElementById('toggleSound').classList.contains('on'),
+        compact:document.getElementById('toggleCompact').classList.contains('on'),
+    };
+
+    localStorage.setItem('siteSettings',JSON.stringify(newSettings));
+    localStorage.setItem('theme',theme);
+    localStorage.setItem('lang',lang);
+
+    const msg=document.getElementById('savedMsg');
+    msg.style.display='block';
+    setTimeout(()=>msg.style.display='none',3000);
+}
+
+function resetSettings(){
+    if(!confirm('Reset all settings to default?'))return;
+    localStorage.removeItem('siteSettings');
+    localStorage.setItem('theme','dark');
+    window.location.reload();
+}
+
+function goBack(){
+    const role=localStorage.getItem('role');
+    if(role==='ADMIN') window.location.href='admin-dashboard.html';
+    else window.location.href='user-dashboard.html';
+}
+</script>
+</body>
+</html>
