@@ -152,7 +152,7 @@ async function sendOtp(){
             savedOtp=data.otp;
 
             // EmailJS se OTP bhejo
-            await emailjs.send('service_6zv6pmo','d4xmurb',{
+            await emailjs.send('service_6zv6pmo','template_5qhmue8',{
                 to_email: email,
                 otp: data.otp
             });
