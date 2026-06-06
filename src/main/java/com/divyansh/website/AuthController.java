@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Random;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -23,10 +24,7 @@ public class AuthController {
     @Autowired
     private OtpService otpService;
 
-    @Autowired
-    private EmailService emailService;
-
-    // STEP 1: Send OTP
+    // Generate OTP — Frontend EmailJS se bhejega
     @PostMapping("/send-otp")
     public ResponseEntity<Map<String, String>> sendOtp(@RequestBody Map<String, String> request) {
         Map<String, String> response = new HashMap<>();
@@ -37,18 +35,13 @@ public class AuthController {
             return ResponseEntity.badRequest().body(response);
         }
 
-        try {
-            String otp = otpService.generateOtp(email);
-            emailService.sendOtpEmail(email, otp);
-            response.put("message", "OTP sent successfully!");
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            response.put("message", "Failed to send OTP! Check your email address.");
-            return ResponseEntity.badRequest().body(response);
-        }
+        String otp = otpService.generateOtp(email);
+        response.put("message", "OTP generated!");
+        response.put("otp", otp); // Frontend ko OTP denge — EmailJS se bhejega
+        return ResponseEntity.ok(response);
     }
 
-    // STEP 2: Verify OTP + Register
+    // Register — OTP verify karke
     @PostMapping("/register")
     public ResponseEntity<Map<String, String>> register(@RequestBody Map<String, String> request) {
         Map<String, String> response = new HashMap<>();
@@ -85,7 +78,7 @@ public class AuthController {
         return ResponseEntity.ok(response);
     }
 
-    // LOGIN
+    // Login
     @PostMapping("/login")
     public ResponseEntity<Map<String, String>> login(@RequestBody Map<String, String> request) {
         Map<String, String> response = new HashMap<>();
