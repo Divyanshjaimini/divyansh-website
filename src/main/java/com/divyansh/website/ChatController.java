@@ -59,4 +59,11 @@ public class ChatController {
         message.setType("JOIN");
         return message;
     }
+    
+    @MessageMapping("/chat.leave")
+    @SendTo("/topic/public")
+    public ChatMessage leaveChat(ChatMessage message) {
+        message.setType("LEAVE");
+        return message;
+    }
 }
