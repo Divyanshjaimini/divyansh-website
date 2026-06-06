@@ -399,31 +399,28 @@ function sendMsg() {
     const btn = document.querySelector('.sub-btn');
     const success = document.getElementById('fSuccess');
 
-    // Validation
     if (!name || !email || !msg) {
         alert('Sab fields bharo!');
         return;
     }
 
-    // Email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
         alert('Sahi email address likho!');
         return;
     }
 
-    // Button loading
     btn.textContent = '⏳ Bhej raha hai...';
     btn.disabled = true;
 
-    // Send email
     emailjs.send('service_6zv6pmo', 'hc6icss', {
         from_name: name,
         from_email: email,
         message: msg,
         to_name: 'Divyansh'
     })
-    .then(() => {
+    .then(function(response) {
+        console.log('SUCCESS!', response.status, response.text);
         success.style.display = 'block';
         success.textContent = '✅ Message send ho gaya! Main jald reply karunga.';
         document.getElementById('cn').value = '';
@@ -433,8 +430,9 @@ function sendMsg() {
         btn.disabled = false;
         setTimeout(() => success.style.display = 'none', 5000);
     })
-    .catch((error) => {
-        alert('Message send nahi hua! Dobara try karo.');
+    .catch(function(error) {
+        console.log('FAILED...', error);
+        alert('Error: ' + JSON.stringify(error));
         btn.textContent = '📨 Message Bhejo';
         btn.disabled = false;
     });
