@@ -379,16 +379,26 @@ function drawP(){
     requestAnimationFrame(drawP);
 }drawP();
 
-// VISITORS
-let v=parseInt(localStorage.getItem('siteVisitors')||'0');
-if(!sessionStorage.getItem('visited')){v++;localStorage.setItem('siteVisitors',v);sessionStorage.setItem('visited','true')}
-document.getElementById('visitorCount').textContent=v;
-document.getElementById('liveText').textContent=`🌍 ${v} people have visited this website`;
+//VISITOR COUNTER — Real counter
+let v = parseInt(localStorage.getItem('siteVisitors') || '0');
+if (!sessionStorage.getItem('visited')) {
+    v++;
+    localStorage.setItem('siteVisitors', v);
+    sessionStorage.setItem('visited', 'true');
+}
+document.getElementById('visitorCount').textContent = v.toLocaleString();
+document.getElementById('liveText').textContent = `🌍 ${v.toLocaleString()} people have visited this website`;
 
-// MEMBERS
+// MEMBER COUNT — Live from database
 fetch('https://divyansh-website-wooq.onrender.com/api/admin/stats')
-.then(r=>r.json()).then(d=>document.getElementById('memberCount').textContent=d.totalUsers||0)
-.catch(()=>document.getElementById('memberCount').textContent='1+');
+.then(r => r.json())
+.then(d => {
+    const count = d.totalUsers || 0;
+    document.getElementById('memberCount').textContent = count.toLocaleString();
+})
+.catch(() => {
+    document.getElementById('memberCount').textContent = '1+';
+});
 
 // SEARCH
 const pages=[

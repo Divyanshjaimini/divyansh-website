@@ -128,7 +128,62 @@ tr:hover td{background:var(--hover)}
             <tbody id="usersList"><tr><td colspan="6" class="no-res">Loading...</td></tr></tbody>
         </table>
     </div>
+    
+    <!-- ADMIN QUICK ACTIONS -->
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin-top:1rem">
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:18px;padding:1.5rem;text-align:center;transition:all 0.3s;cursor:default">
+        <div style="font-size:2rem;margin-bottom:0.8rem">💬</div>
+        <div style="font-weight:800;margin-bottom:0.4rem">Live Chat</div>
+        <div style="font-size:0.82rem;color:var(--text2);margin-bottom:1rem">Chat with users in real-time</div>
+        <a href="chat.html" style="padding:0.5rem 1.2rem;background:linear-gradient(135deg,#f093fb,#f5576c);color:#fff;border-radius:20px;text-decoration:none;font-size:0.82rem;font-weight:700">Open Chat</a>
+    </div>
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:18px;padding:1.5rem;text-align:center;transition:all 0.3s;cursor:default">
+        <div style="font-size:2rem;margin-bottom:0.8rem">⚙️</div>
+        <div style="font-weight:800;margin-bottom:0.4rem">Settings</div>
+        <div style="font-size:0.82rem;color:var(--text2);margin-bottom:1rem">Customize website settings</div>
+        <a href="settings.html" style="padding:0.5rem 1.2rem;background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;border-radius:20px;text-decoration:none;font-size:0.82rem;font-weight:700">Open Settings</a>
+    </div>
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:18px;padding:1.5rem;text-align:center;transition:all 0.3s;cursor:default">
+        <div style="font-size:2rem;margin-bottom:0.8rem">🌐</div>
+        <div style="font-weight:800;margin-bottom:0.4rem">Visit Website</div>
+        <div style="font-size:0.82rem;color:var(--text2);margin-bottom:1rem">See your public website</div>
+        <a href="index.html" style="padding:0.5rem 1.2rem;background:linear-gradient(135deg,#4facfe,#00f2fe);color:#fff;border-radius:20px;text-decoration:none;font-size:0.82rem;font-weight:700">Visit Now</a>
+    </div>
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:18px;padding:1.5rem;text-align:center;transition:all 0.3s;cursor:default">
+        <div style="font-size:2rem;margin-bottom:0.8rem">📊</div>
+        <div style="font-weight:800;margin-bottom:0.4rem">Analytics</div>
+        <div style="font-size:0.82rem;color:var(--text2);margin-bottom:1rem">Total visitors & members</div>
+        <div style="font-size:1.5rem;font-weight:900;background:linear-gradient(135deg,#f093fb,#f5576c);-webkit-background-clip:text;-webkit-text-fill-color:transparent" id="analyticsCount">Loading...</div>
+    </div>
 </div>
+
+<!-- RECENT ACTIVITY -->
+<div style="background:var(--card);border:1px solid var(--border);border-radius:18px;padding:1.5rem;margin-top:1rem">
+    <div style="font-size:0.75rem;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:0.12em;margin-bottom:1.2rem">📈 Website Stats</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1rem">
+        <div style="text-align:center;padding:1rem;background:var(--bg3);border-radius:12px;border:1px solid var(--border)">
+            <div style="font-size:1.8rem;font-weight:900;background:linear-gradient(135deg,#667eea,#f093fb);-webkit-background-clip:text;-webkit-text-fill-color:transparent" id="stat-visitors">0</div>
+            <div style="font-size:0.75rem;color:var(--text2);margin-top:0.3rem;font-weight:600;text-transform:uppercase;letter-spacing:0.08em">Total Visitors</div>
+        </div>
+        <div style="text-align:center;padding:1rem;background:var(--bg3);border-radius:12px;border:1px solid var(--border)">
+            <div style="font-size:1.8rem;font-weight:900;background:linear-gradient(135deg,#4ade80,#22d3ee);-webkit-background-clip:text;-webkit-text-fill-color:transparent" id="stat-members">0</div>
+            <div style="font-size:0.75rem;color:var(--text2);margin-top:0.3rem;font-weight:600;text-transform:uppercase;letter-spacing:0.08em">Registered Members</div>
+        </div>
+        <div style="text-align:center;padding:1rem;background:var(--bg3);border-radius:12px;border:1px solid var(--border)">
+            <div style="font-size:1.8rem;font-weight:900;background:linear-gradient(135deg,#f093fb,#f5576c);-webkit-background-clip:text;-webkit-text-fill-color:transparent" id="stat-admins">0</div>
+            <div style="font-size:0.75rem;color:var(--text2);margin-top:0.3rem;font-weight:600;text-transform:uppercase;letter-spacing:0.08em">Total Admins</div>
+        </div>
+        <div style="text-align:center;padding:1rem;background:var(--bg3);border-radius:12px;border:1px solid var(--border)">
+            <div style="font-size:1.8rem;font-weight:900;background:linear-gradient(135deg,#fda085,#f6d365);-webkit-background-clip:text;-webkit-text-fill-color:transparent">24/7</div>
+            <div style="font-size:0.75rem;color:var(--text2);margin-top:0.3rem;font-weight:600;text-transform:uppercase;letter-spacing:0.08em">Online</div>
+        </div>
+    </div>
+</div>
+    
+</div>
+
+
+
 <div class="toast" id="toast"></div>
 <script>
 const canvas=document.getElementById('c'),ctx=canvas.getContext('2d');
@@ -141,14 +196,37 @@ if(!userId||role!=='ADMIN')window.location.href='login.html';
 document.getElementById('navUser').textContent=username;
 document.getElementById('aName').textContent=username;
 document.getElementById('tVisitors').textContent=localStorage.getItem('siteVisitors')||'0';
+
 const th=localStorage.getItem('theme')||'dark';
 document.documentElement.setAttribute('data-theme',th);
 document.querySelector('.t-icon').textContent=th==='dark'?'🌙':'☀️';
+
 function toggleTheme(){const cur=document.documentElement.getAttribute('data-theme');const nxt=cur==='dark'?'light':'dark';document.documentElement.setAttribute('data-theme',nxt);localStorage.setItem('theme',nxt);document.querySelector('.t-icon').textContent=nxt==='dark'?'🌙':'☀️'}
+
+//STATS
 fetch('https://divyansh-website-wooq.onrender.com/api/admin/stats',{headers:{'userId':userId}})
-.then(r=>r.json()).then(d=>{document.getElementById('tUsers').textContent=d.totalUsers;document.getElementById('tAdmins').textContent=d.totalAdmins;document.getElementById('tNormal').textContent=d.totalNormalUsers});
+.then(r=>r.json())
+.then(d=>{
+    document.getElementById('tUsers').textContent=(d.totalUsers||0).toLocaleString();
+    document.getElementById('tAdmins').textContent=(d.totalAdmins||0).toLocaleString();
+    document.getElementById('tNormal').textContent=(d.totalNormalUsers||0).toLocaleString();
+    document.getElementById('tVisitors').textContent=parseInt(localStorage.getItem('siteVisitors')||'0').toLocaleString();
+});
+
 let allUsers=[],curFilter='all';
 function loadUsers(){fetch('https://divyansh-website-wooq.onrender.com/api/admin/users',{headers:{'userId':userId}}).then(r=>r.json()).then(u=>{allUsers=u;renderUsers()})}
+
+//Analytics
+const visitors=parseInt(localStorage.getItem('siteVisitors')||'0');
+document.getElementById('stat-visitors').textContent=visitors.toLocaleString();
+document.getElementById('analyticsCount').textContent=visitors+' visitors';
+fetch('https://divyansh-website-wooq.onrender.com/api/admin/stats',{headers:{'userId':userId}})
+.then(r=>r.json())
+.then(d=>{
+    document.getElementById('stat-members').textContent=(d.totalUsers||0).toLocaleString();
+    document.getElementById('stat-admins').textContent=(d.totalAdmins||0).toLocaleString();
+});
+
 function setFilter(f,btn){curFilter=f;document.querySelectorAll('.f-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderUsers()}
 function renderUsers(){
     const search=document.getElementById('searchInput').value.toLowerCase();

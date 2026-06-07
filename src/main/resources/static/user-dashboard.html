@@ -135,6 +135,52 @@ nav{position:sticky;top:0;z-index:100;display:flex;justify-content:space-between
             <div class="msg-b" id="uMsg"></div>
         </div>
     </div>
+    <!-- ACTIVITY SECTION -->
+<div style="background:var(--card);border:1px solid var(--border);border-radius:22px;padding:2rem;margin-top:1rem">
+    <div style="font-size:0.75rem;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:0.12em;margin-bottom:1.5rem">📊 My Activity</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem">
+        <div style="background:var(--bg3);border:1px solid var(--border);border-radius:16px;padding:1.5rem;text-align:center">
+            <div style="font-size:2rem;margin-bottom:0.5rem">💬</div>
+            <div style="font-size:1.3rem;font-weight:900;background:linear-gradient(135deg,#667eea,#f093fb);-webkit-background-clip:text;-webkit-text-fill-color:transparent">Chat</div>
+            <div style="font-size:0.78rem;color:var(--text2);margin-top:0.3rem">Join conversation</div>
+            <a href="chat.html" style="display:inline-block;margin-top:0.8rem;padding:0.5rem 1.2rem;background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;border-radius:20px;text-decoration:none;font-size:0.82rem;font-weight:700">Open Chat</a>
+        </div>
+        <div style="background:var(--bg3);border:1px solid var(--border);border-radius:16px;padding:1.5rem;text-align:center">
+            <div style="font-size:2rem;margin-bottom:0.5rem">⚙️</div>
+            <div style="font-size:1.3rem;font-weight:900;background:linear-gradient(135deg,#667eea,#f093fb);-webkit-background-clip:text;-webkit-text-fill-color:transparent">Settings</div>
+            <div style="font-size:0.78rem;color:var(--text2);margin-top:0.3rem">Customize experience</div>
+            <a href="settings.html" style="display:inline-block;margin-top:0.8rem;padding:0.5rem 1.2rem;background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;border-radius:20px;text-decoration:none;font-size:0.82rem;font-weight:700">Open Settings</a>
+        </div>
+        <div style="background:var(--bg3);border:1px solid var(--border);border-radius:16px;padding:1.5rem;text-align:center">
+            <div style="font-size:2rem;margin-bottom:0.5rem">🔑</div>
+            <div style="font-size:1.3rem;font-weight:900;background:linear-gradient(135deg,#667eea,#f093fb);-webkit-background-clip:text;-webkit-text-fill-color:transparent">Security</div>
+            <div style="font-size:0.78rem;color:var(--text2);margin-top:0.3rem">Forgot your password?</div>
+            <a href="forgot-password.html" style="display:inline-block;margin-top:0.8rem;padding:0.5rem 1.2rem;background:linear-gradient(135deg,#f093fb,#f5576c);color:#fff;border-radius:20px;text-decoration:none;font-size:0.82rem;font-weight:700">Reset Password</a>
+        </div>
+    </div>
+</div>
+
+<!-- QUICK INFO -->
+<div style="background:var(--card);border:1px solid var(--border);border-radius:22px;padding:2rem;margin-top:1rem">
+    <div style="font-size:0.75rem;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:0.12em;margin-bottom:1.5rem">ℹ️ About This Website</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem">
+        <div style="padding:1rem;background:var(--bg3);border-radius:12px;border:1px solid var(--border)">
+            <div style="font-size:1.5rem;margin-bottom:0.5rem">🚀</div>
+            <div style="font-weight:700;margin-bottom:0.3rem">Built with Spring Boot</div>
+            <div style="font-size:0.82rem;color:var(--text2)">Modern Java backend technology</div>
+        </div>
+        <div style="padding:1rem;background:var(--bg3);border-radius:12px;border:1px solid var(--border)">
+            <div style="font-size:1.5rem;margin-bottom:0.5rem">🔐</div>
+            <div style="font-weight:700;margin-bottom:0.3rem">Secure & Safe</div>
+            <div style="font-size:0.82rem;color:var(--text2)">Your data is encrypted and protected</div>
+        </div>
+        <div style="padding:1rem;background:var(--bg3);border-radius:12px;border:1px solid var(--border)">
+            <div style="font-size:1.5rem;margin-bottom:0.5rem">💬</div>
+            <div style="font-weight:700;margin-bottom:0.3rem">Real-time Chat</div>
+            <div style="font-size:0.82rem;color:var(--text2)">Chat with Divyansh directly</div>
+        </div>
+    </div>
+</div>
     <div class="tab-content" id="tab-password">
         <div class="pw-card">
             <h3>🔐 Change Password</h3>
@@ -192,16 +238,31 @@ function updateUser(){
     });
 }
 function changePw(){
-    const op=document.getElementById('oldPw').value,np=document.getElementById('newPw').value,cp=document.getElementById('conPw').value;
+    const op=document.getElementById('oldPw').value;
+    const np=document.getElementById('newPw').value;
+    const cp=document.getElementById('conPw').value;
     const mb=document.getElementById('pwMsg');
     if(!op||!np||!cp){showMsg(mb,'Please fill all fields!','err');return}
     if(np!==cp){showMsg(mb,'Passwords do not match!','err');return}
     if(np.length<6){showMsg(mb,'Password must be at least 6 characters!','err');return}
-    fetch('https://divyansh-website-wooq.onrender.com/api/user/change-password',{method:'PUT',headers:{'Content-Type':'application/json','userId':userId},body:JSON.stringify({oldPassword:op,newPassword:np})})
-    .then(r=>r.json()).then(d=>{
-        if(d.message.includes('successfully')){showMsg(mb,'✅ '+d.message,'ok');showToast('Password changed!','ok');document.getElementById('oldPw').value='';document.getElementById('newPw').value='';document.getElementById('conPw').value=''}
-        else showMsg(mb,'❌ '+d.message,'err');
-    });
+    fetch('https://divyansh-website-wooq.onrender.com/api/user/change-password',{
+        method:'PUT',
+        headers:{'Content-Type':'application/json','userId':userId},
+        body:JSON.stringify({oldPassword:op,newPassword:np})
+    })
+    .then(r=>r.json())
+    .then(d=>{
+        if(d.message&&d.message.includes('successfully')){
+            showMsg(mb,'✅ Password changed successfully!','ok');
+            showToast('Password changed!','ok');
+            document.getElementById('oldPw').value='';
+            document.getElementById('newPw').value='';
+            document.getElementById('conPw').value='';
+        } else {
+            showMsg(mb,'❌ '+(d.message||'Error occurred!'),'err');
+        }
+    })
+    .catch(()=>showMsg(mb,'❌ Server connection failed!','err'));
 }
 function showMsg(el,txt,type){el.textContent=txt;el.className='msg-b msg-'+type;el.style.display='block';setTimeout(()=>el.style.display='none',4000)}
 function showToast(msg,type){const t=document.getElementById('toast');t.textContent=msg;t.className='toast '+type;t.style.display='block';setTimeout(()=>t.style.display='none',3000)}
