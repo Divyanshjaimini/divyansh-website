@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blog — Divyansh Jaimini</title>
+<script src="settings-apply.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+*{margin:0;padding:0;box-sizing:border-box;scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;background:var(--bg,#030308);color:var(--text,#fff);min-height:100vh}
+canvas{position:fixed;top:0;left:0;z-index:0;pointer-events:none}
+nav{position:fixed;top:1rem;left:50%;transform:translateX(-50%);z-index:1000;width:calc(100% - 4rem);max-width:1200px;padding:0.8rem 1.5rem;display:flex;align-items:center;justify-content:space-between;background:rgba(3,3,8,0.85);backdrop-filter:blur(30px);border:1px solid rgba(255,255,255,0.08);border-radius:20px}
+.nav-logo{font-size:1.1rem;font-weight:900;background:linear-gradient(135deg,#667eea,#f093fb);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.nav-links{display:flex;align-items:center;gap:0.5rem}
+.nav-link{color:rgba(255,255,255,0.6);text-decoration:none;padding:0.45rem 0.9rem;border-radius:10px;font-size:0.85rem;font-weight:500;transition:all 0.2s}
+.nav-link:hover{color:#fff;background:rgba(255,255,255,0.08)}
+.nav-cta{background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;padding:0.5rem 1.2rem;border-radius:20px;text-decoration:none;font-size:0.85rem;font-weight:700}
+
+.main{position:relative;z-index:1;max-width:1100px;margin:0 auto;padding:7rem 2rem 4rem}
+
+/* HEADER */
+.blog-header{text-align:center;margin-bottom:3rem;animation:fadeUp 0.6s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.blog-tag{display:inline-flex;align-items:center;gap:0.5rem;background:rgba(102,126,234,0.1);border:1px solid rgba(102,126,234,0.3);color:#a78bfa;padding:0.4rem 1.2rem;border-radius:30px;font-size:0.8rem;font-weight:600;margin-bottom:1.2rem}
+.blog-header h1{font-size:clamp(2rem,5vw,3.5rem);font-weight:900;letter-spacing:-1px;margin-bottom:0.8rem}
+.blog-header p{color:rgba(255,255,255,0.45);font-size:1rem;max-width:400px;margin:0 auto}
+.grad{background:linear-gradient(135deg,#667eea,#f093fb,#f5576c);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+
+/* CATEGORIES */
+.categories{display:flex;gap:0.5rem;justify-content:center;flex-wrap:wrap;margin-bottom:2.5rem}
+.cat-btn{padding:0.5rem 1.2rem;border-radius:25px;border:1px solid rgba(255,255,255,0.1);background:transparent;color:rgba(255,255,255,0.5);cursor:pointer;font-size:0.82rem;font-weight:600;font-family:inherit;transition:all 0.2s}
+.cat-btn.active,.cat-btn:hover{background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;border-color:transparent}
+
+/* ADMIN CREATE */
+.create-post{background:rgba(102,126,234,0.06);border:1px solid rgba(102,126,234,0.2);border-radius:20px;padding:1.5rem;margin-bottom:2rem;display:none}
+.create-post h3{font-size:1rem;font-weight:700;margin-bottom:1rem;color:#a78bfa}
+.create-input,.create-textarea,.create-select{width:100%;padding:0.8rem 1rem;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;color:#fff;font-family:inherit;font-size:0.9rem;outline:none;margin-bottom:0.8rem;transition:all 0.2s}
+.create-input:focus,.create-textarea:focus,.create-select:focus{border-color:rgba(102,126,234,0.5);background:rgba(102,126,234,0.07)}
+.create-input::placeholder,.create-textarea::placeholder{color:rgba(255,255,255,0.2)}
+.create-textarea{height:150px;resize:none}
+.create-select option{background:#0a0a14;color:#fff}
+.publish-btn{background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;padding:0.8rem 2rem;border:none;border-radius:12px;font-size:0.9rem;font-weight:700;cursor:pointer;font-family:inherit;transition:all 0.2s}
+.publish-btn:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(102,126,234,0.4)}
+
+/* POSTS GRID */
+.posts-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:1.5rem}
+.post-card{background:rgba(255,255,255,0.025);border:1px solid rgba(255,255,255,0.07);border-radius:20px;padding:1.8rem;transition:all 0.3s;cursor:pointer;position:relative;overflow:hidden;animation:fadeUp 0.5s ease}
+.post-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#667eea,#f093fb);transform:scaleX(0);transition:transform 0.3s;transform-origin:left}
+.post-card:hover{transform:translateY(-6px);border-color:rgba(102,126,234,0.3);background:rgba(102,126,234,0.05);box-shadow:0 20px 40px rgba(0,0,0,0.3)}
+.post-card:hover::before{transform:scaleX(1)}
+.post-cat{display:inline-block;padding:0.25rem 0.8rem;border-radius:20px;font-size:0.72rem;font-weight:700;margin-bottom:0.8rem;text-transform:uppercase;letter-spacing:0.08em}
+.cat-tech{background:rgba(102,126,234,0.15);color:#818cf8;border:1px solid rgba(102,126,234,0.25)}
+.cat-life{background:rgba(240,147,251,0.15);color:#f0abfc;border:1px solid rgba(240,147,251,0.25)}
+.cat-coding{background:rgba(74,222,128,0.15);color:#4ade80;border:1px solid rgba(74,222,128,0.25)}
+.cat-other{background:rgba(253,160,133,0.15);color:#fda085;border:1px solid rgba(253,160,133,0.25)}
+.post-title{font-size:1.15rem;font-weight:800;margin-bottom:0.8rem;line-height:1.3;letter-spacing:-0.3px}
+.post-content{color:rgba(255,255,255,0.45);font-size:0.88rem;line-height:1.65;margin-bottom:1.2rem;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.post-meta{display:flex;align-items:center;justify-content:space-between;font-size:0.78rem;color:rgba(255,255,255,0.3)}
+.post-author{display:flex;align-items:center;gap:0.4rem}
+.author-avatar{width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,#667eea,#f093fb);display:flex;align-items:center;justify-content:center;font-size:0.7rem;font-weight:800}
+.delete-post-btn{background:rgba(239,68,68,0.1);color:#f87171;border:1px solid rgba(239,68,68,0.2);padding:0.25rem 0.6rem;border-radius:8px;cursor:pointer;font-size:0.72rem;font-weight:600;font-family:inherit;display:none}
+.read-more{color:#a78bfa;font-size:0.82rem;font-weight:600;margin-top:0.8rem;display:inline-block}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.8);backdrop-filter:blur(10px);z-index:9999;display:none;align-items:center;justify-content:center;padding:2rem}
+.modal-overlay.open{display:flex}
+.modal{background:#0a0a14;border:1px solid rgba(255,255,255,0.1);border-radius:24px;padding:2.5rem;max-width:700px;width:100%;max-height:80vh;overflow-y:auto;animation:fadeUp 0.3s ease}
+.modal::-webkit-scrollbar{width:4px}
+.modal::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.1);border-radius:2px}
+.modal-cat{margin-bottom:1rem}
+.modal-title{font-size:1.8rem;font-weight:900;letter-spacing:-0.5px;margin-bottom:1rem;line-height:1.2}
+.modal-meta{color:rgba(255,255,255,0.35);font-size:0.82rem;margin-bottom:1.5rem;display:flex;gap:1rem;align-items:center}
+.modal-content{color:rgba(255,255,255,0.7);line-height:1.85;font-size:0.95rem;white-space:pre-wrap}
+.modal-close{position:absolute;top:1rem;right:1rem;width:36px;height:36px;background:rgba(255,255,255,0.08);border:none;border-radius:50%;cursor:pointer;color:#fff;font-size:1.1rem;display:flex;align-items:center;justify-content:center}
+
+/* EMPTY */
+.empty-state{text-align:center;padding:4rem 2rem;grid-column:1/-1}
+.empty-state h3{font-size:1.3rem;font-weight:700;margin-bottom:0.5rem;opacity:0.5}
+.empty-state p{font-size:0.9rem;opacity:0.3}
+
+/* TOAST */
+.toast{position:fixed;bottom:2rem;right:2rem;padding:0.9rem 1.5rem;border-radius:12px;font-size:0.88rem;display:none;z-index:9999;font-weight:700}
+.toast.ok{background:linear-gradient(135deg,#059669,#047857);color:#fff}
+.toast.err{background:linear-gradient(135deg,#dc2626,#b91c1c);color:#fff}
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+
+<nav>
+    <div class="nav-logo">Divyansh Jaimini</div>
+    <div class="nav-links">
+        <a href="index.html" class="nav-link">← Home</a>
+        <a href="chat.html" class="nav-link">💬 Chat</a>
+        <a href="settings.html" class="nav-link">⚙️</a>
+    </div>
+</nav>
+
+<div class="main">
+    <div class="blog-header">
+        <div class="blog-tag">✍️ Blog & Posts</div>
+        <h1>My <span class="grad">Thoughts</span> & Stories</h1>
+        <p>Insights, experiences and everything in between</p>
+    </div>
+
+    <!-- CATEGORIES -->
+    <div class="categories">
+        <button class="cat-btn active" onclick="filterPosts('all',this)">🌟 All</button>
+        <button class="cat-btn" onclick="filterPosts('Technology',this)">💻 Technology</button>
+        <button class="cat-btn" onclick="filterPosts('Coding',this)">🧑‍💻 Coding</button>
+        <button class="cat-btn" onclick="filterPosts('Life',this)">🌱 Life</button>
+        <button class="cat-btn" onclick="filterPosts('Other',this)">✨ Other</button>
+    </div>
+
+    <!-- ADMIN CREATE POST -->
+    <div class="create-post" id="createPost">
+        <h3>✍️ Write New Post</h3>
+        <input class="create-input" id="postTitle" placeholder="Post title...">
+        <select class="create-select" id="postCategory">
+            <option value="Technology">💻 Technology</option>
+            <option value="Coding">🧑‍💻 Coding</option>
+            <option value="Life">🌱 Life</option>
+            <option value="Other">✨ Other</option>
+        </select>
+        <textarea class="create-textarea" id="postContent" placeholder="Write your post here..."></textarea>
+        <button class="publish-btn" onclick="publishPost()">🚀 Publish Post</button>
+    </div>
+
+    <!-- POSTS -->
+    <div class="posts-grid" id="postsGrid">
+        <div class="empty-state"><h3>Loading posts...</h3></div>
+    </div>
+</div>
+
+<!-- POST MODAL -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+    <div class="modal" style="position:relative">
+        <button class="modal-close" onclick="document.getElementById('modalOverlay').classList.remove('open')">✕</button>
+        <div class="modal-cat" id="modalCat"></div>
+        <div class="modal-title" id="modalTitle"></div>
+        <div class="modal-meta" id="modalMeta"></div>
+        <div class="modal-content" id="modalContent"></div>
+    </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// PARTICLES
+const canvas=document.getElementById('c'),ctx=canvas.getContext('2d');
+canvas.width=window.innerWidth;canvas.height=window.innerHeight;
+window.addEventListener('resize',()=>{canvas.width=window.innerWidth;canvas.height=window.innerHeight});
+const pts=Array.from({length:60},()=>({x:Math.random()*canvas.width,y:Math.random()*canvas.height,r:Math.random()*1.2+0.3,dx:(Math.random()-.5)*.3,dy:(Math.random()-.5)*.3,c:['#667eea','#f093fb','#f5576c'][Math.floor(Math.random()*3)],o:Math.random()*0.25+0.05}));
+function drawP(){ctx.clearRect(0,0,canvas.width,canvas.height);pts.forEach(p=>{p.x+=p.dx;p.y+=p.dy;if(p.x<0||p.x>canvas.width)p.dx*=-1;if(p.y<0||p.y>canvas.height)p.dy*=-1;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle=p.c+Math.floor(p.o*255).toString(16).padStart(2,'0');ctx.fill()});requestAnimationFrame(drawP)}drawP();
+
+const userId=localStorage.getItem('userId');
+const username=localStorage.getItem('username');
+const role=localStorage.getItem('role');
+
+// Admin ko create form dikhao
+if(role==='ADMIN') document.getElementById('createPost').style.display='block';
+
+let allPosts=[];
+let currentFilter='all';
+
+// Posts load karo
+function loadPosts(){
+    fetch('https://divyansh-website-wooq.onrender.com/api/blog/posts')
+    .then(r=>r.json())
+    .then(posts=>{
+        allPosts=posts;
+        renderPosts(posts);
+    })
+    .catch(()=>{
+        document.getElementById('postsGrid').innerHTML=`
+            <div class="empty-state">
+                <h3>No posts yet</h3>
+                <p>${role==='ADMIN'?'Create your first post above!':'Check back soon!'}</p>
+            </div>`;
+    });
+}
+
+function filterPosts(cat,btn){
+    currentFilter=cat;
+    document.querySelectorAll('.cat-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    const filtered=cat==='all'?allPosts:allPosts.filter(p=>p.category===cat);
+    renderPosts(filtered);
+}
+
+function getCatClass(cat){
+    const map={Technology:'cat-tech',Coding:'cat-coding',Life:'cat-life',Other:'cat-other'};
+    return map[cat]||'cat-other';
+}
+
+function renderPosts(posts){
+    const grid=document.getElementById('postsGrid');
+    if(!posts.length){
+        grid.innerHTML=`<div class="empty-state"><h3>No posts found</h3><p>Check back soon!</p></div>`;
+        return;
+    }
+    grid.innerHTML=posts.map(p=>{
+        const date=new Date(p.createdAt).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'});
+        const preview=p.content.length>150?p.content.substring(0,150)+'...':p.content;
+        return`<div class="post-card" onclick="openPost(${p.id})">
+            <span class="post-cat ${getCatClass(p.category)}">${p.category}</span>
+            <div class="post-title">${p.title}</div>
+            <div class="post-content">${preview}</div>
+            <div class="post-meta">
+                <div class="post-author">
+                    <div class="author-avatar">${p.author?p.author.charAt(0).toUpperCase():'D'}</div>
+                    ${p.author||'Divyansh'}
+                </div>
+                <div style="display:flex;align-items:center;gap:0.5rem">
+                    <span>${date}</span>
+                    ${role==='ADMIN'?`<button class="delete-post-btn" style="display:block" onclick="event.stopPropagation();deletePost(${p.id})">🗑</button>`:''}
+                </div>
+            </div>
+            <span class="read-more">Read more →</span>
+        </div>`;
+    }).join('');
+}
+
+function openPost(id){
+    const post=allPosts.find(p=>p.id===id);
+    if(!post)return;
+    const date=new Date(post.createdAt).toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'});
+    document.getElementById('modalCat').innerHTML=`<span class="post-cat ${getCatClass(post.category)}">${post.category}</span>`;
+    document.getElementById('modalTitle').textContent=post.title;
+    document.getElementById('modalMeta').innerHTML=`
+        <div class="post-author"><div class="author-avatar">${post.author?post.author.charAt(0).toUpperCase():'D'}</div>${post.author||'Divyansh'}</div>
+        <span>${date}</span>`;
+    document.getElementById('modalContent').textContent=post.content;
+    document.getElementById('modalOverlay').classList.add('open');
+}
+
+function closeModal(e){
+    if(e.target===document.getElementById('modalOverlay'))
+        document.getElementById('modalOverlay').classList.remove('open');
+}
+
+async function publishPost(){
+    const title=document.getElementById('postTitle').value.trim();
+    const content=document.getElementById('postContent').value.trim();
+    const category=document.getElementById('postCategory').value;
+    if(!title||!content){showToast('Fill all fields!','err');return}
+    try{
+        const res=await fetch('https://divyansh-website-wooq.onrender.com/api/blog/posts',{
+            method:'POST',
+            headers:{'Content-Type':'application/json','userId':userId},
+            body:JSON.stringify({title,content,category,published:true})
+        });
+        if(res.ok){
+            showToast('Post published!','ok');
+            document.getElementById('postTitle').value='';
+            document.getElementById('postContent').value='';
+            loadPosts();
+        }
+    }catch(e){showToast('Failed to publish!','err')}
+}
+
+async function deletePost(id){
+    if(!confirm('Delete this post?'))return;
+    try{
+        await fetch(`https://divyansh-website-wooq.onrender.com/api/blog/posts/${id}`,{
+            method:'DELETE',headers:{'userId':userId}
+        });
+        showToast('Post deleted!','ok');
+        loadPosts();
+    }catch(e){showToast('Failed!','err')}
+}
+
+function showToast(msg,type){
+    const t=document.getElementById('toast');
+    t.textContent=msg;t.className='toast '+type;t.style.display='block';
+    setTimeout(()=>t.style.display='none',3000);
+}
+
+loadPosts();
+</script>
+</body>
+</html>

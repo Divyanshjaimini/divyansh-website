@@ -108,10 +108,10 @@ nav{position:sticky;top:0;z-index:100;display:flex;justify-content:space-between
 </div>
     </div>
     <div class="stats-grid">
-        <div class="s-card" style="animation-delay:0.1s"><div class="s-ico">📅</div><div class="s-val" id="joinDate">--</div><div class="s-lbl">Member Since</div></div>
-        <div class="s-card" style="animation-delay:0.2s"><div class="s-ico">✅</div><div class="s-val">Active</div><div class="s-lbl">Status</div></div>
-        <div class="s-card" style="animation-delay:0.3s"><div class="s-ico">⭐</div><div class="s-val" id="sRole">Member</div><div class="s-lbl">Role</div></div>
-        <div class="s-card" style="animation-delay:0.4s"><div class="s-ico">🆔</div><div class="s-val" id="sId">--</div><div class="s-lbl">User ID</div></div>
+        <div class="s-card" style="animation-delay:0.1s"><div class="s-ico">📅</div><div class="s-val" id="joinDate">--</div><div class="s-lbl"data-i18n="memberSince">Member Since</div></div>
+        <div class="s-card" style="animation-delay:0.2s"><div class="s-ico">✅</div><div class="s-val"data-i18n="active">Active</div><div class="s-lbl"data-i18n="status">Status</div></div>
+        <div class="s-card" style="animation-delay:0.3s"><div class="s-ico">⭐</div><div class="s-val" id="sRole">Member</div><div class="s-lbl"data-i18n="role">Role</div></div>
+        <div class="s-card" style="animation-delay:0.4s"><div class="s-ico">🆔</div><div class="s-val" id="sId">--</div><div class="s-lbl"data-i18n="userId">User ID</div></div>
     </div>
     <div class="tabs">
         <button class="tab active" onclick="showTab('profile',this)" data-i18n="profile">👤 Profile</button>
@@ -121,7 +121,8 @@ nav{position:sticky;top:0;z-index:100;display:flex;justify-content:space-between
     <div class="tab-content active" id="tab-profile">
         <div class="p-card">
             <div class="p-header">
-                <div class="avatar" id="avatarLetter">D</div>
+                <div class="avatar" id="avatarLetter" style="cursor:pointer;overflow:hidden" onclick="document.getElementById('photoInput').click()">D</div>
+<input type="file" id="photoInput" accept="image/*" style="display:none" onchange="uploadPhoto(this)">
                 <div><div class="p-name" id="pName">--</div><div class="p-email" id="pEmail">--</div></div>
             </div>
             <div class="p-row"><span class="p-lbl">Username</span><span class="p-val" id="pvUser">--</span></div>
@@ -157,6 +158,14 @@ nav{position:sticky;top:0;z-index:100;display:flex;justify-content:space-between
             <div style="font-size:0.78rem;color:var(--text2);margin-top:0.3rem">Forgot your password?</div>
             <a href="forgot-password.html" style="display:inline-block;margin-top:0.8rem;padding:0.5rem 1.2rem;background:linear-gradient(135deg,#f093fb,#f5576c);color:#fff;border-radius:20px;text-decoration:none;font-size:0.82rem;font-weight:700">Reset Password</a>
         </div>
+        
+        <div style="background:var(--bg3);border:1px solid var(--border);border-radius:16px;padding:1.5rem;text-align:center">
+            <div style="font-size:2rem;margin-bottom:0.5rem">✍️</div>
+            <div style="font-size:1.3rem;font-weight:900;background:linear-gradient(135deg,#667eea,#f093fb);-webkit-background-clip:text;-webkit-text-fill-color:transparent">Blog</div>
+            <div style="font-size:0.78rem;color:var(--text2);margin-top:0.3rem">Read latest posts</div>
+            <a href="blog.html" style="display:inline-block;margin-top:0.8rem;padding:0.5rem 1.2rem;background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;border-radius:20px;text-decoration:none;font-size:0.82rem;font-weight:700">Read Blog</a>
+        </div>
+        
     </div>
 </div>
 
@@ -222,6 +231,9 @@ fetch('https://divyansh-website-wooq.onrender.com/api/user/profile',{headers:{'u
     document.getElementById('sId').textContent='#'+d.id;
     document.getElementById('avatarLetter').textContent=d.username.charAt(0).toUpperCase();
     const dt=new Date(d.joinedOn);
+    
+    if(d.profilePhoto) loadProfilePhoto(d.profilePhoto);
+    
     const fmt=dt.toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'});
     document.getElementById('joinDate').textContent=fmt;
     document.getElementById('pvJoined').textContent=fmt;
@@ -237,6 +249,42 @@ function updateUser(){
         else showMsg(mb,'❌ '+d.message,'err');
     });
 }
+
+//Profile photo load karo
+function loadProfilePhoto(photoData){
+    if(photoData){
+        const avatar=document.getElementById('avatarLetter');
+        avatar.style.backgroundImage=`url(${photoData})`;
+        avatar.style.backgroundSize='cover';
+        avatar.style.backgroundPosition='center';
+        avatar.textContent='';
+    }
+}
+
+// Photo upload
+function uploadPhoto(input){
+    const file=input.files[0];
+    if(!file)return;
+    if(file.size>2*1024*1024){showToast('Image size must be less than 2MB!','err');return}
+    const reader=new FileReader();
+    reader.onload=function(e){
+        const base64=e.target.result;
+        fetch('https://divyansh-website-wooq.onrender.com/api/user/upload-photo',{
+            method:'PUT',
+            headers:{'Content-Type':'application/json','userId':userId},
+            body:JSON.stringify({photo:base64})
+        })
+        .then(r=>r.json())
+        .then(d=>{
+            if(d.message.includes('successfully')){
+                loadProfilePhoto(base64);
+                showToast('Photo uploaded!','ok');
+            }
+        });
+    };
+    reader.readAsDataURL(file);
+}
+
 function changePw(){
     const op=document.getElementById('oldPw').value;
     const np=document.getElementById('newPw').value;

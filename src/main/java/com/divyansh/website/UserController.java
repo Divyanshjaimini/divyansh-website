@@ -35,6 +35,7 @@ public class UserController {
         profile.put("email", user.getEmail());
         profile.put("role", user.getRole());
         profile.put("joinedOn", user.getCreatedAt());
+        profile.put("profilePhoto", user.getProfilePhoto());
         return ResponseEntity.ok(profile);
     }
 
@@ -93,6 +94,27 @@ public class UserController {
             response.put("message", "Profile update ho gaya!");
             response.put("username", newUsername);
         }
+        return ResponseEntity.ok(response);
+    }
+    
+    @PutMapping("/upload-photo")
+    public ResponseEntity<Map<String, String>> uploadPhoto(
+            @RequestHeader("userId") Long userId,
+            @RequestBody Map<String, String> request) {
+
+        Map<String, String> response = new HashMap<>();
+        Optional<User> userOpt = userRepository.findById(userId);
+
+        if (userOpt.isEmpty()) {
+            response.put("message", "User not found!");
+            return ResponseEntity.badRequest().body(response);
+        }
+
+        User user = userOpt.get();
+        user.setProfilePhoto(request.get("photo"));
+        userRepository.save(user);
+
+        response.put("message", "Photo uploaded successfully!");
         return ResponseEntity.ok(response);
     }
 }

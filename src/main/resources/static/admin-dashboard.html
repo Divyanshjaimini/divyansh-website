@@ -93,7 +93,7 @@ tr:hover td{background:var(--hover)}
         <span class="nav-user" id="navUser"></span>
         <button class="t-icon" onclick="toggleTheme()">🌙</button>
         <button class="theme-btn" onclick="toggleTheme()"></button>
-        <button class="logout-btn" onclick="logout()">Logout</button>
+        <button class="logout-btn" onclick="logout()"data-i18n="logout">Logout</button>
     </div>
 </nav>
 <div class="main">
@@ -107,8 +107,8 @@ tr:hover td{background:var(--hover)}
 
     </div>
     <div class="s-grid">
-        <div class="s-card" style="animation-delay:0.1s"><div class="s-ico">👥</div><div class="s-val" id="tUsers">--</div><div class="s-lbl">Total Users</div></div>
-        <div class="s-card" style="animation-delay:0.2s"><div class="s-ico">🛡️</div><div class="s-val" id="tAdmins">--</div><div class="s-lbl">Admins</div></div>
+        <div class="s-card" style="animation-delay:0.1s"><div class="s-ico">👥</div><div class="s-val" id="tUsers">--</div><div class="s-lbl"data-i18n="totalUsers">Total Users</div></div>
+        <div class="s-card" style="animation-delay:0.2s"><div class="s-ico">🛡️</div><div class="s-val" id="tAdmins">--</div><div class="s-lbl"data-i18n="admins">Admins</div></div>
         <div class="s-card" style="animation-delay:0.3s"><div class="s-ico">👤</div><div class="s-val" id="tNormal">--</div><div class="s-lbl">Normal Users</div></div>
         <div class="s-card" style="animation-delay:0.4s"><div class="s-ico">🌍</div><div class="s-val" id="tVisitors">--</div><div class="s-lbl">Visitors</div></div>
     </div>
