@@ -13,6 +13,16 @@
 <meta property="og:url" content="https://divyansh-website-wooq.onrender.com">
 <title>Divyansh Jaimini — Official Website</title>
 <style>
+
+/* GLOBAL THEMES */
+:root[data-theme="dark"]{--bg:#030308;--bg2:#0a0a14;--bg3:rgba(255,255,255,0.04);--border:rgba(255,255,255,0.07);--text:#fff;--text2:rgba(255,255,255,0.45);--card:rgba(255,255,255,0.025)}
+:root[data-theme="light"]{--bg:#f0f2ff;--bg2:#fff;--bg3:rgba(102,126,234,0.06);--border:rgba(102,126,234,0.12);--text:#1a1a2e;--text2:#666688;--card:#fff}
+:root[data-theme="blue"]{--bg:#010b1a;--bg2:#021224;--bg3:rgba(0,150,255,0.06);--border:rgba(0,150,255,0.12);--text:#e0f0ff;--text2:rgba(224,240,255,0.5);--card:rgba(0,150,255,0.04)}
+:root[data-theme="green"]{--bg:#010f08;--bg2:#021a0d;--bg3:rgba(0,200,100,0.06);--border:rgba(0,200,100,0.12);--text:#e0ffe8;--text2:rgba(224,255,232,0.5);--card:rgba(0,200,100,0.04)}
+:root[data-theme="purple"]{--bg:#08010f;--bg2:#12021a;--bg3:rgba(150,0,255,0.06);--border:rgba(150,0,255,0.12);--text:#f0e0ff;--text2:rgba(240,224,255,0.5);--card:rgba(150,0,255,0.04)}
+:root[data-theme="sunset"]{--bg:#0f0500;--bg2:#1a0a00;--bg3:rgba(255,100,0,0.06);--border:rgba(255,100,0,0.12);--text:#fff0e0;--text2:rgba(255,240,224,0.5);--card:rgba(255,100,0,0.04)}
+.compact *{padding:0.5em!important;margin:0.3em!important}
+
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 *{margin:0;padding:0;box-sizing:border-box;scroll-behavior:smooth}
 body{font-family:'Inter',sans-serif;background:#030308;color:#fff;overflow-x:hidden}
@@ -158,6 +168,7 @@ footer{position:relative;z-index:1;border-top:1px solid rgba(255,255,255,0.05)}
 .f-link:hover{color:#a78bfa}
 .f-bottom{padding-top:2rem;border-top:1px solid rgba(255,255,255,0.05);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem}
 .f-copy{color:rgba(255,255,255,0.2);font-size:0.8rem}
+
 html{scroll-padding-top:70px}
 .chat-layout{height:calc(100vh - 60px);padding-bottom:env(safe-area-inset-bottom)}
 
@@ -170,6 +181,7 @@ html{scroll-padding-top:70px}
 .reveal-right{opacity:0;transform:translateX(50px);transition:all 0.9s cubic-bezier(0.16,1,0.3,1)}
 .reveal-right.visible{opacity:1;transform:translateX(0)}
 </style>
+<script src="settings-apply.js"></script>
 </head>
 <body>
 

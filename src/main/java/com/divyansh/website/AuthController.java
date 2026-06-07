@@ -103,4 +103,49 @@ public class AuthController {
         response.put("userId", user.getId().toString());
         return ResponseEntity.ok(response);
     }
+    
+ // Forgot Password — OTP bhejo
+    @PostMapping("/forgot-password/send-otp")
+    public ResponseEntity<Map<String, String>> forgotPasswordSendOtp(@RequestBody Map<String, String> request) {
+        Map<String, String> response = new HashMap<>();
+        String email = request.get("email");
+
+        Optional<User> userOpt = userRepository.findByEmail(email);
+        if (userOpt.isEmpty()) {
+            response.put("message", "Email not registered!");
+            return ResponseEntity.badRequest().body(response);
+        }
+
+        String otp = otpService.generateOtp(email);
+        response.put("message", "OTP generated!");
+        response.put("otp", otp);
+        return ResponseEntity.ok(response);
+    }
+
+    // Reset Password — OTP verify karke
+    @PostMapping("/forgot-password/reset")
+    public ResponseEntity<Map<String, String>> resetPassword(@RequestBody Map<String, String> request) {
+        Map<String, String> response = new HashMap<>();
+        String email = request.get("email");
+        String otp = request.get("otp");
+        String newPassword = request.get("newPassword");
+
+        if (!otpService.verifyOtp(email, otp)) {
+            response.put("message", "Invalid or expired OTP!");
+            return ResponseEntity.badRequest().body(response);
+        }
+
+        Optional<User> userOpt = userRepository.findByEmail(email);
+        if (userOpt.isEmpty()) {
+            response.put("message", "User not found!");
+            return ResponseEntity.badRequest().body(response);
+        }
+
+        User user = userOpt.get();
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+
+        response.put("message", "Password reset successful!");
+        return ResponseEntity.ok(response);
+    }
 }

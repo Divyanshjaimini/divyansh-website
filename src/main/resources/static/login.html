@@ -5,6 +5,16 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Login — Divyansh Jaimini</title>
 <style>
+
+/* GLOBAL THEMES */
+:root[data-theme="dark"]{--bg:#030308;--bg2:#0a0a14;--bg3:rgba(255,255,255,0.04);--border:rgba(255,255,255,0.07);--text:#fff;--text2:rgba(255,255,255,0.45);--card:rgba(255,255,255,0.025)}
+:root[data-theme="light"]{--bg:#f0f2ff;--bg2:#fff;--bg3:rgba(102,126,234,0.06);--border:rgba(102,126,234,0.12);--text:#1a1a2e;--text2:#666688;--card:#fff}
+:root[data-theme="blue"]{--bg:#010b1a;--bg2:#021224;--bg3:rgba(0,150,255,0.06);--border:rgba(0,150,255,0.12);--text:#e0f0ff;--text2:rgba(224,240,255,0.5);--card:rgba(0,150,255,0.04)}
+:root[data-theme="green"]{--bg:#010f08;--bg2:#021a0d;--bg3:rgba(0,200,100,0.06);--border:rgba(0,200,100,0.12);--text:#e0ffe8;--text2:rgba(224,255,232,0.5);--card:rgba(0,200,100,0.04)}
+:root[data-theme="purple"]{--bg:#08010f;--bg2:#12021a;--bg3:rgba(150,0,255,0.06);--border:rgba(150,0,255,0.12);--text:#f0e0ff;--text2:rgba(240,224,255,0.5);--card:rgba(150,0,255,0.04)}
+:root[data-theme="sunset"]{--bg:#0f0500;--bg2:#1a0a00;--bg3:rgba(255,100,0,0.06);--border:rgba(255,100,0,0.12);--text:#fff0e0;--text2:rgba(255,240,224,0.5);--card:rgba(255,100,0,0.04)}
+.compact *{padding:0.5em!important;margin:0.3em!important}
+
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:'Inter',sans-serif;background:#030308;color:#fff;min-height:100vh;display:flex;align-items:center;justify-content:center;overflow:hidden}
@@ -37,6 +47,9 @@ input::placeholder{color:rgba(255,255,255,0.18)}
 .loading{display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin 0.7s linear infinite;margin-right:0.5rem;vertical-align:middle}
 @keyframes spin{to{transform:rotate(360deg)}}
 </style>
+
+<script src="settings-apply.js"></script>
+
 </head>
 <body>
 <canvas id="c"></canvas>
@@ -50,6 +63,9 @@ input::placeholder{color:rgba(255,255,255,0.18)}
     <button class="btn" onclick="login()" id="loginBtn">Login</button>
     <div class="msg" id="msg"></div>
     <div class="divider">or</div>
+    <div style="text-align:right;margin-bottom:1rem">
+    <a href="forgot-password.html" style="color:#a78bfa;text-decoration:none;font-size:0.82rem;font-weight:500">Forgot Password?</a>
+</div>
     <div class="bottom">Don't have an account? <a href="register.html">Register here</a></div>
 </div>
 <script>

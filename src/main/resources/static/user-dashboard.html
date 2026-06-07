@@ -5,6 +5,16 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>My Dashboard — Divyansh Jaimini</title>
 <style>
+
+/* GLOBAL THEMES */
+:root[data-theme="dark"]{--bg:#030308;--bg2:#0a0a14;--bg3:rgba(255,255,255,0.04);--border:rgba(255,255,255,0.07);--text:#fff;--text2:rgba(255,255,255,0.45);--card:rgba(255,255,255,0.025)}
+:root[data-theme="light"]{--bg:#f0f2ff;--bg2:#fff;--bg3:rgba(102,126,234,0.06);--border:rgba(102,126,234,0.12);--text:#1a1a2e;--text2:#666688;--card:#fff}
+:root[data-theme="blue"]{--bg:#010b1a;--bg2:#021224;--bg3:rgba(0,150,255,0.06);--border:rgba(0,150,255,0.12);--text:#e0f0ff;--text2:rgba(224,240,255,0.5);--card:rgba(0,150,255,0.04)}
+:root[data-theme="green"]{--bg:#010f08;--bg2:#021a0d;--bg3:rgba(0,200,100,0.06);--border:rgba(0,200,100,0.12);--text:#e0ffe8;--text2:rgba(224,255,232,0.5);--card:rgba(0,200,100,0.04)}
+:root[data-theme="purple"]{--bg:#08010f;--bg2:#12021a;--bg3:rgba(150,0,255,0.06);--border:rgba(150,0,255,0.12);--text:#f0e0ff;--text2:rgba(240,224,255,0.5);--card:rgba(150,0,255,0.04)}
+:root[data-theme="sunset"]{--bg:#0f0500;--bg2:#1a0a00;--bg3:rgba(255,100,0,0.06);--border:rgba(255,100,0,0.12);--text:#fff0e0;--text2:rgba(255,240,224,0.5);--card:rgba(255,100,0,0.04)}
+.compact *{padding:0.5em!important;margin:0.3em!important}
+
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 :root[data-theme="dark"]{--bg:#030308;--bg2:#0a0a14;--bg3:rgba(255,255,255,0.04);--border:rgba(255,255,255,0.07);--text:#fff;--text2:rgba(255,255,255,0.45);--card:rgba(255,255,255,0.025);--nav:rgba(3,3,8,0.9)}
 :root[data-theme="light"]{--bg:#f0f2ff;--bg2:#fff;--bg3:rgba(102,126,234,0.06);--border:rgba(102,126,234,0.12);--text:#1a1a2e;--text2:#666688;--card:#fff;--nav:rgba(240,242,255,0.95)}
@@ -72,6 +82,9 @@ nav{position:sticky;top:0;z-index:100;display:flex;justify-content:space-between
 .toast.ok{background:linear-gradient(135deg,#059669,#047857);color:#fff}
 .toast.err{background:linear-gradient(135deg,#dc2626,#b91c1c);color:#fff}
 </style>
+
+<script src="settings-apply.js"></script>
+
 </head>
 <body>
 <canvas id="c"></canvas>
@@ -87,7 +100,7 @@ nav{position:sticky;top:0;z-index:100;display:flex;justify-content:space-between
 <div class="main">
     <div class="welcome">
         <h1>Welcome, <span class="w-name" id="wName">User</span>! 👋</h1>
-        <a href="chat.html" style="display:inline-flex;align-items:center;gap:0.5rem;background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;padding:0.7rem 1.5rem;border-radius:25px;text-decoration:none;font-weight:700;font-size:0.88rem;margin-top:1rem;transition:all 0.2s;box-shadow:0 4px 15px rgba(102,126,234,0.3)">💬 Open Chat</a>
+        
         <p>Your personal dashboard — manage everything here.</p>
         <div style="margin-top:1rem;display:flex;gap:0.8rem;flex-wrap:wrap">
     <a href="chat.html" style="display:inline-flex;align-items:center;gap:0.5rem;background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;padding:0.6rem 1.3rem;border-radius:20px;text-decoration:none;font-weight:700;font-size:0.85rem;transition:all 0.2s;box-shadow:0 4px 15px rgba(102,126,234,0.3)">💬 Open Chat</a>
