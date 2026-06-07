@@ -181,7 +181,8 @@ html{scroll-padding-top:70px}
 .reveal-right{opacity:0;transform:translateX(50px);transition:all 0.9s cubic-bezier(0.16,1,0.3,1)}
 .reveal-right.visible{opacity:1;transform:translateX(0)}
 </style>
-<script src="settings-apply.js"></script>
+<script src="/settings-apply.js"></script>
+
 </head>
 <body>
 
@@ -424,7 +425,12 @@ function sendMsg(){
     const emailRegex=/^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if(!emailRegex.test(email)){alert('Please enter a valid email!');return}
     btn.textContent='⏳ Sending...';btn.disabled=true;
-    emailjs.send('service_6zv6pmo','template_fy0xgj9',{from_name:name,from_email:email,message:msg,to_name:'Divyansh'})
+    emailjs.send('service_6zv6pmo','template_5qhmue8',{
+        from_name: name,
+        from_email: email,
+        message: msg,
+        to_name: 'Divyansh'
+    })
     .then(()=>{
         success.style.display='block';
         document.getElementById('cn').value='';document.getElementById('ce').value='';document.getElementById('cm').value='';

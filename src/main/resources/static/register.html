@@ -165,10 +165,10 @@ async function sendOtp(){
             savedOtp=data.otp;
 
             // EmailJS se OTP bhejo
-            await emailjs.send('service_6zv6pmo','template_5qhmue8',{
-                to_email: email,
-                otp: data.otp
-            });
+         await emailjs.send('service_6zv6pmo','template_fy0xgj9',{
+    to_email: email,
+    otp_code: data.otp
+});
 
             // Show OTP section
             document.getElementById('sentEmail').textContent=email;
@@ -227,7 +227,10 @@ async function resendOtp(){
         const res=await fetch('https://divyansh-website-wooq.onrender.com/api/auth/send-otp',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email})});
         const data=await res.json();
         if(res.ok){
-            await emailjs.send('service_6zv6pmo','d4xmurb',{to_email:email,otp:data.otp});
+        	await emailjs.send('service_6zv6pmo','8i895mc',{
+        	    to_email: email,
+        	    otp_code: data.otp
+        	});
             alert('OTP resent! Check your inbox.');
         }
     }catch(e){alert('Failed to resend!')}
