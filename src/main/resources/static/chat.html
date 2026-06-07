@@ -175,8 +175,10 @@ nav{position:relative;z-index:10;display:flex;justify-content:space-between;alig
             <span id="typingUser"></span> is typing...
         </div>
         <div class="chat-input">
-            <textarea class="input-box" id="msgInput" placeholder="Type a message... (Enter to send, Shift+Enter for new line)" rows="1" onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
-            <button class="send-btn" onclick="sendMessage()">➤</button>
+           <label for="fileInput" style="width:40px;height:40px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:all 0.2s;font-size:1.1rem" title="Send photo/file">📎</label>
+           <input type="file" id="fileInput" accept="image/*,.pdf,.doc,.docx" style="display:none" onchange="sendFile(this)">
+           <textarea class="input-box" id="msgInput" placeholder="Type a message... (Enter to send, Shift+Enter for new line)" rows="1" onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
+           <button class="send-btn" onclick="sendMessage()">➤</button>
         </div>
     </div>
 </div>
@@ -352,7 +354,7 @@ function addMessage(msg,isHistory=false){
             <div class="msg-avatar">${msg.sender?msg.sender.charAt(0).toUpperCase():'?'}</div>
             <div style="max-width:65%">
                 ${!isMe?`<div class="msg-sender">${msg.sender}</div>`:''}
-                <div class="msg-bubble">${escapeHtml(msg.content)}</div>
+                <div class="msg-bubble">${renderContent(msg.content)}</div>
                 <div class="msg-time">${time}</div>
             </div>
         </div>`;
@@ -362,6 +364,42 @@ function addMessage(msg,isHistory=false){
 
 function addSysMsg(text){
     document.getElementById('messages').innerHTML+=`<div class="sys-msg">— ${text} —</div>`;
+}
+
+//FILE/PHOTO SEND
+function sendFile(input){
+    const file=input.files[0];
+    if(!file)return;
+    if(file.size>5*1024*1024){
+        addSysMsg('File too large! Max 5MB allowed.');
+        return;
+    }
+    const reader=new FileReader();
+    reader.onload=function(e){
+        const isImage=file.type.startsWith('image/');
+        const content=isImage?
+            `[IMAGE]${e.target.result}`:
+            `[FILE]${file.name}|${e.target.result}`;
+
+        if(currentRoom==='public'){
+            stompClient.send('/app/chat.public',{},JSON.stringify({
+                sender:username,
+                content:content,
+                type:'PUBLIC'
+            }));
+        } else {
+            stompClient.send('/app/chat.private',{},JSON.stringify({
+                sender:username,
+                recipient:currentPrivateUser,
+                content:content,
+                type:'PRIVATE'
+            }));
+            addMessage({sender:username,content:content,timestamp:new Date().toISOString()});
+            scrollBottom();
+        }
+    };
+    reader.readAsDataURL(file);
+    input.value='';
 }
 
 function sendMessage(){
@@ -443,6 +481,21 @@ window.addEventListener('beforeunload',()=>{
 });
 
 if(userId)connect();
+
+function renderContent(content){
+    if(!content) return '';
+    if(content.startsWith('[IMAGE]')){
+        const src=content.replace('[IMAGE]','');
+        return `<img src="${src}" style="max-width:200px;max-height:200px;border-radius:10px;cursor:pointer;display:block;margin-top:0.3rem" onclick="window.open('${src}','_blank')">`;
+    }
+    if(content.startsWith('[FILE]')){
+        const parts=content.replace('[FILE]','').split('|');
+        const fileName=parts[0];
+        const fileData=parts[1];
+        return `<a href="${fileData}" download="${fileName}" style="display:inline-flex;align-items:center;gap:0.5rem;background:rgba(255,255,255,0.08);padding:0.5rem 0.8rem;border-radius:10px;text-decoration:none;color:#a78bfa;font-size:0.82rem;margin-top:0.3rem">📄 ${escapeHtml(fileName)}</a>`;
+    }
+    return escapeHtml(content);
+}
 </script>
 </body>
 </html>

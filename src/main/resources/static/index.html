@@ -180,6 +180,32 @@ html{scroll-padding-top:70px}
 .reveal-left.visible{opacity:1;transform:translateX(0)}
 .reveal-right{opacity:0;transform:translateX(50px);transition:all 0.9s cubic-bezier(0.16,1,0.3,1)}
 .reveal-right.visible{opacity:1;transform:translateX(0)}
+
+/* MOBILE NAV */
+.hamburger{display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;padding:5px}
+.hamburger span{display:block;width:24px;height:2px;background:#fff;border-radius:2px;transition:all 0.3s}
+.mobile-menu{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(3,3,8,0.98);backdrop-filter:blur(20px);z-index:9999;flex-direction:column;align-items:center;justify-content:center;gap:1.5rem}
+.mobile-menu.open{display:flex}
+.mobile-menu a{color:#fff;text-decoration:none;font-size:1.5rem;font-weight:700;opacity:0.7;transition:opacity 0.2s}
+.mobile-menu a:hover{opacity:1}
+.mobile-close{position:absolute;top:2rem;right:2rem;background:none;border:none;color:#fff;font-size:1.5rem;cursor:pointer}
+@media(max-width:768px){
+    nav{padding:0 1rem;width:calc(100% - 2rem)}
+    .nav-links,.nav-search,.nav-right{display:none}
+    .hamburger{display:flex}
+    .hero h1{font-size:2.5rem;letter-spacing:-1px}
+    .hero-sub{font-size:0.95rem}
+    .stats{gap:1.5rem;flex-wrap:wrap}
+    .feat-grid{grid-template-columns:1fr}
+    .about-wrap{grid-template-columns:1fr;gap:2rem}
+    .about-visual{max-width:250px;margin:0 auto}
+    .contact-grid{grid-template-columns:1fr}
+    .footer-grid{grid-template-columns:1fr}
+    .floats{display:none}
+    .hero{padding:6rem 1.2rem 3rem}
+    .sec{padding:4rem 1.2rem}
+}
+
 </style>
 <script src="/settings-apply.js"></script>
 
@@ -208,6 +234,11 @@ html{scroll-padding-top:70px}
         </div>
         <a href="register.html" class="nav-cta">Join Now</a>
     </div>
+    
+     <!-- MOBILE MENU BUTTON -->
+<button class="hamburger" id="hamburger" onclick="toggleMenu()">
+    <span></span><span></span><span></span>
+</button>
 </nav>
 <div class="s-drop" id="sDrop"></div>
 
@@ -341,6 +372,24 @@ html{scroll-padding-top:70px}
         </div>
     </div>
 </footer>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu">
+    <button class="mobile-close" onclick="toggleMenu()">✕</button>
+    <a href="#home" onclick="toggleMenu()">🏠 Home</a>
+    <a href="#about" onclick="toggleMenu()">👤 About</a>
+    <a href="blog.html" onclick="toggleMenu()">✍️ Blog</a>
+    <a href="chat.html" onclick="toggleMenu()">💬 Chat</a>
+    <a href="#contact" onclick="toggleMenu()">📬 Contact</a>
+    <a href="login.html" onclick="toggleMenu()">🔐 Login</a>
+    <a href="register.html" onclick="toggleMenu()" style="background:linear-gradient(135deg,#667eea,#764ba2);padding:0.8rem 2rem;border-radius:25px;opacity:1">🚀 Join Now</a>
+</div>
+
+<script>
+function toggleMenu(){
+    document.getElementById('mobileMenu').classList.toggle('open');
+}
+</script>
 
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 <script>
