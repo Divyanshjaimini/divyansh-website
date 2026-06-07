@@ -83,7 +83,7 @@ nav{position:sticky;top:0;z-index:100;display:flex;justify-content:space-between
 .toast.err{background:linear-gradient(135deg,#dc2626,#b91c1c);color:#fff}
 </style>
 
-<script src="settings-apply.js"></script>
+<script src="/settings-apply.js"></script>
 
 </head>
 <body>
@@ -94,7 +94,7 @@ nav{position:sticky;top:0;z-index:100;display:flex;justify-content:space-between
         <span class="u-badge" id="navUser">Loading...</span>
         <button class="t-icon" onclick="toggleTheme()">🌙</button>
         <button class="theme-btn" onclick="toggleTheme()"></button>
-        <button class="logout-btn" onclick="logout()">Logout</button>
+        <button class="logout-btn" onclick="logout()" data-i18n="logout">Logout</button>
     </div>
 </nav>
 <div class="main">
@@ -114,8 +114,9 @@ nav{position:sticky;top:0;z-index:100;display:flex;justify-content:space-between
         <div class="s-card" style="animation-delay:0.4s"><div class="s-ico">🆔</div><div class="s-val" id="sId">--</div><div class="s-lbl">User ID</div></div>
     </div>
     <div class="tabs">
-        <button class="tab active" onclick="showTab('profile',this)">👤 Profile</button>
-        <button class="tab" onclick="showTab('password',this)">🔐 Change Password</button>
+        <button class="tab active" onclick="showTab('profile',this)" data-i18n="profile">👤 Profile</button>
+<button class="tab" onclick="showTab('password',this)" data-i18n="changePassword">🔐 Change Password</button>
+        
     </div>
     <div class="tab-content active" id="tab-profile">
         <div class="p-card">
@@ -137,6 +138,9 @@ nav{position:sticky;top:0;z-index:100;display:flex;justify-content:space-between
     <div class="tab-content" id="tab-password">
         <div class="pw-card">
             <h3>🔐 Change Password</h3>
+            <div style="margin-bottom:1.2rem;padding:0.8rem 1rem;background:rgba(102,126,234,0.06);border:1px solid rgba(102,126,234,0.15);border-radius:12px;font-size:0.85rem;color:var(--text2)">
+    Forgot your password? <a href="forgot-password.html" style="color:#a78bfa;text-decoration:none;font-weight:600">Reset via Email →</a>
+</div>
             <div class="pw-g"><label>Current Password</label><input type="password" id="oldPw" placeholder="Current password"></div>
             <div class="pw-g"><label>New Password</label><input type="password" id="newPw" placeholder="New password"></div>
             <div class="pw-g"><label>Confirm New Password</label><input type="password" id="conPw" placeholder="Repeat new password"></div>

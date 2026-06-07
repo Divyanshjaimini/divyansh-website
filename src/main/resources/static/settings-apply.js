@@ -1,135 +1,39 @@
-// Global Settings Apply — Har page par ye script chalegi
-(function() {
-    const settings = JSON.parse(localStorage.getItem('siteSettings') || '{}');
-    const theme = settings.theme || localStorage.getItem('theme') || 'dark';
-    const lang = settings.lang || localStorage.getItem('lang') || 'en';
-    const fontSize = settings.fontSize || 14;
-    const compact = settings.compact || false;
+(function(){
+    const settings=JSON.parse(localStorage.getItem('siteSettings')||'{}');
+    const theme=settings.theme||localStorage.getItem('theme')||'dark';
+    const fontSize=settings.fontSize||14;
+    const compact=settings.compact||false;
 
-    // Theme apply
-    document.documentElement.setAttribute('data-theme', theme);
+    // Theme apply — turant
+    document.documentElement.setAttribute('data-theme',theme);
 
-    // Font size apply
-    document.documentElement.style.fontSize = fontSize + 'px';
+    // Font size
+    document.documentElement.style.setProperty('--font-size', fontSize+'px');
 
-    // Compact mode
-    if (compact) {
-        document.documentElement.classList.add('compact');
+    // Compact
+    if(compact){
+        const style=document.createElement('style');
+        style.textContent='.main{padding:1rem!important}.s-card{padding:0.8rem!important}.welcome{padding:1.2rem!important}';
+        document.head.appendChild(style);
     }
 
-    // Language translations
-    const translations = {
-        en: {
-            home: 'Home',
-            about: 'About',
-            contact: 'Contact',
-            login: 'Login',
-            joinNow: 'Join Now',
-            welcome: 'Welcome',
-            logout: 'Logout',
-            settings: 'Settings',
-            chat: 'Open Chat',
-            profile: 'Profile',
-            changePassword: 'Change Password',
-            save: 'Save',
-            totalUsers: 'Total Users',
-            allUsers: 'All Users',
-            searchUsers: 'Search users...',
-        },
-        hi: {
-            home: 'होम',
-            about: 'हमारे बारे में',
-            contact: 'संपर्क',
-            login: 'लॉगिन',
-            joinNow: 'अभी जुड़ें',
-            welcome: 'स्वागत है',
-            logout: 'लॉगआउट',
-            settings: 'सेटिंग्स',
-            chat: 'चैट खोलें',
-            profile: 'प्रोफ़ाइल',
-            changePassword: 'पासवर्ड बदलें',
-            save: 'सहेजें',
-            totalUsers: 'कुल उपयोगकर्ता',
-            allUsers: 'सभी उपयोगकर्ता',
-            searchUsers: 'उपयोगकर्ता खोजें...',
-        },
-        es: {
-            home: 'Inicio',
-            about: 'Acerca de',
-            contact: 'Contacto',
-            login: 'Iniciar sesión',
-            joinNow: 'Únete ahora',
-            welcome: 'Bienvenido',
-            logout: 'Cerrar sesión',
-            settings: 'Configuración',
-            chat: 'Abrir Chat',
-            profile: 'Perfil',
-            changePassword: 'Cambiar contraseña',
-            save: 'Guardar',
-            totalUsers: 'Total usuarios',
-            allUsers: 'Todos los usuarios',
-            searchUsers: 'Buscar usuarios...',
-        },
-        fr: {
-            home: 'Accueil',
-            about: 'À propos',
-            contact: 'Contact',
-            login: 'Connexion',
-            joinNow: 'Rejoindre',
-            welcome: 'Bienvenue',
-            logout: 'Déconnexion',
-            settings: 'Paramètres',
-            chat: 'Ouvrir le chat',
-            profile: 'Profil',
-            changePassword: 'Changer mot de passe',
-            save: 'Sauvegarder',
-            totalUsers: 'Total utilisateurs',
-            allUsers: 'Tous les utilisateurs',
-            searchUsers: 'Rechercher...',
-        },
-        de: {
-            home: 'Startseite',
-            about: 'Über uns',
-            contact: 'Kontakt',
-            login: 'Anmelden',
-            joinNow: 'Jetzt beitreten',
-            welcome: 'Willkommen',
-            logout: 'Abmelden',
-            settings: 'Einstellungen',
-            chat: 'Chat öffnen',
-            profile: 'Profil',
-            changePassword: 'Passwort ändern',
-            save: 'Speichern',
-            totalUsers: 'Alle Benutzer',
-            allUsers: 'Alle Benutzer',
-            searchUsers: 'Benutzer suchen...',
-        },
-        ja: {
-            home: 'ホーム',
-            about: '私たちについて',
-            contact: 'お問い合わせ',
-            login: 'ログイン',
-            joinNow: '今すぐ参加',
-            welcome: 'ようこそ',
-            logout: 'ログアウト',
-            settings: '設定',
-            chat: 'チャットを開く',
-            profile: 'プロフィール',
-            changePassword: 'パスワード変更',
-            save: '保存',
-            totalUsers: '総ユーザー数',
-            allUsers: '全ユーザー',
-            searchUsers: 'ユーザー検索...',
-        }
+    // Language
+    const lang=settings.lang||localStorage.getItem('lang')||'en';
+    const t={
+        en:{logout:'Logout',settings:'⚙️ Settings',chat:'💬 Open Chat',profile:'👤 Profile',changePassword:'🔐 Change Password',save:'💾 Save',allUsers:'All Users',searchUsers:'Search users...',totalUsers:'Total Users',welcome:'Welcome'},
+        hi:{logout:'लॉगआउट',settings:'⚙️ सेटिंग्स',chat:'💬 चैट',profile:'👤 प्रोफ़ाइल',changePassword:'🔐 पासवर्ड बदलें',save:'💾 सहेजें',allUsers:'सभी उपयोगकर्ता',searchUsers:'खोजें...',totalUsers:'कुल उपयोगकर्ता',welcome:'स्वागत है'},
+        es:{logout:'Cerrar sesión',settings:'⚙️ Configuración',chat:'💬 Chat',profile:'👤 Perfil',changePassword:'🔐 Cambiar contraseña',save:'💾 Guardar',allUsers:'Todos usuarios',searchUsers:'Buscar...',totalUsers:'Total usuarios',welcome:'Bienvenido'},
+        fr:{logout:'Déconnexion',settings:'⚙️ Paramètres',chat:'💬 Chat',profile:'👤 Profil',changePassword:'🔐 Changer MDP',save:'💾 Sauvegarder',allUsers:'Tous utilisateurs',searchUsers:'Rechercher...',totalUsers:'Total utilisateurs',welcome:'Bienvenue'},
+        de:{logout:'Abmelden',settings:'⚙️ Einstellungen',chat:'💬 Chat',profile:'👤 Profil',changePassword:'🔐 Passwort',save:'💾 Speichern',allUsers:'Alle Benutzer',searchUsers:'Suchen...',totalUsers:'Alle Benutzer',welcome:'Willkommen'},
+        ja:{logout:'ログアウト',settings:'⚙️ 設定',chat:'💬 チャット',profile:'👤 プロフィール',changePassword:'🔐 パスワード変更',save:'💾 保存',allUsers:'全ユーザー',searchUsers:'検索...',totalUsers:'総ユーザー数',welcome:'ようこそ'},
     };
+    const tr=t[lang]||t.en;
 
-    // Apply translations after page loads
-    window.addEventListener('DOMContentLoaded', () => {
-        const t = translations[lang] || translations.en;
-        // data-lang attribute wale elements translate karo
-        document.querySelectorAll('[data-lang]').forEach(el => {
-            const key = el.getAttribute('data-lang');
-            if (t[key]) el.textContent = t[key];
+    window.addEventListener('DOMContentLoaded',()=>{
+        // data-i18n attribute wale elements translate karo
+        document.querySelectorAll('[data-i18n]').forEach(el=>{
+            const key=el.getAttribute('data-i18n');
+            if(tr[key])el.textContent=tr[key];
         });
     });
 })();

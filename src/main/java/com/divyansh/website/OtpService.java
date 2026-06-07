@@ -30,7 +30,7 @@ public class OtpService {
             return false;
         }
         if (storedOtp == Long.parseLong(otp)) {
-            otpStore.remove(email);
+            otpStore.remove(email); // Reset ke baad delete
             return true;
         }
         return false;
