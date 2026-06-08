@@ -123,7 +123,7 @@ nav{position:sticky;top:0;z-index:100;display:flex;justify-content:space-between
             <div class="p-header">
                 <div class="avatar" id="avatarLetter" style="cursor:pointer;overflow:hidden" onclick="document.getElementById('photoInput').click()">D</div>
 <input type="file" id="photoInput" accept="image/*" style="display:none" onchange="uploadPhoto(this)">
-                <div><div class="p-name" id="pName">--</div><div class="p-email" id="pEmail">--</div></div>
+                <div><div class="p-name" id="pName" style="cursor:pointer" onclick="window.location.href='profile.html?user='+localStorage.getItem('username')">--</div>--</div><div class="p-email" id="pEmail">--</div></div>
             </div>
             <div class="p-row"><span class="p-lbl">Username</span><span class="p-val" id="pvUser">--</span></div>
             <div class="p-row"><span class="p-lbl">Email</span><span class="p-val" id="pvEmail">--</span></div>

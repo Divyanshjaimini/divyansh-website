@@ -41,13 +41,14 @@ public class BlogController {
             @RequestBody BlogPost post) {
 
         Optional<User> userOpt = userRepository.findById(userId);
-        if (userOpt.isEmpty() || userOpt.get().getRole() != User.Role.ADMIN) {
+        if (userOpt.isEmpty()) {
             Map<String, String> error = new HashMap<>();
-            error.put("message", "Admins only!");
-            return ResponseEntity.status(403).body(error);
+            error.put("message", "Please login first!");
+            return ResponseEntity.status(401).body(error);
         }
 
         post.setAuthor(userOpt.get().getUsername());
+        post.setAuthorId(userId);
         BlogPost saved = blogRepository.save(post);
         return ResponseEntity.ok(saved);
     }

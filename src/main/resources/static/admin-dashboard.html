@@ -77,6 +77,20 @@ tr:hover td{background:var(--hover)}
 @keyframes slideUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 .toast.ok{background:linear-gradient(135deg,#059669,#047857);color:#fff}
 .toast.err{background:linear-gradient(135deg,#dc2626,#b91c1c);color:#fff}
+
+/* MOBILE TABLE FIX */
+@media(max-width:768px){
+    nav{padding:0 1rem}
+    .main{padding:1rem}
+    .a-header{padding:1.2rem}
+    .a-header h1{font-size:1.3rem}
+    .s-grid{grid-template-columns:repeat(2,1fr)}
+    .t-wrap{overflow-x:auto}
+    table{min-width:600px}
+    .toolbar{flex-direction:column}
+    .s-input{width:100%}
+}
+
 </style>
 
 <script src="/settings-apply.js"></script>
@@ -149,6 +163,14 @@ tr:hover td{background:var(--hover)}
         <div style="font-size:0.82rem;color:var(--text2);margin-bottom:1rem">See your public website</div>
         <a href="index.html" style="padding:0.5rem 1.2rem;background:linear-gradient(135deg,#4facfe,#00f2fe);color:#fff;border-radius:20px;text-decoration:none;font-size:0.82rem;font-weight:700">Visit Now</a>
     </div>
+    
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:18px;padding:1.5rem;text-align:center;transition:all 0.3s">
+         <div style="font-size:2rem;margin-bottom:0.8rem">✍️</div>
+         <div style="font-weight:800;margin-bottom:0.4rem">Blog</div>
+         <div style="font-size:0.82rem;color:var(--text2);margin-bottom:1rem">Manage all posts</div>
+         <a href="blog.html" style="padding:0.5rem 1.2rem;background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;border-radius:20px;text-decoration:none;font-size:0.82rem;font-weight:700">Open Blog</a>
+    </div>
+    
     <div style="background:var(--card);border:1px solid var(--border);border-radius:18px;padding:1.5rem;text-align:center;transition:all 0.3s;cursor:default">
         <div style="font-size:2rem;margin-bottom:0.8rem">📊</div>
         <div style="font-weight:800;margin-bottom:0.4rem">Analytics</div>

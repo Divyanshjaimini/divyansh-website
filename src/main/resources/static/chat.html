@@ -167,6 +167,9 @@ nav{position:relative;z-index:10;display:flex;justify-content:space-between;alig
             <div>
                 <div class="chat-header-name" id="chatName">Public Chat</div>
                 <div class="chat-header-sub" id="chatSub">Everyone can see messages here</div>
+                
+                
+                
             </div>
         </div>
         <div class="messages" id="messages"></div>
@@ -180,6 +183,9 @@ nav{position:relative;z-index:10;display:flex;justify-content:space-between;alig
            <textarea class="input-box" id="msgInput" placeholder="Type a message... (Enter to send, Shift+Enter for new line)" rows="1" onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
            <button class="send-btn" onclick="sendMessage()">➤</button>
         </div>
+        
+        <div class="msg-sender" style="cursor:pointer" onclick="window.location.href='profile.html?user=${msg.sender}'">${msg.sender}</div>
+        
     </div>
 </div>
 
@@ -370,31 +376,18 @@ function addSysMsg(text){
 function sendFile(input){
     const file=input.files[0];
     if(!file)return;
-    if(file.size>5*1024*1024){
-        addSysMsg('File too large! Max 5MB allowed.');
-        return;
-    }
+    if(file.size>3*1024*1024){addSysMsg('File too large! Max 3MB.');input.value='';return}
     const reader=new FileReader();
     reader.onload=function(e){
         const isImage=file.type.startsWith('image/');
-        const content=isImage?
-            `[IMAGE]${e.target.result}`:
-            `[FILE]${file.name}|${e.target.result}`;
+        const content=isImage?`[IMAGE]${e.target.result}`:`[FILE]${file.name}|${e.target.result}`;
+        const msgData={sender:username,content:content,type:currentRoom==='public'?'PUBLIC':'PRIVATE',timestamp:new Date().toISOString()};
 
         if(currentRoom==='public'){
-            stompClient.send('/app/chat.public',{},JSON.stringify({
-                sender:username,
-                content:content,
-                type:'PUBLIC'
-            }));
+            stompClient.send('/app/chat.public',{},JSON.stringify(msgData));
         } else {
-            stompClient.send('/app/chat.private',{},JSON.stringify({
-                sender:username,
-                recipient:currentPrivateUser,
-                content:content,
-                type:'PRIVATE'
-            }));
-            addMessage({sender:username,content:content,timestamp:new Date().toISOString()});
+            stompClient.send('/app/chat.private',{},JSON.stringify({...msgData,recipient:currentPrivateUser}));
+            addMessage(msgData);
             scrollBottom();
         }
     };
