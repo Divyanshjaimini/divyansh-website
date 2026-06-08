@@ -184,7 +184,7 @@ nav{position:relative;z-index:10;display:flex;justify-content:space-between;alig
     <button class="send-btn" onclick="sendMessage()">➤</button>
 </div>
         
-        <div class="msg-sender" style="cursor:pointer" onclick="window.location.href='profile.html?user=${msg.sender}'">${msg.sender}</div>
+      
         
     </div>
 </div>
@@ -337,10 +337,7 @@ function startPrivateChat(targetUsername){
     const isOnline=onlineUsers.has(targetUsername);
     document.getElementById('chatSub').textContent=isOnline?'🟢 Online':'⚫ Offline';
     document.getElementById('messages').innerHTML='';
-    // Load history
-    fetch(`https://divyansh-website-wooq.onrender.com/api/chat/private-history?user1=${username}&user2=${targetUsername}`)
-    .then(r=>r.json())
-    .then(msgs=>{msgs.forEach(m=>addMessage(m,true));scrollBottom();}).catch(()=>{});
+    loadPrivateHistory(targetUsername);
 }
 
 let currentPrivateUser='divyansh_admin';
@@ -351,23 +348,40 @@ function loadPublicHistory(){
     .then(msgs=>{msgs.forEach(m=>addMessage(m,true));scrollBottom();}).catch(()=>{});
 }
 
-function addMessage(msg,isHistory=false){
+function addMessage(msg, isHistory=false){
     const div=document.getElementById('messages');
     const isMe=msg.sender===username;
     const time=new Date(msg.timestamp||Date.now()).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
+
+    // Content render karo
+    let contentHtml='';
+    const content=msg.content||'';
+
+    if(content.startsWith('[IMAGE]')){
+        const src=content.replace('[IMAGE]','');
+        contentHtml='<img src="'+src+'" style="max-width:220px;max-height:220px;border-radius:12px;cursor:pointer;display:block;margin-top:0.4rem" onclick="window.open(\''+src+'\',\'_blank\')">';
+    } else if(content.startsWith('[FILE]')){
+        const withoutPrefix=content.replace('[FILE]','');
+        const pipeIndex=withoutPrefix.indexOf('|');
+        const fileName=withoutPrefix.substring(0,pipeIndex);
+        const fileData=withoutPrefix.substring(pipeIndex+1);
+        contentHtml='<a href="'+fileData+'" download="'+fileName+'" style="display:inline-flex;align-items:center;gap:0.5rem;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.1);padding:0.5rem 0.9rem;border-radius:10px;text-decoration:none;color:#a78bfa;font-size:0.82rem;margin-top:0.4rem">📄 '+fileName+'</a>';
+    } else {
+        contentHtml=escapeHtml(content);
+    }
+
     const html=`
         <div class="msg-wrap ${isMe?'mine':''}">
             <div class="msg-avatar">${msg.sender?msg.sender.charAt(0).toUpperCase():'?'}</div>
             <div style="max-width:65%">
-                ${!isMe?`<div class="msg-sender">${msg.sender}</div>`:''}
-                <div class="msg-bubble">${renderContent(msg.content)}</div>
+                ${!isMe?`<div class="msg-sender" style="cursor:pointer" onclick="window.location.href='profile.html?user=${msg.sender}'">${msg.sender}</div>`:''}
+                <div class="msg-bubble">${contentHtml}</div>
                 <div class="msg-time">${time}</div>
             </div>
         </div>`;
     div.innerHTML+=html;
-    if(!isHistory)scrollBottom();
+    if(!isHistory) scrollBottom();
 }
-
 function addSysMsg(text){
     document.getElementById('messages').innerHTML+=`<div class="sys-msg">— ${text} —</div>`;
 }
@@ -375,15 +389,18 @@ function addSysMsg(text){
 //FILE/PHOTO SEND
 // FILE SEND FUNCTION
 function sendFile(input){
-    if(!stompClient){addSysMsg('Not connected!');return}
+    if(!stompClient){
+        addSysMsg('Not connected! Please wait...');
+        return;
+    }
     const file=input.files[0];
     if(!file){return}
-    if(file.size>3*1024*1024){
-        addSysMsg('File too large! Max 3MB allowed.');
+    if(file.size>2*1024*1024){
+        addSysMsg('File too large! Max 2MB allowed.');
         input.value='';
         return;
     }
-    addSysMsg('Uploading file...');
+
     const reader=new FileReader();
     reader.onload=function(e){
         const isImage=file.type.startsWith('image/');
@@ -393,28 +410,37 @@ function sendFile(input){
         } else {
             content='[FILE]'+file.name+'|'+e.target.result;
         }
+
+        const msgData={
+            sender:username,
+            content:content,
+            type:currentRoom==='public'?'PUBLIC':'PRIVATE',
+            timestamp:new Date().toISOString()
+        };
+
         if(currentRoom==='public'){
+            // Public chat — WebSocket se bhejo
             stompClient.send('/app/chat.public',{},JSON.stringify({
                 sender:username,
                 content:content,
                 type:'PUBLIC'
             }));
         } else {
+            // Private chat
             stompClient.send('/app/chat.private',{},JSON.stringify({
                 sender:username,
                 recipient:currentPrivateUser,
                 content:content,
                 type:'PRIVATE'
             }));
-            addMessage({
-                sender:username,
-                content:content,
-                timestamp:new Date().toISOString()
-            });
+            // Apna message turant dikhao
+            addMessage(msgData);
             scrollBottom();
         }
     };
-    reader.onerror=function(){addSysMsg('File read failed!')};
+    reader.onerror=function(){
+        addSysMsg('File read failed! Try again.');
+    };
     reader.readAsDataURL(file);
     input.value='';
 }
@@ -471,9 +497,19 @@ function switchToDivyansh(){
     document.getElementById('chatName').textContent='Chat with Divyansh';
     document.getElementById('chatSub').textContent='Private conversation';
     document.getElementById('messages').innerHTML='';
-    fetch(`https://divyansh-website-wooq.onrender.com/api/chat/private-history?user1=${username}&user2=divyansh_admin`)
+    loadPrivateHistory('divyansh_admin');
+}
+
+function loadPrivateHistory(targetUser){
+    fetch('https://divyansh-website-wooq.onrender.com/api/chat/private-history?user1='+username+'&user2='+targetUser)
     .then(r=>r.json())
-    .then(msgs=>{msgs.forEach(m=>addMessage(m,true));scrollBottom();}).catch(()=>{});
+    .then(msgs=>{
+        msgs.forEach(m=>addMessage(m,true));
+        scrollBottom();
+    })
+    .catch(()=>{
+        addSysMsg('Could not load history');
+    });
 }
 
 function scrollBottom(){
