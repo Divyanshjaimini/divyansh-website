@@ -60,15 +60,30 @@ public class BlogController {
             @PathVariable Long id) {
 
         Map<String, String> response = new HashMap<>();
-        Optional<User> userOpt = userRepository.findById(userId);
 
-        if (userOpt.isEmpty() || userOpt.get().getRole() != User.Role.ADMIN) {
-            response.put("message", "Admins only!");
+        Optional<User> userOpt = userRepository.findById(userId);
+        if (userOpt.isEmpty()) {
+            response.put("message", "Not authorized!");
+            return ResponseEntity.status(401).body(response);
+        }
+
+        // Admin ya post author delete kar sake
+        User user = userOpt.get();
+        Optional<BlogPost> postOpt = blogRepository.findById(id);
+
+        if (postOpt.isEmpty()) {
+            response.put("message", "Post not found!");
+            return ResponseEntity.notFound().build();
+        }
+
+        BlogPost post = postOpt.get();
+        if (user.getRole() != User.Role.ADMIN && !post.getAuthor().equals(user.getUsername())) {
+            response.put("message", "You can only delete your own posts!");
             return ResponseEntity.status(403).body(response);
         }
 
         blogRepository.deleteById(id);
-        response.put("message", "Post deleted!");
+        response.put("message", "Post deleted successfully!");
         return ResponseEntity.ok(response);
     }
 }

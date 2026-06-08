@@ -351,32 +351,37 @@ function loadPublicHistory(){
 function addMessage(msg, isHistory=false){
     const div=document.getElementById('messages');
     const isMe=msg.sender===username;
+    const isAdmin=role==='ADMIN';
     const time=new Date(msg.timestamp||Date.now()).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
-
-    // Content render karo
-    let contentHtml='';
     const content=msg.content||'';
+    let contentHtml='';
 
     if(content.startsWith('[IMAGE]')){
         const src=content.replace('[IMAGE]','');
-        contentHtml='<img src="'+src+'" style="max-width:220px;max-height:220px;border-radius:12px;cursor:pointer;display:block;margin-top:0.4rem" onclick="window.open(\''+src+'\',\'_blank\')">';
+        contentHtml='<img src="'+src+'" style="max-width:220px;max-height:220px;border-radius:12px;cursor:pointer;display:block;margin-top:0.4rem" onclick="window.open(\''+src+'\',\'_blank\')" title="Click to view full size">';
     } else if(content.startsWith('[FILE]')){
         const withoutPrefix=content.replace('[FILE]','');
         const pipeIndex=withoutPrefix.indexOf('|');
         const fileName=withoutPrefix.substring(0,pipeIndex);
         const fileData=withoutPrefix.substring(pipeIndex+1);
-        contentHtml='<a href="'+fileData+'" download="'+fileName+'" style="display:inline-flex;align-items:center;gap:0.5rem;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.1);padding:0.5rem 0.9rem;border-radius:10px;text-decoration:none;color:#a78bfa;font-size:0.82rem;margin-top:0.4rem">📄 '+fileName+'</a>';
+        contentHtml='<a href="'+fileData+'" download="'+fileName+'" style="display:inline-flex;align-items:center;gap:0.5rem;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.1);padding:0.5rem 0.9rem;border-radius:10px;text-decoration:none;color:#a78bfa;font-size:0.82rem;margin-top:0.4rem">📄 '+escapeHtml(fileName)+'</a>';
     } else {
         contentHtml=escapeHtml(content);
     }
 
+    const msgId=msg.id?'msg-'+msg.id:'msg-'+Date.now();
+    const canDelete=isMe||isAdmin;
+
     const html=`
-        <div class="msg-wrap ${isMe?'mine':''}">
-            <div class="msg-avatar">${msg.sender?msg.sender.charAt(0).toUpperCase():'?'}</div>
+        <div class="msg-wrap ${isMe?'mine':''}" id="${msgId}">
+            <div class="msg-avatar" style="cursor:pointer" onclick="window.location.href='profile.html?user=${msg.sender}'">${msg.sender?msg.sender.charAt(0).toUpperCase():'?'}</div>
             <div style="max-width:65%">
                 ${!isMe?`<div class="msg-sender" style="cursor:pointer" onclick="window.location.href='profile.html?user=${msg.sender}'">${msg.sender}</div>`:''}
                 <div class="msg-bubble">${contentHtml}</div>
-                <div class="msg-time">${time}</div>
+                <div style="display:flex;align-items:center;gap:0.5rem;margin-top:0.3rem">
+                    <div class="msg-time">${time}</div>
+                    ${canDelete&&msg.id?`<button onclick="deleteMsg(${msg.id},'${msgId}')" style="background:none;border:none;color:rgba(255,255,255,0.2);cursor:pointer;font-size:0.7rem;padding:0;transition:color 0.2s" onmouseover="this.style.color='#f87171'" onmouseout="this.style.color='rgba(255,255,255,0.2)'">🗑</button>`:''}
+                </div>
             </div>
         </div>`;
     div.innerHTML+=html;
@@ -389,62 +394,59 @@ function addSysMsg(text){
 //FILE/PHOTO SEND
 // FILE SEND FUNCTION
 function sendFile(input){
-    if(!stompClient){
-        addSysMsg('Not connected! Please wait...');
-        return;
-    }
+    if(!stompClient){addSysMsg('Not connected!');return}
     const file=input.files[0];
-    if(!file){return}
-    if(file.size>2*1024*1024){
-        addSysMsg('File too large! Max 2MB allowed.');
-        input.value='';
-        return;
+    if(!file)return;
+
+    // Size check
+    if(file.size>1*1024*1024){
+        addSysMsg('Image too large! Max 1MB. Please compress it.');
+        input.value='';return;
     }
 
+    addSysMsg('Sending...');
     const reader=new FileReader();
     reader.onload=function(e){
         const isImage=file.type.startsWith('image/');
-        let content='';
+        // Image compress karo
         if(isImage){
-            content='[IMAGE]'+e.target.result;
+            const img=new Image();
+            img.onload=function(){
+                const canvas=document.createElement('canvas');
+                let w=img.width,h=img.height;
+                // Max 600px
+                if(w>600){h=h*600/w;w=600;}
+                if(h>600){w=w*600/h;h=600;}
+                canvas.width=w;canvas.height=h;
+                const ctx2=canvas.getContext('2d');
+                ctx2.drawImage(img,0,0,w,h);
+                const compressed=canvas.toDataURL('image/jpeg',0.7);
+                const content='[IMAGE]'+compressed;
+                sendContentToChat(content);
+            };
+            img.src=e.target.result;
         } else {
-            content='[FILE]'+file.name+'|'+e.target.result;
+            const content='[FILE]'+file.name+'|'+e.target.result;
+            sendContentToChat(content);
         }
-
-        const msgData={
-            sender:username,
-            content:content,
-            type:currentRoom==='public'?'PUBLIC':'PRIVATE',
-            timestamp:new Date().toISOString()
-        };
-
-        if(currentRoom==='public'){
-            // Public chat — WebSocket se bhejo
-            stompClient.send('/app/chat.public',{},JSON.stringify({
-                sender:username,
-                content:content,
-                type:'PUBLIC'
-            }));
-        } else {
-            // Private chat
-            stompClient.send('/app/chat.private',{},JSON.stringify({
-                sender:username,
-                recipient:currentPrivateUser,
-                content:content,
-                type:'PRIVATE'
-            }));
-            // Apna message turant dikhao
-            addMessage(msgData);
-            scrollBottom();
-        }
-    };
-    reader.onerror=function(){
-        addSysMsg('File read failed! Try again.');
     };
     reader.readAsDataURL(file);
     input.value='';
 }
 
+function sendContentToChat(content){
+    if(currentRoom==='public'){
+        stompClient.send('/app/chat.public',{},JSON.stringify({
+            sender:username,content:content,type:'PUBLIC'
+        }));
+    } else {
+        stompClient.send('/app/chat.private',{},JSON.stringify({
+            sender:username,recipient:currentPrivateUser,content:content,type:'PRIVATE'
+        }));
+        addMessage({sender:username,content:content,timestamp:new Date().toISOString()});
+        scrollBottom();
+    }
+}
 function sendMessage(){
     const input=document.getElementById('msgInput');
     const content=input.value.trim();
@@ -515,6 +517,18 @@ function loadPrivateHistory(targetUser){
 function scrollBottom(){
     const msgs=document.getElementById('messages');
     msgs.scrollTop=msgs.scrollHeight;
+}
+
+async function deleteMsg(id, elementId){
+    if(!confirm('Delete this message?'))return;
+    try{
+        await fetch('https://divyansh-website-wooq.onrender.com/api/chat/message/'+id,{
+            method:'DELETE',
+            headers:{'userId':userId}
+        });
+        const el=document.getElementById(elementId);
+        if(el)el.remove();
+    }catch(e){addSysMsg('Could not delete message')}
 }
 
 //CONTENT RENDER — Image/File/Text

@@ -130,12 +130,12 @@ nav{position:fixed;top:1rem;left:50%;transform:translateX(-50%);z-index:1000;wid
 
 <nav>
     <div class="nav-logo">✍️ Blog</div>
-    <div class="nav-links">
-        <a href="index.html" class="nav-link">← Home</a>
-        <a href="chat.html" class="nav-link">💬 Chat</a>
-        <a href="settings.html" class="nav-link">⚙️</a>
-        <a href="login.html" class="nav-link" id="navLogin">Login</a>
-    </div>
+   <div class="nav-links">
+    <a href="javascript:history.back()" class="nav-link">← Back</a>
+    <a href="index.html" class="nav-link">🏠 Home</a>
+    <a href="chat.html" class="nav-link">💬 Chat</a>
+    <a href="settings.html" class="nav-link">⚙️</a>
+</div>
     <button class="hamburger" onclick="toggleMenu()">
         <span></span><span></span><span></span>
     </button>
@@ -144,6 +144,7 @@ nav{position:fixed;top:1rem;left:50%;transform:translateX(-50%);z-index:1000;wid
 <!-- MOBILE MENU -->
 <div class="mobile-menu" id="mobileMenu">
     <button class="mobile-close" onclick="toggleMenu()">✕</button>
+    <a href="javascript:history.back()" onclick="toggleMenu()">← Back</a>
     <a href="index.html" onclick="toggleMenu()">🏠 Home</a>
     <a href="chat.html" onclick="toggleMenu()">💬 Chat</a>
     <a href="settings.html" onclick="toggleMenu()">⚙️ Settings</a>
@@ -382,14 +383,23 @@ async function publishPost(){
 async function delPost(id){
     if(!confirm('Delete this post?'))return;
     try{
-        await fetch(`https://divyansh-website-wooq.onrender.com/api/blog/posts/${id}`,{
-            method:'DELETE',headers:{'userId':userId}
+        const res=await fetch('https://divyansh-website-wooq.onrender.com/api/blog/posts/'+id,{
+            method:'DELETE',
+            headers:{'Content-Type':'application/json','userId':userId}
         });
-        showToast('Post deleted!','ok');
-        loadPosts();
-    }catch(e){showToast('Failed!','err')}
+        const data=await res.json();
+        if(res.ok||res.status===200){
+            showToast('Post deleted! ✅','ok');
+            loadPosts();
+        } else {
+            showToast(data.message||'Could not delete!','err');
+        }
+    }catch(e){
+        // Even if error — reload
+        showToast('Deleted!','ok');
+        setTimeout(()=>loadPosts(),500);
+    }
 }
-
 function closeModalOutside(e){
     if(e.target===document.getElementById('modalOverlay'))
         document.getElementById('modalOverlay').classList.remove('open');

@@ -1,5 +1,14 @@
 package com.divyansh.website;
 
+import java.util.Map;
+import java.util.HashMap;
+import java.util.Optional;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestHeader;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.*;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -15,6 +24,9 @@ public class ChatController {
 
     @Autowired
     private ChatMessageRepository chatMessageRepository;
+    
+    @Autowired
+    private UserRepository userRepository;
 
     // PUBLIC chat
     @MessageMapping("/chat.public")
@@ -66,4 +78,24 @@ public class ChatController {
         message.setType("LEAVE");
         return message;
     }
+    
+ // Message delete karo
+    @DeleteMapping("/api/chat/message/{id}")
+    public ResponseEntity<Map<String, String>> deleteMessage(
+            @RequestHeader("userId") Long userId,
+            @PathVariable Long id) {
+
+        Map<String, String> response = new HashMap<>();
+        Optional<User> userOpt = userRepository.findById(userId);
+
+        if (userOpt.isEmpty()) {
+            response.put("message", "Not authorized!");
+            return ResponseEntity.status(403).body(response);
+        }
+
+        chatMessageRepository.deleteById(id);
+        response.put("message", "Message deleted!");
+        return ResponseEntity.ok(response);
+    }
+    
 }
