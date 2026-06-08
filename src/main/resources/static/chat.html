@@ -178,11 +178,11 @@ nav{position:relative;z-index:10;display:flex;justify-content:space-between;alig
             <span id="typingUser"></span> is typing...
         </div>
         <div class="chat-input">
-           <label for="fileInput" style="width:40px;height:40px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:all 0.2s;font-size:1.1rem" title="Send photo/file">📎</label>
-           <input type="file" id="fileInput" accept="image/*,.pdf,.doc,.docx" style="display:none" onchange="sendFile(this)">
-           <textarea class="input-box" id="msgInput" placeholder="Type a message... (Enter to send, Shift+Enter for new line)" rows="1" onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
-           <button class="send-btn" onclick="sendMessage()">➤</button>
-        </div>
+    <label for="fileInput" style="width:42px;height:42px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;font-size:1.2rem;transition:all 0.2s" title="Send photo/file" onmouseover="this.style.background='rgba(102,126,234,0.2)'" onmouseout="this.style.background='rgba(255,255,255,0.05)'">📎</label>
+    <input type="file" id="fileInput" accept="image/*,.pdf,.doc,.docx,.txt" style="display:none" onchange="sendFile(this)">
+    <textarea class="input-box" id="msgInput" placeholder="Type a message... (Enter to send, Shift+Enter for new line)" rows="1" onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
+    <button class="send-btn" onclick="sendMessage()">➤</button>
+</div>
         
         <div class="msg-sender" style="cursor:pointer" onclick="window.location.href='profile.html?user=${msg.sender}'">${msg.sender}</div>
         
@@ -373,24 +373,48 @@ function addSysMsg(text){
 }
 
 //FILE/PHOTO SEND
+// FILE SEND FUNCTION
 function sendFile(input){
+    if(!stompClient){addSysMsg('Not connected!');return}
     const file=input.files[0];
-    if(!file)return;
-    if(file.size>3*1024*1024){addSysMsg('File too large! Max 3MB.');input.value='';return}
+    if(!file){return}
+    if(file.size>3*1024*1024){
+        addSysMsg('File too large! Max 3MB allowed.');
+        input.value='';
+        return;
+    }
+    addSysMsg('Uploading file...');
     const reader=new FileReader();
     reader.onload=function(e){
         const isImage=file.type.startsWith('image/');
-        const content=isImage?`[IMAGE]${e.target.result}`:`[FILE]${file.name}|${e.target.result}`;
-        const msgData={sender:username,content:content,type:currentRoom==='public'?'PUBLIC':'PRIVATE',timestamp:new Date().toISOString()};
-
-        if(currentRoom==='public'){
-            stompClient.send('/app/chat.public',{},JSON.stringify(msgData));
+        let content='';
+        if(isImage){
+            content='[IMAGE]'+e.target.result;
         } else {
-            stompClient.send('/app/chat.private',{},JSON.stringify({...msgData,recipient:currentPrivateUser}));
-            addMessage(msgData);
+            content='[FILE]'+file.name+'|'+e.target.result;
+        }
+        if(currentRoom==='public'){
+            stompClient.send('/app/chat.public',{},JSON.stringify({
+                sender:username,
+                content:content,
+                type:'PUBLIC'
+            }));
+        } else {
+            stompClient.send('/app/chat.private',{},JSON.stringify({
+                sender:username,
+                recipient:currentPrivateUser,
+                content:content,
+                type:'PRIVATE'
+            }));
+            addMessage({
+                sender:username,
+                content:content,
+                timestamp:new Date().toISOString()
+            });
             scrollBottom();
         }
     };
+    reader.onerror=function(){addSysMsg('File read failed!')};
     reader.readAsDataURL(file);
     input.value='';
 }
@@ -457,6 +481,23 @@ function scrollBottom(){
     msgs.scrollTop=msgs.scrollHeight;
 }
 
+//CONTENT RENDER — Image/File/Text
+function renderContent(content){
+    if(!content) return '';
+    if(content.startsWith('[IMAGE]')){
+        const src=content.replace('[IMAGE]','');
+        return '<img src="'+src+'" style="max-width:220px;max-height:220px;border-radius:12px;cursor:pointer;display:block;margin-top:0.4rem;border:1px solid rgba(255,255,255,0.1)" onclick="window.open(\''+src+'\',\'_blank\')" title="Click to open full size">';
+    }
+    if(content.startsWith('[FILE]')){
+        const withoutPrefix=content.replace('[FILE]','');
+        const pipeIndex=withoutPrefix.indexOf('|');
+        const fileName=withoutPrefix.substring(0,pipeIndex);
+        const fileData=withoutPrefix.substring(pipeIndex+1);
+        return '<a href="'+fileData+'" download="'+escapeHtml(fileName)+'" style="display:inline-flex;align-items:center;gap:0.5rem;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.1);padding:0.5rem 0.9rem;border-radius:10px;text-decoration:none;color:#a78bfa;font-size:0.82rem;margin-top:0.4rem;transition:all 0.2s" onmouseover="this.style.background=\'rgba(102,126,234,0.15)\'" onmouseout="this.style.background=\'rgba(255,255,255,0.07)\'">📄 '+escapeHtml(fileName)+'</a>';
+    }
+    return escapeHtml(content);
+}
+
 function escapeHtml(text){
     const div=document.createElement('div');
     div.appendChild(document.createTextNode(text));
@@ -475,20 +516,7 @@ window.addEventListener('beforeunload',()=>{
 
 if(userId)connect();
 
-function renderContent(content){
-    if(!content) return '';
-    if(content.startsWith('[IMAGE]')){
-        const src=content.replace('[IMAGE]','');
-        return `<img src="${src}" style="max-width:200px;max-height:200px;border-radius:10px;cursor:pointer;display:block;margin-top:0.3rem" onclick="window.open('${src}','_blank')">`;
-    }
-    if(content.startsWith('[FILE]')){
-        const parts=content.replace('[FILE]','').split('|');
-        const fileName=parts[0];
-        const fileData=parts[1];
-        return `<a href="${fileData}" download="${fileName}" style="display:inline-flex;align-items:center;gap:0.5rem;background:rgba(255,255,255,0.08);padding:0.5rem 0.8rem;border-radius:10px;text-decoration:none;color:#a78bfa;font-size:0.82rem;margin-top:0.3rem">📄 ${escapeHtml(fileName)}</a>`;
-    }
-    return escapeHtml(content);
-}
+
 </script>
 </body>
 </html>
