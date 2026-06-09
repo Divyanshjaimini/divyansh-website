@@ -5,7 +5,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -116,5 +118,23 @@ public class UserController {
 
         response.put("message", "Photo uploaded successfully!");
         return ResponseEntity.ok(response);
+    }
+    
+ // Public user search — sab use kar sakte hain
+    @GetMapping("/search")
+    public ResponseEntity<?> searchUsers(@RequestParam String query) {
+        List<User> allUsers = userRepository.findAll();
+        List<Map<String, Object>> result = new ArrayList<>();
+
+        for (User user : allUsers) {
+            if (user.getUsername().toLowerCase().contains(query.toLowerCase())) {
+                Map<String, Object> userMap = new HashMap<>();
+                userMap.put("id", user.getId());
+                userMap.put("username", user.getUsername());
+                userMap.put("role", user.getRole());
+                result.add(userMap);
+            }
+        }
+        return ResponseEntity.ok(result);
     }
 }

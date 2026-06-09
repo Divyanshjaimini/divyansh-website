@@ -287,14 +287,21 @@ function connect(){
 
 // ALL USERS LOAD
 function loadAllUsers(){
-    fetch('https://divyansh-website-wooq.onrender.com/api/admin/users',{
-        headers:{'userId':userId}
-    })
-    .then(r=>r.json())
-    .then(users=>{
-        allUsers=users.filter(u=>u.username!==username);
+    // Admin ke liye full list
+    if(role==='ADMIN'){
+        fetch('https://divyansh-website-wooq.onrender.com/api/admin/users',{
+            headers:{'userId':userId}
+        })
+        .then(r=>r.json())
+        .then(users=>{
+            allUsers=users.filter(u=>u.username!==username);
+            updateOnlineUsers();
+        }).catch(()=>{});
+    } else {
+        // Normal users ke liye — sirf online users dikhao
+        // WebSocket se hi pata chalega
         updateOnlineUsers();
-    }).catch(()=>{});
+    }
 }
 
 // UPDATE ONLINE USERS LIST
