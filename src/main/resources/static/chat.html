@@ -287,7 +287,6 @@ function connect(){
 
 // ALL USERS LOAD
 function loadAllUsers(){
-    // Admin ke liye full list
     if(role==='ADMIN'){
         fetch('https://divyansh-website-wooq.onrender.com/api/admin/users',{
             headers:{'userId':userId}
@@ -296,14 +295,12 @@ function loadAllUsers(){
         .then(users=>{
             allUsers=users.filter(u=>u.username!==username);
             updateOnlineUsers();
-        }).catch(()=>{});
+        }).catch(()=>{updateOnlineUsers()});
     } else {
-        // Normal users ke liye — sirf online users dikhao
-        // WebSocket se hi pata chalega
+        // Normal users — sirf online users dikhao
         updateOnlineUsers();
     }
 }
-
 // UPDATE ONLINE USERS LIST
 function updateOnlineUsers(){
     document.getElementById('onlineCount').textContent=onlineUsers.size;
@@ -405,36 +402,39 @@ function sendFile(input){
     const file=input.files[0];
     if(!file)return;
 
-    // Size check
-    if(file.size>1*1024*1024){
-        addSysMsg('Image too large! Max 1MB. Please compress it.');
-        input.value='';return;
-    }
-
-    addSysMsg('Sending...');
     const reader=new FileReader();
     reader.onload=function(e){
         const isImage=file.type.startsWith('image/');
-        // Image compress karo
         if(isImage){
+            // Compress karo pehle
             const img=new Image();
             img.onload=function(){
-                const canvas=document.createElement('canvas');
+                const canvas2=document.createElement('canvas');
                 let w=img.width,h=img.height;
-                // Max 600px
-                if(w>600){h=h*600/w;w=600;}
-                if(h>600){w=w*600/h;h=600;}
-                canvas.width=w;canvas.height=h;
-                const ctx2=canvas.getContext('2d');
+                // Max 400px
+                const maxSize=400;
+                if(w>maxSize){h=Math.floor(h*maxSize/w);w=maxSize}
+                if(h>maxSize){w=Math.floor(w*maxSize/h);h=maxSize}
+                canvas2.width=w;canvas2.height=h;
+                const ctx2=canvas2.getContext('2d');
                 ctx2.drawImage(img,0,0,w,h);
-                const compressed=canvas.toDataURL('image/jpeg',0.7);
-                const content='[IMAGE]'+compressed;
-                sendContentToChat(content);
+                // Quality 0.5 — choti size
+                const compressed=canvas2.toDataURL('image/jpeg',0.5);
+                const sizeKB=Math.round(compressed.length*0.75/1024);
+                if(compressed.length>60000){
+                    addSysMsg('Image too large! Please use a smaller image (max ~50KB).');
+                    return;
+                }
+                sendContentToChat('[IMAGE]'+compressed);
             };
             img.src=e.target.result;
         } else {
-            const content='[FILE]'+file.name+'|'+e.target.result;
-            sendContentToChat(content);
+            // File — sirf naam bhejo
+            if(file.size>500*1024){
+                addSysMsg('File too large for chat! Max 500KB.');
+                return;
+            }
+            sendContentToChat('[FILE]'+file.name+'|'+e.target.result);
         }
     };
     reader.readAsDataURL(file);
@@ -442,16 +442,31 @@ function sendFile(input){
 }
 
 function sendContentToChat(content){
-    if(currentRoom==='public'){
-        stompClient.send('/app/chat.public',{},JSON.stringify({
-            sender:username,content:content,type:'PUBLIC'
-        }));
-    } else {
-        stompClient.send('/app/chat.private',{},JSON.stringify({
-            sender:username,recipient:currentPrivateUser,content:content,type:'PRIVATE'
-        }));
-        addMessage({sender:username,content:content,timestamp:new Date().toISOString()});
-        scrollBottom();
+    if(!stompClient){addSysMsg('Not connected!');return}
+    try{
+        if(currentRoom==='public'){
+            stompClient.send('/app/chat.public',{},JSON.stringify({
+                sender:username,
+                content:content,
+                type:'PUBLIC'
+            }));
+        } else {
+            stompClient.send('/app/chat.private',{},JSON.stringify({
+                sender:username,
+                recipient:currentPrivateUser,
+                content:content,
+                type:'PRIVATE'
+            }));
+            addMessage({
+                sender:username,
+                content:content,
+                timestamp:new Date().toISOString()
+            });
+            scrollBottom();
+        }
+    }catch(err){
+        addSysMsg('Send failed: '+err.message);
+        console.error(err);
     }
 }
 function sendMessage(){

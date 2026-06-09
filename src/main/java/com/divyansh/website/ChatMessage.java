@@ -13,7 +13,7 @@ public class ChatMessage {
 
     private String sender;
     
-    @Column(columnDefinition = "TEXT", length = 100000)
+    @Column(columnDefinition = "TEXT")
     private String content;
     private String type; // "PUBLIC" ya "PRIVATE"
     private String recipient; // private chat ke liye
