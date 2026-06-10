@@ -250,40 +250,41 @@ function setAvatar(photoData){
 async function uploadPhoto(input){
     const file=input.files[0];
     if(!file)return;
-    if(file.size>3*1024*1024){showToast('Max 3MB!','err');return}
+    if(file.size>5*1024*1024){showToast('Max 5MB!','err');return}
 
-    // Compress karo
-    const reader=new FileReader();
-    reader.onload=function(e){
-        const img=new Image();
-        img.onload=async function(){
-            const canvas2=document.createElement('canvas');
-            let w=img.width,h=img.height;
-            const maxSize=500;
-            if(w>maxSize){h=h*maxSize/w;w=maxSize}
-            if(h>maxSize){w=w*maxSize/h;h=maxSize}
-            canvas2.width=w;canvas2.height=h;
-            const ctx2=canvas2.getContext('2d');
-            ctx2.drawImage(img,0,0,w,h);
-            const compressed=canvas2.toDataURL('image/jpeg',0.8);
+    showToast('Uploading photo...','ok');
 
-            try{
-                const res=await fetch('https://divyansh-website-wooq.onrender.com/api/user/upload-photo',{
-                    method:'PUT',
-                    headers:{'Content-Type':'application/json','userId':myUserId},
-                    body:JSON.stringify({photo:compressed})
-                });
-                if(res.ok){
-                    setAvatar(compressed);
-                    showToast('Profile photo updated! 📸','ok');
-                } else {
-                    showToast('Upload failed!','err');
-                }
-            }catch(e){showToast('Failed!','err')}
-        };
-        img.src=e.target.result;
-    };
-    reader.readAsDataURL(file);
+    const formData=new FormData();
+    formData.append('file',file);
+    formData.append('upload_preset','divyansh-chat');
+    formData.append('cloud_name','dyoqfgf8s');
+
+    try{
+        const res=await fetch('https://api.cloudinary.com/v1_1/dyoqfgf8s/image/upload',{
+            method:'POST',
+            body:formData
+        });
+        const data=await res.json();
+
+        if(data.secure_url){
+            // Backend mein save karo
+            const saveRes=await fetch('https://divyansh-website-wooq.onrender.com/api/user/upload-photo',{
+                method:'PUT',
+                headers:{'Content-Type':'application/json','userId':myUserId},
+                body:JSON.stringify({photo:data.secure_url})
+            });
+
+            if(saveRes.ok){
+                setAvatar(data.secure_url);
+                showToast('Profile photo updated! 📸','ok');
+            }
+        } else {
+            showToast('Upload failed!','err');
+        }
+    }catch(e){
+        showToast('Failed! Try again.','err');
+        console.error(e);
+    }
     input.value='';
 }
 

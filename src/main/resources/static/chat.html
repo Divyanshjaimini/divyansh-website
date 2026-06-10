@@ -401,43 +401,33 @@ function sendFile(input){
     if(!stompClient){addSysMsg('Not connected!');return}
     const file=input.files[0];
     if(!file)return;
+    if(file.size>10*1024*1024){addSysMsg('Max 10MB!');input.value='';return}
 
-    const reader=new FileReader();
-    reader.onload=function(e){
-        const isImage=file.type.startsWith('image/');
-        if(isImage){
-            // Compress karo pehle
-            const img=new Image();
-            img.onload=function(){
-                const canvas2=document.createElement('canvas');
-                let w=img.width,h=img.height;
-                // Max 400px
-                const maxSize=400;
-                if(w>maxSize){h=Math.floor(h*maxSize/w);w=maxSize}
-                if(h>maxSize){w=Math.floor(w*maxSize/h);h=maxSize}
-                canvas2.width=w;canvas2.height=h;
-                const ctx2=canvas2.getContext('2d');
-                ctx2.drawImage(img,0,0,w,h);
-                // Quality 0.5 — choti size
-                const compressed=canvas2.toDataURL('image/jpeg',0.5);
-                const sizeKB=Math.round(compressed.length*0.75/1024);
-                if(compressed.length>60000){
-                    addSysMsg('Image too large! Please use a smaller image (max ~50KB).');
-                    return;
-                }
-                sendContentToChat('[IMAGE]'+compressed);
-            };
-            img.src=e.target.result;
+    addSysMsg('Uploading...');
+
+    const formData=new FormData();
+    formData.append('file',file);
+    formData.append('upload_preset','divyansh-chat');
+    formData.append('cloud_name','dyoqfgf8s');
+
+    const isImage=file.type.startsWith('image/');
+    const uploadUrl='https://api.cloudinary.com/v1_1/dyoqfgf8s/'+(isImage?'image':'raw')+'/upload';
+
+    fetch(uploadUrl,{method:'POST',body:formData})
+    .then(r=>r.json())
+    .then(data=>{
+        if(data.secure_url){
+            const content=isImage?'[IMAGE]'+data.secure_url:'[FILE]'+file.name+'|'+data.secure_url;
+            sendContentToChat(content);
+            addSysMsg('');
         } else {
-            // File — sirf naam bhejo
-            if(file.size>500*1024){
-                addSysMsg('File too large for chat! Max 500KB.');
-                return;
-            }
-            sendContentToChat('[FILE]'+file.name+'|'+e.target.result);
+            addSysMsg('Upload failed! Try again.');
         }
-    };
-    reader.readAsDataURL(file);
+    })
+    .catch(e=>{
+        addSysMsg('Upload failed: '+e.message);
+        console.error(e);
+    });
     input.value='';
 }
 
@@ -465,7 +455,7 @@ function sendContentToChat(content){
             scrollBottom();
         }
     }catch(err){
-        addSysMsg('Send failed: '+err.message);
+        addSysMsg('Send failed!');
         console.error(err);
     }
 }
@@ -558,14 +548,15 @@ function renderContent(content){
     if(!content) return '';
     if(content.startsWith('[IMAGE]')){
         const src=content.replace('[IMAGE]','');
-        return '<img src="'+src+'" style="max-width:220px;max-height:220px;border-radius:12px;cursor:pointer;display:block;margin-top:0.4rem;border:1px solid rgba(255,255,255,0.1)" onclick="window.open(\''+src+'\',\'_blank\')" title="Click to open full size">';
-    }
-    if(content.startsWith('[FILE]')){
+        contentHtml='<img src="'+src+'" style="max-width:250px;max-height:250px;border-radius:12px;cursor:pointer;display:block;margin-top:0.4rem;border:1px solid rgba(255,255,255,0.1)" onclick="window.open(\''+src+'\',\'_blank\')" title="Click to view full size" onerror="this.style.display=\'none\'">';
+    } else if(content.startsWith('[FILE]')){
         const withoutPrefix=content.replace('[FILE]','');
         const pipeIndex=withoutPrefix.indexOf('|');
         const fileName=withoutPrefix.substring(0,pipeIndex);
-        const fileData=withoutPrefix.substring(pipeIndex+1);
-        return '<a href="'+fileData+'" download="'+escapeHtml(fileName)+'" style="display:inline-flex;align-items:center;gap:0.5rem;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.1);padding:0.5rem 0.9rem;border-radius:10px;text-decoration:none;color:#a78bfa;font-size:0.82rem;margin-top:0.4rem;transition:all 0.2s" onmouseover="this.style.background=\'rgba(102,126,234,0.15)\'" onmouseout="this.style.background=\'rgba(255,255,255,0.07)\'">📄 '+escapeHtml(fileName)+'</a>';
+        const fileUrl=withoutPrefix.substring(pipeIndex+1);
+        contentHtml='<a href="'+fileUrl+'" target="_blank" download="'+escapeHtml(fileName)+'" style="display:inline-flex;align-items:center;gap:0.5rem;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.1);padding:0.5rem 0.9rem;border-radius:10px;text-decoration:none;color:#a78bfa;font-size:0.82rem;margin-top:0.4rem">📄 '+escapeHtml(fileName)+'</a>';
+    } else {
+        contentHtml=escapeHtml(content);
     }
     return escapeHtml(content);
 }

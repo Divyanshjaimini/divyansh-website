@@ -265,24 +265,39 @@ function loadProfilePhoto(photoData){
 function uploadPhoto(input){
     const file=input.files[0];
     if(!file)return;
-    if(file.size>2*1024*1024){showToast('Image size must be less than 2MB!','err');return}
-    const reader=new FileReader();
-    reader.onload=function(e){
-        const base64=e.target.result;
-        fetch('https://divyansh-website-wooq.onrender.com/api/user/upload-photo',{
-            method:'PUT',
-            headers:{'Content-Type':'application/json','userId':userId},
-            body:JSON.stringify({photo:base64})
-        })
-        .then(r=>r.json())
-        .then(d=>{
-            if(d.message.includes('successfully')){
-                loadProfilePhoto(base64);
-                showToast('Photo uploaded!','ok');
-            }
-        });
-    };
-    reader.readAsDataURL(file);
+    if(file.size>5*1024*1024){showToast('Max 5MB!','err');return}
+
+    showToast('Uploading...','ok');
+
+    const formData=new FormData();
+    formData.append('file',file);
+    formData.append('upload_preset','divyansh-chat');
+
+    fetch('https://api.cloudinary.com/v1_1/dyoqfgf8s/image/upload',{
+        method:'POST',
+        body:formData
+    })
+    .then(r=>r.json())
+    .then(data=>{
+        if(data.secure_url){
+            fetch('https://divyansh-website-wooq.onrender.com/api/user/upload-photo',{
+                method:'PUT',
+                headers:{'Content-Type':'application/json','userId':userId},
+                body:JSON.stringify({photo:data.secure_url})
+            })
+            .then(r=>r.json())
+            .then(d=>{
+                if(d.message&&d.message.includes('successfully')){
+                    loadProfilePhoto(data.secure_url);
+                    showToast('Photo uploaded! 📸','ok');
+                }
+            });
+        } else {
+            showToast('Upload failed!','err');
+        }
+    })
+    .catch(()=>showToast('Failed!','err'));
+    input.value='';
 }
 
 function changePw(){
