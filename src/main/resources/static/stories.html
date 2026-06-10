@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stories — Divyansh Jaimini</title>
+<script src="settings-apply.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',sans-serif;background:var(--bg,#030308);color:var(--text,#fff);min-height:100vh}
+canvas{position:fixed;top:0;left:0;z-index:0;pointer-events:none}
+
+nav{position:sticky;top:0;z-index:100;display:flex;justify-content:space-between;align-items:center;padding:0 2rem;height:65px;background:var(--nav,rgba(3,3,8,0.9));backdrop-filter:blur(30px);border-bottom:1px solid var(--border,rgba(255,255,255,0.07))}
+.nav-logo{font-size:1.1rem;font-weight:900;background:linear-gradient(135deg,#667eea,#f093fb);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.nav-right{display:flex;gap:0.8rem;align-items:center}
+.nav-btn{color:rgba(255,255,255,0.5);text-decoration:none;font-size:0.85rem;padding:0.4rem 0.9rem;border-radius:10px;border:1px solid rgba(255,255,255,0.08);transition:all 0.2s;cursor:pointer;background:none;font-family:inherit}
+.nav-btn:hover{color:#fff;border-color:rgba(255,255,255,0.3)}
+
+.main{position:relative;z-index:1;max-width:1100px;margin:0 auto;padding:2rem 1.5rem}
+
+/* PAGE HEADER */
+.page-header{text-align:center;margin-bottom:2.5rem;animation:fadeUp 0.6s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.page-tag{display:inline-flex;align-items:center;gap:0.5rem;background:rgba(102,126,234,0.1);border:1px solid rgba(102,126,234,0.3);color:#a78bfa;padding:0.4rem 1.2rem;border-radius:30px;font-size:0.8rem;font-weight:600;margin-bottom:1rem}
+.page-header h1{font-size:2.5rem;font-weight:900;letter-spacing:-1px;margin-bottom:0.5rem}
+.grad{background:linear-gradient(135deg,#667eea,#f093fb,#f5576c);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.page-header p{color:rgba(255,255,255,0.4);font-size:0.95rem}
+
+/* STORIES ROW */
+.stories-row{display:flex;gap:1rem;overflow-x:auto;padding:0.5rem 0 1rem;margin-bottom:2rem;scrollbar-width:none}
+.stories-row::-webkit-scrollbar{display:none}
+
+/* ADD STORY BUTTON */
+.add-story-btn{flex-shrink:0;width:80px;display:flex;flex-direction:column;align-items:center;gap:0.5rem;cursor:pointer;animation:fadeUp 0.4s ease}
+.add-story-circle{width:72px;height:72px;border-radius:50%;background:rgba(102,126,234,0.1);border:2px dashed rgba(102,126,234,0.4);display:flex;align-items:center;justify-content:center;font-size:1.8rem;transition:all 0.3s}
+.add-story-btn:hover .add-story-circle{background:rgba(102,126,234,0.2);border-color:#667eea;transform:scale(1.05)}
+.add-story-label{font-size:0.72rem;color:rgba(255,255,255,0.4);font-weight:600;text-align:center}
+
+/* STORY BUBBLE */
+.story-bubble{flex-shrink:0;width:80px;display:flex;flex-direction:column;align-items:center;gap:0.5rem;cursor:pointer;animation:fadeUp 0.4s ease}
+.story-ring{width:74px;height:74px;border-radius:50%;background:linear-gradient(135deg,#667eea,#f093fb,#f5576c);padding:2px;transition:transform 0.2s}
+.story-ring.seen{background:rgba(255,255,255,0.15)}
+.story-bubble:hover .story-ring{transform:scale(1.08)}
+.story-avatar{width:70px;height:70px;border-radius:50%;background:#0a0a14;border:2px solid var(--bg,#030308);display:flex;align-items:center;justify-content:center;font-size:1.5rem;font-weight:900;overflow:hidden}
+.story-avatar img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+.story-username{font-size:0.72rem;color:rgba(255,255,255,0.6);font-weight:600;text-align:center;max-width:78px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* ALL STORIES GRID */
+.stories-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.5rem}
+.story-card{background:rgba(255,255,255,0.025);border:1px solid rgba(255,255,255,0.07);border-radius:20px;overflow:hidden;cursor:pointer;transition:all 0.3s;animation:fadeUp 0.5s ease;position:relative}
+.story-card:hover{transform:translateY(-5px);border-color:rgba(102,126,234,0.3);box-shadow:0 20px 40px rgba(0,0,0,0.3)}
+.story-media{width:100%;height:220px;object-fit:cover;display:block}
+.story-text-bg{width:100%;height:220px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;font-weight:700;text-align:center;padding:1.5rem;line-height:1.5}
+.story-info{padding:1rem;display:flex;align-items:center;justify-content:space-between}
+.story-author-wrap{display:flex;align-items:center;gap:0.6rem}
+.s-avatar{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#667eea,#f093fb);display:flex;align-items:center;justify-content:center;font-size:0.8rem;font-weight:800;overflow:hidden;flex-shrink:0}
+.s-avatar img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+.story-author-name{font-size:0.88rem;font-weight:700}
+.story-time{font-size:0.75rem;color:rgba(255,255,255,0.3);margin-top:0.1rem}
+.story-del-btn{background:rgba(239,68,68,0.1);color:#f87171;border:1px solid rgba(239,68,68,0.2);padding:0.25rem 0.6rem;border-radius:8px;cursor:pointer;font-size:0.75rem;font-weight:600;font-family:inherit}
+.story-expires{position:absolute;top:0.8rem;right:0.8rem;background:rgba(0,0,0,0.6);color:rgba(255,255,255,0.7);font-size:0.7rem;padding:0.2rem 0.6rem;border-radius:20px;font-weight:600;backdrop-filter:blur(5px)}
+
+/* EMPTY */
+.empty{text-align:center;padding:3rem;grid-column:1/-1;opacity:0.4}
+.empty-icon{font-size:3rem;margin-bottom:1rem}
+.empty h3{font-size:1.2rem;font-weight:700;margin-bottom:0.4rem}
+
+/* CREATE STORY MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.85);backdrop-filter:blur(15px);z-index:9999;display:none;align-items:center;justify-content:center;padding:1.5rem}
+.modal-overlay.open{display:flex}
+.modal{background:#0a0a14;border:1px solid rgba(255,255,255,0.1);border-radius:24px;padding:2rem;width:100%;max-width:480px;animation:fadeUp 0.3s ease;position:relative}
+.modal-close{position:absolute;top:1rem;right:1rem;width:32px;height:32px;background:rgba(255,255,255,0.07);border:none;border-radius:50%;cursor:pointer;color:#fff;font-size:1rem;display:flex;align-items:center;justify-content:center}
+.modal h3{font-size:1.2rem;font-weight:800;margin-bottom:1.5rem}
+
+/* TABS */
+.create-tabs{display:flex;gap:0.4rem;background:rgba(255,255,255,0.04);border-radius:12px;padding:0.3rem;margin-bottom:1.2rem}
+.c-tab{flex:1;padding:0.5rem;border:none;border-radius:9px;cursor:pointer;font-family:inherit;font-size:0.85rem;font-weight:600;transition:all 0.2s;background:transparent;color:rgba(255,255,255,0.45)}
+.c-tab.active{background:linear-gradient(135deg,#667eea,#764ba2);color:#fff}
+
+.tab-section{display:none}.tab-section.active{display:block}
+
+/* FORM */
+.form-label{font-size:0.75rem;font-weight:700;color:rgba(255,255,255,0.45);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.5rem;display:block}
+.form-input{width:100%;padding:0.8rem 1rem;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;color:#fff;font-family:inherit;font-size:0.9rem;outline:none;margin-bottom:1rem;transition:all 0.2s}
+.form-input:focus{border-color:rgba(102,126,234,0.5)}
+.form-input::placeholder{color:rgba(255,255,255,0.2)}
+
+/* COLOR PICKER */
+.color-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:0.5rem;margin-bottom:1rem}
+.color-swatch{width:100%;aspect-ratio:1;border-radius:10px;cursor:pointer;border:2px solid transparent;transition:all 0.2s}
+.color-swatch.selected{border-color:#fff;transform:scale(1.1)}
+
+/* PREVIEW */
+.story-preview{width:100%;height:160px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;font-weight:700;text-align:center;padding:1rem;margin-bottom:1rem;transition:all 0.3s;border:1px solid rgba(255,255,255,0.1)}
+
+/* UPLOAD */
+.upload-area{width:100%;height:160px;border:2px dashed rgba(255,255,255,0.15);border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:all 0.2s;margin-bottom:1rem;gap:0.5rem}
+.upload-area:hover{border-color:rgba(102,126,234,0.5);background:rgba(102,126,234,0.05)}
+.upload-area-icon{font-size:2.5rem}
+.upload-area-text{font-size:0.85rem;color:rgba(255,255,255,0.4)}
+.upload-preview{width:100%;height:160px;border-radius:14px;object-fit:cover;margin-bottom:1rem;display:none}
+
+.submit-btn{width:100%;padding:0.9rem;background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;border:none;border-radius:12px;font-size:0.95rem;font-weight:700;cursor:pointer;font-family:inherit;transition:all 0.3s;box-shadow:0 4px 20px rgba(102,126,234,0.3)}
+.submit-btn:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(102,126,234,0.5)}
+.submit-btn:disabled{opacity:0.6;cursor:not-allowed;transform:none}
+
+/* STORY VIEWER */
+.viewer-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.95);z-index:99999;display:none;align-items:center;justify-content:center}
+.viewer-overlay.open{display:flex}
+.viewer{width:100%;max-width:400px;height:100vh;max-height:700px;position:relative;border-radius:20px;overflow:hidden;background:#000}
+.viewer-progress{position:absolute;top:0.8rem;left:0.8rem;right:0.8rem;display:flex;gap:0.3rem;z-index:10}
+.v-prog-bar{flex:1;height:3px;background:rgba(255,255,255,0.3);border-radius:2px;overflow:hidden}
+.v-prog-fill{height:100%;background:#fff;border-radius:2px;transition:width linear}
+.viewer-header{position:absolute;top:1.5rem;left:1rem;right:1rem;display:flex;align-items:center;gap:0.8rem;z-index:10}
+.v-avatar{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#667eea,#f093fb);display:flex;align-items:center;justify-content:center;font-size:1rem;font-weight:800;overflow:hidden;flex-shrink:0}
+.v-avatar img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+.v-author{font-size:0.9rem;font-weight:700;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,0.5)}
+.v-time{font-size:0.75rem;color:rgba(255,255,255,0.6)}
+.v-close{margin-left:auto;width:34px;height:34px;background:rgba(255,255,255,0.1);border:none;border-radius:50%;cursor:pointer;color:#fff;font-size:1rem;display:flex;align-items:center;justify-content:center}
+.viewer-content{width:100%;height:100%;display:flex;align-items:center;justify-content:center}
+.viewer-img{width:100%;height:100%;object-fit:cover}
+.viewer-text{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:1.5rem;font-weight:800;text-align:center;padding:2rem;line-height:1.5}
+.v-nav-left,.v-nav-right{position:absolute;top:50%;transform:translateY(-50%);width:40%;height:100%;z-index:5;cursor:pointer}
+.v-nav-left{left:0}
+.v-nav-right{right:0}
+
+/* TOAST */
+.toast{position:fixed;bottom:2rem;right:2rem;padding:0.9rem 1.5rem;border-radius:12px;font-size:0.88rem;display:none;z-index:99999;font-weight:700;box-shadow:0 8px 30px rgba(0,0,0,0.4)}
+.toast.ok{background:linear-gradient(135deg,#059669,#047857);color:#fff}
+.toast.err{background:linear-gradient(135deg,#dc2626,#b91c1c);color:#fff}
+
+/* MOBILE */
+@media(max-width:768px){
+    .stories-grid{grid-template-columns:1fr}
+    .main{padding:1.5rem 1rem}
+    nav{padding:0 1rem}
+}
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+
+<nav>
+    <div class="nav-logo">✨ Stories</div>
+    <div class="nav-right">
+        <button class="nav-btn" onclick="history.back()">← Back</button>
+        <a href="index.html" class="nav-btn">🏠 Home</a>
+    </div>
+</nav>
+
+<div class="main">
+    <div class="page-header">
+        <div class="page-tag">✨ 24 Hour Stories</div>
+        <h1><span class="grad">Stories</span> & Status</h1>
+        <p>Share your moments — disappear in 24 hours!</p>
+    </div>
+
+    <!-- STORIES BUBBLES ROW -->
+    <div class="stories-row" id="storiesRow">
+        <!-- Add Story Button — logged in users ke liye -->
+        <div class="add-story-btn" id="addStoryBtn" style="display:none" onclick="document.getElementById('createModal').classList.add('open')">
+            <div class="add-story-circle">＋</div>
+            <div class="add-story-label">Add Story</div>
+        </div>
+    </div>
+
+    <!-- ALL STORIES GRID -->
+    <div class="section-title" style="font-size:1rem;font-weight:800;margin-bottom:1.2rem">📖 All Stories</div>
+    <div class="stories-grid" id="storiesGrid">
+        <div class="empty"><div class="empty-icon">✨</div><h3>Loading stories...</h3></div>
+    </div>
+</div>
+
+<!-- CREATE STORY MODAL -->
+<div class="modal-overlay" id="createModal">
+    <div class="modal">
+        <button class="modal-close" onclick="document.getElementById('createModal').classList.remove('open')">✕</button>
+        <h3>✨ Create Story</h3>
+
+        <div class="create-tabs">
+            <button class="c-tab active" onclick="switchTab('text',this)">✏️ Text</button>
+            <button class="c-tab" onclick="switchTab('image',this)">📸 Image</button>
+        </div>
+
+        <!-- TEXT TAB -->
+        <div class="tab-section active" id="tab-text">
+            <label class="form-label">Your Story Text</label>
+            <textarea class="form-input" id="storyText" rows="3" placeholder="What's on your mind?" oninput="updatePreview()"></textarea>
+
+            <label class="form-label">Background Color</label>
+            <div class="color-grid" id="colorGrid">
+                <div class="color-swatch selected" style="background:linear-gradient(135deg,#667eea,#764ba2)" onclick="selectColor('linear-gradient(135deg,#667eea,#764ba2)',this)"></div>
+                <div class="color-swatch" style="background:linear-gradient(135deg,#f093fb,#f5576c)" onclick="selectColor('linear-gradient(135deg,#f093fb,#f5576c)',this)"></div>
+                <div class="color-swatch" style="background:linear-gradient(135deg,#4facfe,#00f2fe)" onclick="selectColor('linear-gradient(135deg,#4facfe,#00f2fe)',this)"></div>
+                <div class="color-swatch" style="background:linear-gradient(135deg,#43e97b,#38f9d7)" onclick="selectColor('linear-gradient(135deg,#43e97b,#38f9d7)',this)"></div>
+                <div class="color-swatch" style="background:linear-gradient(135deg,#fa709a,#fee140)" onclick="selectColor('linear-gradient(135deg,#fa709a,#fee140)',this)"></div>
+                <div class="color-swatch" style="background:linear-gradient(135deg,#30cfd0,#667eea)" onclick="selectColor('linear-gradient(135deg,#30cfd0,#667eea)',this)"></div>
+                <div class="color-swatch" style="background:linear-gradient(135deg,#f7971e,#ffd200)" onclick="selectColor('linear-gradient(135deg,#f7971e,#ffd200)',this)"></div>
+                <div class="color-swatch" style="background:linear-gradient(135deg,#ee0979,#ff6a00)" onclick="selectColor('linear-gradient(135deg,#ee0979,#ff6a00)',this)"></div>
+                <div class="color-swatch" style="background:linear-gradient(135deg,#0f0c29,#302b63)" onclick="selectColor('linear-gradient(135deg,#0f0c29,#302b63)',this)"></div>
+                <div class="color-swatch" style="background:linear-gradient(135deg,#11998e,#38ef7d)" onclick="selectColor('linear-gradient(135deg,#11998e,#38ef7d)',this)"></div>
+                <div class="color-swatch" style="background:linear-gradient(135deg,#8e2de2,#4a00e0)" onclick="selectColor('linear-gradient(135deg,#8e2de2,#4a00e0)',this)"></div>
+                <div class="color-swatch" style="background:linear-gradient(135deg,#fc5c7d,#6a3093)" onclick="selectColor('linear-gradient(135deg,#fc5c7d,#6a3093)',this)"></div>
+            </div>
+
+            <div class="story-preview" id="storyPreview" style="background:linear-gradient(135deg,#667eea,#764ba2)">
+                Your story preview...
+            </div>
+
+            <button class="submit-btn" onclick="createTextStory()" id="textSubmitBtn">✨ Share Story</button>
+        </div>
+
+        <!-- IMAGE TAB -->
+        <div class="tab-section" id="tab-image">
+            <div class="upload-area" onclick="document.getElementById('imageInput').click()">
+                <div class="upload-area-icon">📸</div>
+                <div class="upload-area-text">Click to select image</div>
+                <div style="font-size:0.75rem;color:rgba(255,255,255,0.25)">Max 10MB</div>
+            </div>
+            <input type="file" id="imageInput" accept="image/*" style="display:none" onchange="previewImage(this)">
+            <img id="imagePreview" class="upload-preview">
+            <button class="submit-btn" onclick="createImageStory()" id="imageSubmitBtn" disabled>📸 Share Story</button>
+        </div>
+    </div>
+</div>
+
+<!-- STORY VIEWER -->
+<div class="viewer-overlay" id="viewerOverlay">
+    <div class="viewer">
+        <div class="viewer-progress" id="viewerProgress"></div>
+        <div class="viewer-header">
+            <div class="v-avatar" id="viewerAvatar">D</div>
+            <div>
+                <div class="v-author" id="viewerAuthor">--</div>
+                <div class="v-time" id="viewerTime">--</div>
+            </div>
+            <button class="v-close" onclick="closeViewer()">✕</button>
+        </div>
+        <div class="viewer-content" id="viewerContent"></div>
+        <div class="v-nav-left" onclick="prevStory()"></div>
+        <div class="v-nav-right" onclick="nextStory()"></div>
+    </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// PARTICLES
+const canvas=document.getElementById('c'),ctx=canvas.getContext('2d');
+canvas.width=window.innerWidth;canvas.height=window.innerHeight;
+window.addEventListener('resize',()=>{canvas.width=window.innerWidth;canvas.height=window.innerHeight});
+const pts=Array.from({length:50},()=>({x:Math.random()*canvas.width,y:Math.random()*canvas.height,r:Math.random()*1.2+0.3,dx:(Math.random()-.5)*.25,dy:(Math.random()-.5)*.25,c:['#667eea','#f093fb','#f5576c'][Math.floor(Math.random()*3)],o:Math.random()*0.2+0.05}));
+function drawP(){ctx.clearRect(0,0,canvas.width,canvas.height);pts.forEach(p=>{p.x+=p.dx;p.y+=p.dy;if(p.x<0||p.x>canvas.width)p.dx*=-1;if(p.y<0||p.y>canvas.height)p.dy*=-1;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle=p.c+Math.floor(p.o*255).toString(16).padStart(2,'0');ctx.fill()});requestAnimationFrame(drawP)}drawP();
+
+const userId=localStorage.getItem('userId');
+const username=localStorage.getItem('username');
+const role=localStorage.getItem('role');
+const seenStories=JSON.parse(localStorage.getItem('seenStories')||'[]');
+
+// Logged in user ko Add Story dikhao
+if(userId) document.getElementById('addStoryBtn').style.display='flex';
+
+let allStories=[];
+let currentStoryIndex=0;
+let currentGroupIndex=0;
+let storyGroups=[];
+let selectedColor='linear-gradient(135deg,#667eea,#764ba2)';
+let selectedImageUrl='';
+let progressTimer=null;
+
+// LOAD STORIES
+async function loadStories(){
+    try{
+        const res=await fetch('https://divyansh-website-wooq.onrender.com/api/stories');
+        allStories=await res.json();
+        renderStories();
+        renderBubbles();
+    }catch(e){
+        document.getElementById('storiesGrid').innerHTML='<div class="empty"><div class="empty-icon">✨</div><h3>No stories yet</h3><p>Be the first to share!</p></div>';
+    }
+}
+
+// Group stories by author
+function groupStories(){
+    const groups={};
+    allStories.forEach(s=>{
+        if(!groups[s.author]) groups[s.author]=[];
+        groups[s.author].push(s);
+    });
+    return Object.entries(groups).map(([author,stories])=>({author,stories}));
+}
+
+function renderBubbles(){
+    const row=document.getElementById('storiesRow');
+    const groups=groupStories();
+    storyGroups=groups;
+
+    // Add story button preserve karo
+    const addBtn=document.getElementById('addStoryBtn');
+    row.innerHTML='';
+    row.appendChild(addBtn);
+
+    groups.forEach((group,idx)=>{
+        const seen=group.stories.every(s=>seenStories.includes(s.id));
+        const bubble=document.createElement('div');
+        bubble.className='story-bubble';
+        bubble.onclick=()=>openGroupViewer(idx);
+        bubble.innerHTML=`
+            <div class="story-ring ${seen?'seen':''}">
+                <div class="story-avatar">${group.author.charAt(0).toUpperCase()}</div>
+            </div>
+            <div class="story-username">${group.author}</div>`;
+        row.appendChild(bubble);
+    });
+}
+
+function renderStories(){
+    const grid=document.getElementById('storiesGrid');
+    if(!allStories.length){
+        grid.innerHTML='<div class="empty"><div class="empty-icon">✨</div><h3>No stories yet</h3><p>Be the first to share a story!</p></div>';
+        return;
+    }
+
+    grid.innerHTML=allStories.map(s=>{
+        const timeAgo=getTimeAgo(s.createdAt);
+        const remaining=getRemaining(s.expiresAt);
+        const canDel=role==='ADMIN'||(userId&&s.authorId==userId);
+        const mediaHtml=s.type==='IMAGE'?
+            `<img class="story-media" src="${s.mediaUrl}" alt="story" onerror="this.style.display='none'">`:
+            `<div class="story-text-bg" style="background:${s.bgColor||'linear-gradient(135deg,#667eea,#764ba2)'}">${s.text||''}</div>`;
+
+        return`<div class="story-card" onclick="openStoryById(${s.id})">
+            <div class="story-expires">⏰ ${remaining}</div>
+            ${mediaHtml}
+            <div class="story-info">
+                <div class="story-author-wrap">
+                    <div class="s-avatar">${s.author.charAt(0).toUpperCase()}</div>
+                    <div>
+                        <div class="story-author-name">${s.author}</div>
+                        <div class="story-time">${timeAgo}</div>
+                    </div>
+                </div>
+                ${canDel?`<button class="story-del-btn" onclick="event.stopPropagation();deleteStory(${s.id})">🗑 Delete</button>`:''}
+            </div>
+        </div>`;
+    }).join('');
+}
+
+// OPEN STORY BY ID
+function openStoryById(id){
+    const idx=allStories.findIndex(s=>s.id===id);
+    if(idx===-1)return;
+    const author=allStories[idx].author;
+    const groups=groupStories();
+    const gIdx=groups.findIndex(g=>g.author===author);
+    if(gIdx===-1)return;
+    const sIdx=groups[gIdx].stories.findIndex(s=>s.id===id);
+    openGroupViewer(gIdx,sIdx);
+}
+
+// STORY VIEWER
+function openGroupViewer(groupIdx,storyIdx=0){
+    const groups=groupStories();
+    storyGroups=groups;
+    currentGroupIndex=groupIdx;
+    currentStoryIndex=storyIdx;
+    document.getElementById('viewerOverlay').classList.add('open');
+    showCurrentStory();
+}
+
+function showCurrentStory(){
+    const groups=groupStories();
+    if(currentGroupIndex>=groups.length){closeViewer();return}
+    const group=groups[currentGroupIndex];
+    if(currentStoryIndex>=group.stories.length){
+        currentGroupIndex++;
+        currentStoryIndex=0;
+        if(currentGroupIndex>=groups.length){closeViewer();return}
+        showCurrentStory();return;
+    }
+
+    const story=group.stories[currentStoryIndex];
+
+    // Mark as seen
+    if(!seenStories.includes(story.id)){
+        seenStories.push(story.id);
+        localStorage.setItem('seenStories',JSON.stringify(seenStories));
+    }
+
+    // Progress bars
+    const progContainer=document.getElementById('viewerProgress');
+    progContainer.innerHTML=group.stories.map((_,i)=>`
+        <div class="v-prog-bar">
+            <div class="v-prog-fill" id="prog-${i}" style="width:${i<currentStoryIndex?'100':i===currentStoryIndex?'0':'0'}%"></div>
+        </div>`).join('');
+
+    // Author
+    document.getElementById('viewerAuthor').textContent=story.author;
+    document.getElementById('viewerTime').textContent=getTimeAgo(story.createdAt);
+    document.getElementById('viewerAvatar').textContent=story.author.charAt(0).toUpperCase();
+
+    // Content
+    const content=document.getElementById('viewerContent');
+    if(story.type==='IMAGE'){
+        content.innerHTML=`<img class="viewer-img" src="${story.mediaUrl}" alt="story">`;
+    } else {
+        content.innerHTML=`<div class="viewer-text" style="background:${story.bgColor||'linear-gradient(135deg,#667eea,#764ba2)'}">${story.text||''}</div>`;
+    }
+
+    // Progress animation
+    clearTimeout(progressTimer);
+    const progFill=document.getElementById('prog-'+currentStoryIndex);
+    if(progFill){
+        progFill.style.transition='width 5s linear';
+        setTimeout(()=>progFill.style.width='100%',50);
+    }
+    progressTimer=setTimeout(nextStory,5000);
+}
+
+function nextStory(){
+    clearTimeout(progressTimer);
+    const groups=groupStories();
+    const group=groups[currentGroupIndex];
+    if(!group)return closeViewer();
+    currentStoryIndex++;
+    if(currentStoryIndex>=group.stories.length){
+        currentGroupIndex++;
+        currentStoryIndex=0;
+    }
+    showCurrentStory();
+}
+
+function prevStory(){
+    clearTimeout(progressTimer);
+    currentStoryIndex--;
+    if(currentStoryIndex<0){
+        currentGroupIndex--;
+        if(currentGroupIndex<0){currentGroupIndex=0;currentStoryIndex=0;}
+        else{
+            const groups=groupStories();
+            currentStoryIndex=Math.max(0,groups[currentGroupIndex].stories.length-1);
+        }
+    }
+    showCurrentStory();
+}
+
+function closeViewer(){
+    clearTimeout(progressTimer);
+    document.getElementById('viewerOverlay').classList.remove('open');
+    renderBubbles(); // Refresh seen status
+}
+
+// CREATE STORY
+function switchTab(tab,btn){
+    document.querySelectorAll('.c-tab').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.tab-section').forEach(s=>s.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('tab-'+tab).classList.add('active');
+}
+
+function selectColor(color,el){
+    selectedColor=color;
+    document.querySelectorAll('.color-swatch').forEach(s=>s.classList.remove('selected'));
+    el.classList.add('selected');
+    updatePreview();
+}
+
+function updatePreview(){
+    const text=document.getElementById('storyText').value||'Your story preview...';
+    const preview=document.getElementById('storyPreview');
+    preview.style.background=selectedColor;
+    preview.textContent=text;
+}
+
+function previewImage(input){
+    const file=input.files[0];
+    if(!file)return;
+    const reader=new FileReader();
+    reader.onload=function(e){
+        const img=document.getElementById('imagePreview');
+        img.src=e.target.result;
+        img.style.display='block';
+        document.getElementById('imageSubmitBtn').disabled=false;
+        document.querySelector('.upload-area').style.display='none';
+    };
+    reader.readAsDataURL(file);
+}
+
+async function createTextStory(){
+    if(!userId){showToast('Please login first!','err');return}
+    const text=document.getElementById('storyText').value.trim();
+    if(!text){showToast('Please write something!','err');return}
+    const btn=document.getElementById('textSubmitBtn');
+    btn.textContent='Sharing...';btn.disabled=true;
+    try{
+        const res=await fetch('https://divyansh-website-wooq.onrender.com/api/stories',{
+            method:'POST',
+            headers:{'Content-Type':'application/json','userId':userId},
+            body:JSON.stringify({text,bgColor:selectedColor,type:'TEXT'})
+        });
+        if(res.ok){
+            document.getElementById('createModal').classList.remove('open');
+            document.getElementById('storyText').value='';
+            showToast('Story shared! ✨','ok');
+            loadStories();
+        }
+    }catch(e){showToast('Failed!','err')}
+    btn.textContent='✨ Share Story';btn.disabled=false;
+}
+
+async function createImageStory(){
+    if(!userId){showToast('Please login first!','err');return}
+    const input=document.getElementById('imageInput');
+    const file=input.files[0];
+    if(!file){showToast('Please select an image!','err');return}
+    const btn=document.getElementById('imageSubmitBtn');
+    btn.textContent='Uploading...';btn.disabled=true;
+
+    // Cloudinary upload
+    const formData=new FormData();
+    formData.append('file',file);
+    formData.append('upload_preset','divyansh-chat');
+    try{
+        const uploadRes=await fetch('https://api.cloudinary.com/v1_1/dyoqfgf8s/image/upload',{
+            method:'POST',body:formData
+        });
+        const uploadData=await uploadRes.json();
+        if(!uploadData.secure_url){showToast('Upload failed!','err');btn.textContent='📸 Share Story';btn.disabled=false;return}
+
+        const res=await fetch('https://divyansh-website-wooq.onrender.com/api/stories',{
+            method:'POST',
+            headers:{'Content-Type':'application/json','userId':userId},
+            body:JSON.stringify({mediaUrl:uploadData.secure_url,type:'IMAGE'})
+        });
+        if(res.ok){
+            document.getElementById('createModal').classList.remove('open');
+            document.getElementById('imagePreview').style.display='none';
+            document.querySelector('.upload-area').style.display='flex';
+            input.value='';
+            showToast('Story shared! 📸','ok');
+            loadStories();
+        }
+    }catch(e){showToast('Failed!','err')}
+    btn.textContent='📸 Share Story';btn.disabled=false;
+}
+
+async function deleteStory(id){
+    if(!confirm('Delete this story?'))return;
+    try{
+        await fetch('https://divyansh-website-wooq.onrender.com/api/stories/'+id,{
+            method:'DELETE',headers:{'userId':userId}
+        });
+        showToast('Story deleted!','ok');
+        loadStories();
+    }catch(e){showToast('Failed!','err')}
+}
+
+// TIME HELPERS
+function getTimeAgo(dateStr){
+    const diff=Date.now()-new Date(dateStr).getTime();
+    const mins=Math.floor(diff/60000);
+    if(mins<1)return 'Just now';
+    if(mins<60)return mins+'m ago';
+    const hrs=Math.floor(mins/60);
+    if(hrs<24)return hrs+'h ago';
+    return Math.floor(hrs/24)+'d ago';
+}
+
+function getRemaining(dateStr){
+    const diff=new Date(dateStr).getTime()-Date.now();
+    if(diff<=0)return 'Expired';
+    const hrs=Math.floor(diff/3600000);
+    const mins=Math.floor((diff%3600000)/60000);
+    if(hrs>0)return hrs+'h '+mins+'m left';
+    return mins+'m left';
+}
+
+function showToast(msg,type){
+    const t=document.getElementById('toast');
+    t.textContent=msg;t.className='toast '+type;t.style.display='block';
+    setTimeout(()=>t.style.display='none',3000);
+}
+
+// Close modal on outside click
+document.getElementById('createModal').addEventListener('click',function(e){
+    if(e.target===this)this.classList.remove('open');
+});
+
+loadStories();
+// Auto refresh every 30 seconds
+setInterval(loadStories,30000);
+</script>
+</body>
+</html>
