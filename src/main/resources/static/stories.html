@@ -261,10 +261,6 @@ const seenStories=JSON.parse(localStorage.getItem('seenStories')||'[]');
 // Logged in user ko Add Story dikhao
 if(userId) document.getElementById('addStoryBtn').style.display='flex';
 
-if(!userId){
-    window.location.href='login.html?redirect=stories.html';
-    return;
-}
 
 let allStories=[];
 let currentStoryIndex=0;
@@ -591,6 +587,11 @@ function showToast(msg,type){
 document.getElementById('createModal').addEventListener('click',function(e){
     if(e.target===this)this.classList.remove('open');
 });
+
+if(!userId){
+    window.location.href='login.html?redirect=stories.html';
+    return;
+}
 
 loadStories();
 // Auto refresh every 30 seconds
