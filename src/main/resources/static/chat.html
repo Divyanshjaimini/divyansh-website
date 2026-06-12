@@ -214,12 +214,7 @@ function goBack(){
 }
 
 if(!userId){
-    document.getElementById('chatLayout').innerHTML=`
-        <div class="not-logged">
-            <h2>Login Required 🔐</h2>
-            <p>Please login to access the chat!</p>
-            <a href="login.html" class="login-link">Login Now</a>
-        </div>`;
+    window.location.href='login.html?redirect=chat.html';
 }
 
 let stompClient=null;

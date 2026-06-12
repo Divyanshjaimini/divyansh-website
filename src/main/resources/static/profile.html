@@ -139,6 +139,10 @@ const myUsername=localStorage.getItem('username');
 const myRole=localStorage.getItem('role');
 const likesDB=JSON.parse(localStorage.getItem('blogLikes')||'{}');
 
+if(!myUserId){
+    window.location.href='login.html?redirect=profile.html';
+}
+
 // URL se username lo
 const urlParams=new URLSearchParams(window.location.search);
 const targetUser=urlParams.get('user');

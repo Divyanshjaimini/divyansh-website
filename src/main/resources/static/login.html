@@ -96,7 +96,18 @@ async function login(){
             const savedTheme=localStorage.getItem('theme');
             
             showMsg('✅ Login successful! Redirecting...','success');
-            setTimeout(()=>window.location.href=data.role==='ADMIN'?'admin-dashboard.html':'user-dashboard.html',1000);
+            
+            setTimeout(()=>{
+                const params=new URLSearchParams(window.location.search);
+                const redirect=params.get('redirect');
+                if(redirect){
+                    window.location.href=redirect;
+                } else {
+                    window.location.href=data.role==='ADMIN'?'admin-dashboard.html':'user-dashboard.html';
+                }
+            },1000);
+            
+            
         }else{showMsg('❌ '+data.message,'error');btn.innerHTML='Login';btn.disabled=false}
     }catch(e){showMsg('❌ Server connection failed!','error');btn.innerHTML='Login';btn.disabled=false}
 }

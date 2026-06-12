@@ -223,6 +223,11 @@ const role=localStorage.getItem('role');
 // Logged in user ko create section dikhao
 if(userId) document.getElementById('createSection').classList.add('show');
 
+if(!userId){
+    window.location.href='login.html?redirect=blog.html';
+    return;
+}
+
 // Comments localStorage mein store karenge
 const commentsDB=JSON.parse(localStorage.getItem('blogComments')||'{}');
 const likesDB=JSON.parse(localStorage.getItem('blogLikes')||'{}');
